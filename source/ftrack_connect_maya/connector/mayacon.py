@@ -17,73 +17,73 @@ import os
 import uuid
 
 
-class Dialog(maincon.Dialog):
-    def __init__(self):
-        super(Dialog, self).__init__()
-        self.panelWidth = 350
-        self.dockAt = 'right'
-        self.dockName = 'myDock'
-        self.dockAllowedAreas = ['all']
-        self.diaName = self.__class__.__name__
-        self.qtClassName = self.__class__.__name__ + 'Window'
-        self.gotRefresh = None
+# class Dialog(maincon.Dialog):
+#     def __init__(self):
+#         super(Dialog, self).__init__()
+#         self.panelWidth = 350
+#         self.dockAt = 'right'
+#         self.dockName = 'myDock'
+#         self.dockAllowedAreas = ['all']
+#         self.diaName = self.__class__.__name__
+#         self.qtClassName = self.__class__.__name__ + 'Window'
+#         self.gotRefresh = None
 
-    # Return a Qt Dialog Class
-    def initGui(self):
-        return None
+#     # Return a Qt Dialog Class
+#     def initGui(self):
+#         return None
 
-    # Attach QT Gui to application
-    def show(self):
-        #ftrack.resetDebug()
-        from PySide import QtGui
-        app = Connector.getMainWindow()
+#     # Attach QT Gui to application
+#     def show(self):
+#         #ftrack.resetDebug()
+#         from PySide import QtGui
+#         app = Connector.getMainWindow()
 
-        if self.type == 'panel':
+#         if self.type == 'panel':
 
-            foundQtObjects = app.findChildren(QtGui.QDialog, self.dockName)
+#             foundQtObjects = app.findChildren(QtGui.QDialog, self.dockName)
 
-            if len(foundQtObjects) > 0:
-                self.qtObject = foundQtObjects[0]
-                mc.dockControl(self.qtObject.dockControlName, e=True, r=True)
-                #print self.qtObject.dockControlName
-                if not mc.dockControl(self.qtObject.dockControlName, q=True, io=True):
-                    returnObj = self.qtObject
-                else:
-                    self.createDockLayout()
-                    returnObj = self.qtObject
+#             if len(foundQtObjects) > 0:
+#                 self.qtObject = foundQtObjects[0]
+#                 mc.dockControl(self.qtObject.dockControlName, e=True, r=True)
+#                 #print self.qtObject.dockControlName
+#                 if not mc.dockControl(self.qtObject.dockControlName, q=True, io=True):
+#                     returnObj = self.qtObject
+#                 else:
+#                     self.createDockLayout()
+#                     returnObj = self.qtObject
 
-                if self.gotRefresh:
-                    returnObj.refresh()
-                return returnObj
+#                 if self.gotRefresh:
+#                     returnObj.refresh()
+#                 return returnObj
 
-            import ftrackplugin
-            self.qtObject = getattr(ftrackplugin.ftrackDialogs, self.__class__.__name__.replace('Dialog', 'Qt'))()
-            self.qtObject.show()
+#             import ftrackplugin
+#             self.qtObject = getattr(ftrackplugin.ftrackDialogs, self.__class__.__name__.replace('Dialog', 'Qt'))()
+#             self.qtObject.show()
 
-            self.createDockLayout()
-            #ftrack.printDebug()
-            return self.qtObject
-        else:
-            qtClass = self.initGui()
-            self.qtObject = qtClass()
-            self.qtObject.show()
-            return self.qtObject
+#             self.createDockLayout()
+#             #ftrack.printDebug()
+#             return self.qtObject
+#         else:
+#             qtClass = self.initGui()
+#             self.qtObject = qtClass()
+#             self.qtObject.show()
+#             return self.qtObject
 
-    def getWindow(self):
-        return self.qtObject
+#     def getWindow(self):
+#         return self.qtObject
 
-    def createDockLayout(self):
-        gMainWindow = mm.eval('$temp1=$gMainWindow')
-        columnLay = mc.paneLayout(parent=gMainWindow, width=200)
-        #print columnLay
-        dockControl = mc.dockControl(l=self.qtObject.windowTitle(), \
-                                     allowedArea="all", \
-                                     area="right", \
-                                     content=columnLay, \
-                                     width=self.panelWidth)
-        mc.control(str(self.qtObject.objectName()), e=True, p=columnLay)
-        self.qtObject.dockControlName = dockControl
-        return
+#     def createDockLayout(self):
+#         gMainWindow = mm.eval('$temp1=$gMainWindow')
+#         columnLay = mc.paneLayout(parent=gMainWindow, width=200)
+#         #print columnLay
+#         dockControl = mc.dockControl(l=self.qtObject.windowTitle(), \
+#                                      allowedArea="all", \
+#                                      area="right", \
+#                                      content=columnLay, \
+#                                      width=self.panelWidth)
+#         mc.control(str(self.qtObject.objectName()), e=True, p=columnLay)
+#         self.qtObject.dockControlName = dockControl
+#         return
 
 
 class Connector(maincon.Connector):
