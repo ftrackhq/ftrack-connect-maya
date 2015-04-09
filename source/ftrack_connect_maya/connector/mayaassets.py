@@ -482,8 +482,8 @@ class GeometryAsset(GenericAsset):
         except:
             alembicEnabled = False
 
-        s = os.environ['FS']
-        e = os.environ['FE']
+        s = os.getenv('FS', 1001)
+        e = os.getenv('FE', 1101)
         xml = xml.format(s, e, str(alembicEnabled))
         return xml
 
@@ -717,8 +717,8 @@ class CameraAsset(GenericAsset):
         except:
             alembicEnabled = False
 
-        s = os.environ['FS']
-        e = os.environ['FE']
+        s = os.getenv('FS', 1001)
+        e = os.getenv('FE', 1101)
         xml = xml.format(s, e, str(alembicEnabled))
         return xml
 

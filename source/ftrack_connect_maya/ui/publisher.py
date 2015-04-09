@@ -3,8 +3,6 @@ from ftrack_connect import connector as ftrack_connector
 
 import getpass
 from ftrack_connect.ui.widget.browse_tasks_small import BrowseTasksSmallWidget
-# from ftrackplugin.ftrackWidgets.ExportAssetOptionsWidget import ExportAssetOptionsWidget
-# from ftrackplugin.ftrackWidgets.ExportOptionsWidget import ExportOptionsWidget
 from ftrack_connect_maya.ui.export_asset_options_widget import ExportAssetOptionsWidget
 from ftrack_connect_maya.ui.export_options_widget import ExportOptionsWidget
 from ftrack_connect.ui.widget import header
@@ -180,7 +178,7 @@ class FtrackPublishAssetDialog(QtGui.QDialog):
         if thumbnail != '':
             assetVersion.createThumbnail(thumbnail)
 
-        self.exportOptionsWidget.setMessage(message)
+        self.headerWidget.setMessage(message, 'info')
         self.exportOptionsWidget.setComment('')
         self.resetOptions()
         self.exportAssetOptionsWidget.emitAssetType(
@@ -197,9 +195,4 @@ class FtrackPublishAssetDialog(QtGui.QDialog):
         return shotpath
 
     def showWarning(self, subject, message):
-        msgBox = QtGui.QMessageBox()
-        msgBox.setText(subject)
-        msgBox.setInformativeText(message)
-        msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-        msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
-        msgBox.exec_()
+        self.headerWidget.setMessage(message, 'warning')
