@@ -16,9 +16,10 @@ dialogs = [
 
 
 def loadAndInit():
-    # load the assetPlugin
     mc.loadPlugin('ftrackMayaPlugin.py', quiet=True)
-    Connector.registerAssets()
+
+    connector = Connector()
+    connector.registerAssets()
 
     if mc.about(batch=True):
         return
@@ -34,7 +35,6 @@ def loadAndInit():
         label='ftrack'
     )
 
-    connector = Connector()
     for Dialog in dialogs:
         ftrack_dialog = Dialog(connector=connector)
         ftrack_docked_dialog = DockedWidget(ftrack_dialog)
