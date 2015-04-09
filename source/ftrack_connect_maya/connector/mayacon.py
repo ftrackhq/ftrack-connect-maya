@@ -33,6 +33,7 @@ class DockedWidget(object):
     def show(self):
         app = Connector.getMainWindow()
         foundQtObjects = app.findChildren(QtGui.QDialog, self.dockName)
+        print 'FOUND:', foundQtObjects
 
         if len(foundQtObjects) > 0:
             self.qtObject = foundQtObjects[0]

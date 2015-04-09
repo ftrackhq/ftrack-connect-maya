@@ -3,11 +3,12 @@ import maya.cmds as mc
 import maya.mel as mm
 
 from ftrack_connect_maya.connector import Connector
+from ftrack_connect_maya.connector.mayacon import DockedWidget
 from ftrack_connect.ui.widget.import_asset import FtrackImportAssetDialog
 from ftrack_connect.ui.widget.asset_manager import FtrackAssetManagerDialog
 
 
-Dialogs = [FtrackImportAssetDialog, FtrackAssetManagerDialog]
+dialogs = [FtrackImportAssetDialog, FtrackAssetManagerDialog]
 
 
 def loadAndInit():
@@ -20,13 +21,22 @@ def loadAndInit():
     if mc.menu('ftrack', exists=True):
         mc.deleteUI('ftrack')
 
-    # for dialog in dialogs:
+    ftrack_menu = mc.menu(
+        'ftrack',
+        parent=gMainWindow,
+        tearOff=False,
+        label='ftrack'
+    )
 
-
-        # mc.menuItem(
-        #     parent=app[0],
-        #     label=app[1],
-        #     command=app[2])
+    connector = Connector()
+    for Dialog in dialogs:
+        ftrack_dialog = Dialog(connector=connector)
+        ftrack_docked_dialog = DockedWidget(ftrack_dialog)
+        mc.menuItem(
+            parent=ftrack_menu,
+            label=ftrack_dialog.windowTitle(),
+            command=lambda x: ftrack_docked_dialog.show()
+        )
 
     import ftrack
     ftrack.setup()
@@ -52,11 +62,11 @@ def checkForNewAssets():
                 message += ' to v:' + str(latestversion) + '\n'
 
     if message != '':
-        confirm = mc.confirmDialog(title='New assets', \
-                                   message=message, \
-                                   button=['Open AssetManager', 'Close'], \
-                                   defaultButton='Close', \
-                                   cancelButton='Close', \
+        confirm = mc.confirmDialog(title='New assets',
+                                   message=message,
+                                   button=['Open AssetManager', 'Close'],
+                                   defaultButton='Close',
+                                   cancelButton='Close',
                                    dismissString='Close')
         if confirm != 'Close':
             from ftrackplugin import ftrackDialogs
@@ -66,8 +76,8 @@ def checkForNewAssets():
 
 
 def refAssetManager():
-    from ftrackplugin import ftrackConnector
-    panelComInstance = ftrackConnector.panelcom.PanelComInstance.instance()
+    from ftrack_connect.connector import panelcom
+    panelComInstance = panelcom.PanelComInstance.instance()
     panelComInstance.refreshListeners()
 
 
@@ -115,7 +125,7 @@ def timeline_init():
     )
 
 
-if not ftrackplugin.ftrackConnector.Connector.batch():
+if not Connector.batch():
     mc.scriptJob(e=["SceneOpened", "checkForNewAssets()"], permanent=True)
     mc.scriptJob(e=["SceneOpened", "refAssetManager()"], permanent=True)
     mc.evalDeferred("loadAndInit()")
