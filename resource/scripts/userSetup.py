@@ -104,8 +104,8 @@ def framerate_init():
 
 def timeline_init():
     import ftrack
-    start_frame = float(os.getenv('FS'))
-    end_frame = float(os.getenv('FE'))
+    start_frame = float(os.getenv('FS', 1001))
+    end_frame = float(os.getenv('FE', 1101))
     shot_id = os.getenv('FTRACK_SHOTID')
     shot = ftrack.Shot(id=shot_id)
     handles = float(shot.get('handles'))
