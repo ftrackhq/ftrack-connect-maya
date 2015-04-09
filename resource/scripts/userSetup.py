@@ -32,10 +32,11 @@ def loadAndInit():
     for Dialog in dialogs:
         ftrack_dialog = Dialog(connector=connector)
         ftrack_docked_dialog = DockedWidget(ftrack_dialog)
+
         mc.menuItem(
             parent=ftrack_menu,
             label=ftrack_dialog.windowTitle(),
-            command=lambda x: ftrack_docked_dialog.show()
+            command=lambda x, dialog=ftrack_docked_dialog: dialog.show(),
         )
 
     import ftrack
