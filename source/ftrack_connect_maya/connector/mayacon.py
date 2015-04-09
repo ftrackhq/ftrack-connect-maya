@@ -2,88 +2,71 @@ from ftrack_connect.connector import base as maincon
 import maya.cmds as mc
 import maya.OpenMayaUI as mui
 import maya.mel as mm
-
+from PySide import QtGui
 windows = None
 
+
 from ftrack_connect.connector import (
-	FTAssetHandlerInstance,
-	FTAssetObject,
-	HelpFunctions,
-	FTAssetType,
-	FTComponent
+    FTAssetHandlerInstance,
+    FTAssetObject,
+    HelpFunctions,
+    FTAssetType,
+    FTComponent
 )
 
 import os
 import uuid
 
 
-# class Dialog(maincon.Dialog):
-#     def __init__(self):
-#         super(Dialog, self).__init__()
-#         self.panelWidth = 350
-#         self.dockAt = 'right'
-#         self.dockName = 'myDock'
-#         self.dockAllowedAreas = ['all']
-#         self.diaName = self.__class__.__name__
-#         self.qtClassName = self.__class__.__name__ + 'Window'
-#         self.gotRefresh = None
+class DockedWidget(object):
+    def __init__(self, widget):
+        super(DockedWidget, self).__init__()
+        self.panelWidth = 350
+        self.qtObject = widget
+        self.dockAt = 'right'
+        self.dockName = 'myDock'
+        self.type = 'panel'
+        self.dockAllowedAreas = ['all']
+        self.gotRefresh = None
 
-#     # Return a Qt Dialog Class
-#     def initGui(self):
-#         return None
+    # Attach QT Gui to application
+    def show(self):
+        app = Connector.getMainWindow()
+        foundQtObjects = app.findChildren(QtGui.QDialog, self.dockName)
 
-#     # Attach QT Gui to application
-#     def show(self):
-#         #ftrack.resetDebug()
-#         from PySide import QtGui
-#         app = Connector.getMainWindow()
+        if len(foundQtObjects) > 0:
+            self.qtObject = foundQtObjects[0]
+            mc.dockControl(str(self.qtObject.objectName()), e=True, r=True)
+            if not mc.dockControl(
+                str(self.qtObject.objectName()), q=True, io=True
+            ):
+                returnObj = self.qtObject
+            else:
+                self.createDockLayout()
+                returnObj = self.qtObject
 
-#         if self.type == 'panel':
+            if self.gotRefresh:
+                returnObj.refresh()
+            return returnObj
 
-#             foundQtObjects = app.findChildren(QtGui.QDialog, self.dockName)
+        self.qtObject.show()
+        self.createDockLayout()
+        return self.qtObject
 
-#             if len(foundQtObjects) > 0:
-#                 self.qtObject = foundQtObjects[0]
-#                 mc.dockControl(self.qtObject.dockControlName, e=True, r=True)
-#                 #print self.qtObject.dockControlName
-#                 if not mc.dockControl(self.qtObject.dockControlName, q=True, io=True):
-#                     returnObj = self.qtObject
-#                 else:
-#                     self.createDockLayout()
-#                     returnObj = self.qtObject
+    def getWindow(self):
+        return self.qtObject
 
-#                 if self.gotRefresh:
-#                     returnObj.refresh()
-#                 return returnObj
-
-#             import ftrackplugin
-#             self.qtObject = getattr(ftrackplugin.ftrackDialogs, self.__class__.__name__.replace('Dialog', 'Qt'))()
-#             self.qtObject.show()
-
-#             self.createDockLayout()
-#             #ftrack.printDebug()
-#             return self.qtObject
-#         else:
-#             qtClass = self.initGui()
-#             self.qtObject = qtClass()
-#             self.qtObject.show()
-#             return self.qtObject
-
-#     def getWindow(self):
-#         return self.qtObject
-
-#     def createDockLayout(self):
-#         gMainWindow = mm.eval('$temp1=$gMainWindow')
-#         columnLay = mc.paneLayout(parent=gMainWindow, width=200)
-#         #print columnLay
-#         dockControl = mc.dockControl(l=self.qtObject.windowTitle(), \
-#                                      allowedArea="all", \
-#                                      area="right", \
-#                                      content=columnLay, \
-#                                      width=self.panelWidth)
-#         mc.control(str(self.qtObject.objectName()), e=True, p=columnLay)
-#         self.qtObject.dockControlName = dockControl
-#         return
+    def createDockLayout(self):
+        gMainWindow = mm.eval('$temp1=$gMainWindow')
+        columnLay = mc.paneLayout(parent=gMainWindow, width=200)
+        dockControl = mc.dockControl(l=self.qtObject.windowTitle(),
+                                     allowedArea="all",
+                                     area="right",
+                                     content=columnLay,
+                                     width=self.panelWidth)
+        mc.control(str(self.qtObject.objectName()), e=True, p=columnLay)
+        self.qtObject.dockControlName = dockControl
+        return
 
 
 class Connector(maincon.Connector):
@@ -100,8 +83,10 @@ class Connector(maincon.Connector):
             if not mc.referenceQuery(ftrackobj, isNodeReferenced=True):
                 assetcomponentid = mc.getAttr(ftrackobj + ".assetComponentId")
                 try:
-                    nameInScene = mc.connectionInfo(ftrackobj + ".assetLink", \
-                                                    destinationFromSource=True)
+                    nameInScene = mc.connectionInfo(
+                        ftrackobj + ".assetLink",
+                        destinationFromSource=True
+                    )
                     nameInScene = nameInScene[0].split(".")[0]
                 except:
                     print 'AssetLink broken for assetNode ' + str(ftrackobj)
@@ -113,16 +98,6 @@ class Connector(maincon.Connector):
     @staticmethod
     def getFileName():
         return mc.file(query=1, sceneName=True)
-
-#    @staticmethod
-#    def getMainWindow():
-#        from PySide import QtGui
-#        """
-#        Get the main Maya window as a QtGui.QMainWindow instance
-#        @return: QtGui.QMainWindow instance of the top level Maya windows
-#        """
-#        ptr = mui.MQtUtil.mainWindow()
-#        return Connector.wrapinstance(long(ptr), QtGui.QMainWindow)
 
     @staticmethod
     def getMainWindow():
@@ -239,7 +214,9 @@ class Connector(maincon.Connector):
                 mc.listConnections(node + '.ftrack', d=False, s=True)
                 selectedObjects.append(node)
             except:
-                transformParents = mc.listRelatives(node, allParents=True, type='transform')
+                transformParents = mc.listRelatives(
+                    node, allParents=True, type='transform'
+                )
                 for parent in transformParents:
                     try:
                         mc.listConnections(parent + '.ftrack', d=False, s=True)
@@ -260,7 +237,6 @@ class Connector(maincon.Connector):
         pubAsset = assetHandler.getAssetClass(iAObj.assetType)
         if pubAsset:
             publishedComponents, message = pubAsset.publishAsset(iAObj)
-            #result = pubAsset.changeVersion(iAObj, applicationObject)
             return publishedComponents, message
         else:
             return [], 'assetType not supported'
@@ -276,10 +252,12 @@ class Connector(maincon.Connector):
                 if mc.menu('ftrack', exists=True):
                     mc.deleteUI('ftrack')
 
-                showMyMenuCtrl = mc.menu('ftrack', \
-                                         parent=gMainWindow, \
-                                         tearOff=False, \
-                                         label='ftrack')
+                showMyMenuCtrl = mc.menu(
+                    'ftrack',
+                    parent=gMainWindow,
+                    tearOff=False,
+                    label='ftrack'
+                )
 
                 categories = dict()
 
@@ -298,13 +276,21 @@ class Connector(maincon.Connector):
                         if category not in categories:
                             categories[category] = list()
 
-                        categories[category].append((showMyMenuCtrl, classObject.__name__.replace('Dialog', '').replace('ftrack', ''), menuItemCommand))
+                        categories[category].append(
+                            (
+                                showMyMenuCtrl,
+                                classObject.__name__.replace('Dialog', '').replace('ftrack', ''),
+                                menuItemCommand
+                            )
+                        )
 
                 for category, menulist in sorted(categories.items()):
                     for app in sorted(menulist, key=lambda entry: entry[1]):
-                        mc.menuItem(parent=app[0],\
-                                    label=app[1], \
-                                    command=app[2])
+                        mc.menuItem(
+                            parent=app[0],
+                            label=app[1],
+                            command=app[2]
+                        )
 
                     mc.menuItem(divider=True)
 
@@ -363,8 +349,12 @@ class Connector(maincon.Connector):
         nodes = mc.ls(sl=True)
         mc.select(cl=True)
 
-        # Ensure JPEG is set in renderglobals. Only used on windows for some reason
-        currentFormatStr = mc.getAttr('defaultRenderGlobals.imageFormat', asString=True)
+        # Ensure JPEG is set in renderglobals.
+        # Only used on windows for some reason
+        currentFormatStr = mc.getAttr(
+            'defaultRenderGlobals.imageFormat',
+            asString=True
+        )
 
         restoreRenderGlobals = False
         if not ('jpg' in currentFormatStr.lower() or 'jpeg' in currentFormatStr.lower()):
@@ -373,14 +363,16 @@ class Connector(maincon.Connector):
             restoreRenderGlobals = True
 
         filename = os.path.join(tempfile.gettempdir(), str(uuid.uuid4()))
-        res = mc.playblast(format="image", \
-                     frame=mc.currentTime(query=True), \
-                     compression='jpg', \
-                     quality=80, \
-                     showOrnaments=False, \
-                     forceOverwrite=True, \
-                     viewer=False, \
-                     filename=filename)
+        res = mc.playblast(
+            format="image",
+            frame=mc.currentTime(query=True),
+            compression='jpg',
+            quality=80,
+            showOrnaments=False,
+            forceOverwrite=True,
+            viewer=False,
+            filename=filename
+        )
 
         if restoreRenderGlobals:
             mc.setAttr('defaultRenderGlobals.imageFormat', currentFormatInt)
