@@ -8,7 +8,7 @@ import os
 import copy
 
 if mayacon.Connector.batch() == False:
-    import panelcom
+    from ftrack_connect.connector import panelcom
 
 
 class GenericAsset(mayacon.FTAssetType):

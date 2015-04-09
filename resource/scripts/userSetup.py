@@ -18,6 +18,8 @@ dialogs = [
 def loadAndInit():
     # load the assetPlugin
     mc.loadPlugin('ftrackMayaPlugin.py', quiet=True)
+    Connector.registerAssets()
+
     if mc.about(batch=True):
         return
 
