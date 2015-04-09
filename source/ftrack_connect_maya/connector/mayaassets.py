@@ -2,8 +2,14 @@ import mayacon
 import maya.cmds as mc
 import ftrack
 
+from ftrack_connect.connector import (
+    FTAssetHandlerInstance,
+    FTAssetObject,
+    HelpFunctions,
+    FTAssetType,
+    FTComponent
+)
 
-from mayacon import FTAssetHandlerInstance, HelpFunctions
 import os
 import copy
 
@@ -27,7 +33,11 @@ class GenericAsset(mayacon.FTAssetType):
             self.old_data = set(mc.ls())
 
             mc.createNode('transform', n=iAObj.assetName)
-            mc.AbcImport(iAObj.filePath, mode='import', reparent=iAObj.assetName)
+            mc.AbcImport(
+                iAObj.filePath,
+                mode='import',
+                reparent=iAObj.assetName
+            )
 
             self.new_data = set(mc.ls())
 

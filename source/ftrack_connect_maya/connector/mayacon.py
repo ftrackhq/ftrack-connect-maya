@@ -5,7 +5,6 @@ import maya.mel as mm
 from PySide import QtGui
 windows = None
 
-
 from ftrack_connect.connector import (
     FTAssetHandlerInstance,
     FTAssetObject,
@@ -14,14 +13,10 @@ from ftrack_connect.connector import (
     FTComponent
 )
 
-import os
-import uuid
-
-
 class DockedWidget(object):
     def __init__(self, widget):
         super(DockedWidget, self).__init__()
-        self.panelWidth = 350
+        self.panelWidth = 650
         self.qtObject = widget
         self.dockAt = 'right'
         self.dockName = 'myDock'
