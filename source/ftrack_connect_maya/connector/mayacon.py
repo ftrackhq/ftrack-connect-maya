@@ -13,8 +13,6 @@ class DockedWidget(object):
         super(DockedWidget, self).__init__()
         self.panelWidth = 650
         self.qtObject = widget
-        self.dockAt = 'right'
-        self.dockName = 'myDock'
         self.type = 'panel'
         self.dockAllowedAreas = ['all']
         self.gotRefresh = None
@@ -350,9 +348,15 @@ class Connector(maincon.Connector):
             return result, message
         nodes = mc.ls(sl=True)
         if len(nodes) == 0:
-            if 'exportMode' in iAObj.options and (iAObj.options['exportMode'] == 'Selection'):
+            if (
+                'exportMode' in iAObj.options and
+                iAObj.options['exportMode'] == 'Selection'
+                ):
                 return None, 'Nothing selected'
-            if 'alembicExportMode' in iAObj.options and (iAObj.options['alembicExportMode'] == 'Selection'):
+            if (
+                'alembicExportMode' in iAObj.options and
+                iAObj.options['alembicExportMode'] == 'Selection'
+            ):
                 return None, 'Nothing selected'
 
         return True, ''

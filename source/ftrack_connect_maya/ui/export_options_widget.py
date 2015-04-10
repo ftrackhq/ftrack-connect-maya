@@ -9,10 +9,14 @@ class Ui_ExportOptions(object):
     def setupUi(self, ExportOptions):
         ExportOptions.setObjectName("ExportOptions")
         ExportOptions.resize(339, 266)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(ExportOptions.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            ExportOptions.sizePolicy().hasHeightForWidth()
+        )
         ExportOptions.setSizePolicy(sizePolicy)
         self.verticalLayout = QtGui.QVBoxLayout(ExportOptions)
         self.verticalLayout.setSpacing(3)
@@ -54,12 +58,22 @@ class Ui_ExportOptions(object):
         self.publishMessageLabel.setText("")
         self.publishMessageLabel.setObjectName("publishMessageLabel")
         self.verticalLayout.addWidget(self.publishMessageLabel)
-        spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        spacerItem = QtGui.QSpacerItem(
+            20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding
+        )
         self.verticalLayout.addItem(spacerItem)
 
         self.retranslateUi(ExportOptions)
-        QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL("clicked()"), ExportOptions.setThumbnailFilename)
-        QtCore.QObject.connect(self.screenshotButton, QtCore.SIGNAL("clicked()"), ExportOptions.takeScreenshot)
+        QtCore.QObject.connect(
+            self.pushButton,
+            QtCore.SIGNAL("clicked()"),
+            ExportOptions.setThumbnailFilename
+        )
+        QtCore.QObject.connect(
+            self.screenshotButton,
+            QtCore.SIGNAL("clicked()"),
+            ExportOptions.takeScreenshot
+        )
         QtCore.QMetaObject.connectSlotsByName(ExportOptions)
 
     def retranslateUi(self, ExportOptions):
@@ -76,8 +90,9 @@ class ExportOptionsWidget(QtGui.QWidget):
         QtGui.QWidget.__init__(self, parent)
         self.ui = Ui_ExportOptions()
         self.ui.setupUi(self)
-
-        self.stackedOptionsWidget = StackedOptionsWidget(self, connector=connector)
+        self.stackedOptionsWidget = StackedOptionsWidget(
+            self, connector=connector
+        )
 
         xml = self.getXml()
 

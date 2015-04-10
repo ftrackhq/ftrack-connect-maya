@@ -1,3 +1,4 @@
+import os
 from PySide import QtCore, QtGui
 import ftrack
 from ftrack_connect.connector import FTAssetHandlerInstance
@@ -259,10 +260,7 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
         if comboBoxIndex:
             comboItem = self.ui.ListAssetsComboBoxModel.item(comboBoxIndex)
             newItem = self.ui.ListAssetsViewModel.item(0, 1)
-            # if comboItem.type:
             newItem.setText(comboItem.type)
-            # print comboItem.type
-            # print newItem.text()
             self.ui.ListAssetsSortModel.setFilterFixedString(comboItem.type)
         else:
             self.ui.ListAssetsSortModel.setFilterFixedString('')
@@ -294,7 +292,6 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
 
     @QtCore.Slot(str)
     def updateTasks(self, ftrackId):
-        #print 'Updating tasks'
         self.currentId = ftrackId
         try:
             task = ftrack.Task(ftrackId)
@@ -316,7 +313,10 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
                 assetTaskItem.id = tasks[i].getId()
                 self.ui.AssetTaskComboBoxModel.appendRow(assetTaskItem)
 
-                if 'FTRACK_TASKID' in os.environ and os.environ['FTRACK_TASKID'] == assetTaskItem.id:
+                if (
+                    'FTRACK_TASKID' in os.environ and
+                    os.environ['FTRACK_TASKID'] == assetTaskItem.id
+                ):
                     curIndex = i
                 else:
                     if assetTaskItem.id in taskids:
@@ -335,7 +335,9 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
 
     def getTaskId(self):
         if self.browseMode == 'Shot':
-            comboItem = self.ui.AssetTaskComboBoxModel.item(self.ui.AssetTaskComboBox.currentIndex())
+            comboItem = self.ui.AssetTaskComboBoxModel.item(
+                self.ui.AssetTaskComboBox.currentIndex()
+            )
             if comboItem:
                 return comboItem.id
             else:
