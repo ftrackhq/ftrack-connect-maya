@@ -238,10 +238,10 @@ class GenericAsset(FTAssetType):
         nodeAssetPath = iAObj.filePath
 
         if not iAObj.assetName.endswith('_AST'):
-            iAObj.assetName = '_'.join(
+            iAObj.assetName = '_'.join([
                 iAObj.assetType.upper(),
                 iAObj.assetName,
-                "AST"
+                "AST"]
             )
 
         # assetLinkNode = mc.listConnections(ftrackNode + '.assetLink')[0]

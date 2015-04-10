@@ -20,12 +20,13 @@ dialogs = [
     FtrackTasksDialog
 ]
 
+connector = Connector()
+
 
 def loadAndInit():
     # Load the ftrack maya plugin
     mc.loadPlugin('ftrackMayaPlugin.py', quiet=True)
     # Create new maya connector and register the assets
-    connector = Connector()
     connector.registerAssets()
 
     # Check if maya is in batch mode
@@ -71,10 +72,11 @@ def checkForNewAssets():
             assetversion = ftrack.AssetVersion(assetId)
             asset = assetversion.getAsset()
             versions = asset.getVersions(componentNames=[assetTake])
-            latestversion = versions[-1].getVersion()
-            if latestversion != assetVersion:
-                message += ftNode + ' can be updated from v:' + str(assetVersion)
-                message += ' to v:' + str(latestversion) + '\n'
+            latestVersion = versions[-1].getVersion()
+            if latestVersion != assetVersion:
+                message = '- %s can be updated from v:%d to v:%s' % (
+                    ftNode, assetVersion, latestVersion
+                )
 
     if message != '':
         confirm = mc.confirmDialog(title='New assets',
@@ -84,11 +86,9 @@ def checkForNewAssets():
                                    cancelButton='Close',
                                    dismissString='Close')
         if confirm != 'Close':
-            global ftrackAssetManagerDialogWindow
-            Connector = globals().get('Connector')
-            Asset_manager_dialog = globals().get('FtrackAssetManagerDialog')
-            ftrackAssetManagerDialogWindow = Asset_manager_dialog(connector=Connector())
-            ftrackAssetManagerDialogWindow.show()
+            global assetManagerDialog
+            assetManagerDialog = FtrackAssetManagerDialog(connector=connector)
+            assetManagerDialog.show()
 
 
 def refAssetManager():
