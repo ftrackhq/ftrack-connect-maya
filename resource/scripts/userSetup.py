@@ -6,14 +6,16 @@ from ftrack_connect_maya.connector import Connector
 from ftrack_connect_maya.connector.mayacon import DockedWidget
 from ftrack_connect.ui.widget.import_asset import FtrackImportAssetDialog
 from ftrack_connect.ui.widget.asset_manager import FtrackAssetManagerDialog
-from ftrack_connect.ui.widget.info import FtrackInfoDialog
+from ftrack_connect_maya.ui.info import FtrackMayaInfoDialog
 from ftrack_connect_maya.ui.publisher import FtrackPublishAssetDialog
+from ftrack_connect_maya.ui.tasks import FtrackTasksDialog
 
 dialogs = [
     FtrackImportAssetDialog,
     FtrackAssetManagerDialog,
     FtrackPublishAssetDialog,
-    FtrackInfoDialog
+    FtrackMayaInfoDialog,
+    FtrackTasksDialog
 ]
 
 
