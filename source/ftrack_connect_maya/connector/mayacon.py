@@ -2,16 +2,9 @@ from ftrack_connect.connector import base as maincon
 import maya.cmds as mc
 import maya.OpenMayaUI as mui
 import maya.mel as mm
-from PySide import QtGui
-windows = None
 
-from ftrack_connect.connector import (
-    FTAssetHandlerInstance,
-    FTAssetObject,
-    HelpFunctions,
-    FTAssetType,
-    FTComponent
-)
+from ftrack_connect.connector import FTAssetHandlerInstance
+
 
 class DockedWidget(object):
     def __init__(self, widget):
