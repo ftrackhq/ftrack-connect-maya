@@ -24,7 +24,6 @@ dialogs = [
 def loadAndInit():
     # Load the ftrack maya plugin
     mc.loadPlugin('ftrackMayaPlugin.py', quiet=True)
-
     # Create new maya connector and register the assets
     connector = Connector()
     connector.registerAssets()
@@ -85,9 +84,10 @@ def checkForNewAssets():
                                    cancelButton='Close',
                                    dismissString='Close')
         if confirm != 'Close':
-            from ftrackplugin import ftrackDialogs
             global ftrackAssetManagerDialogWindow
-            ftrackAssetManagerDialogWindow = ftrackDialogs.ftrackAssetManagerDialog()
+            Connector = globals().get('Connector')
+            Asset_manager_dialog = globals().get('FtrackAssetManagerDialog')
+            ftrackAssetManagerDialogWindow = Asset_manager_dialog(connector=Connector())
             ftrackAssetManagerDialogWindow.show()
 
 
