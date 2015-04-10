@@ -54,7 +54,7 @@ def loadAndInit():
             label=ftrack_dialog.windowTitle().replace('ftrack', ''),
             command=lambda x, dialog=ftrack_docked_dialog: dialog.show(),
         )
-
+    mc.menuItem(divider=True)
     # Run ftrack setup
     ftrack.setup()
 

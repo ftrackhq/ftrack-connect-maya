@@ -188,9 +188,9 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
         try:
             task = ftrack.Task(ftrackId)
             project = task.getProject()
-
+            taskid = '11c137c0-ee7e-4f9c-91c5-8c77cec22b2c'
             # Populate statuses based on task if it is a task.
-            if task.get('object_typeid') == '11c137c0-ee7e-4f9c-91c5-8c77cec22b2c':
+            if task.get('object_typeid') == taskid:
                 self.ui.ListStatusComboBox.show()
                 self.ui.assetTaskLabel_2.show()
                 self.ui.ListStatusComboBox.clear()
@@ -226,7 +226,9 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
                 if assetName != '':
                     item = QtGui.QStandardItem(assetName)
                     item.id = assets[i].getId()
-                    itemType = QtGui.QStandardItem(assets[i].getType().getShort())
+                    itemType = QtGui.QStandardItem(
+                        assets[i].getType().getShort()
+                    )
 
                     j = i - blankRows + 1
                     self.ui.ListAssetsViewModel.setItem(j, 0, item)
@@ -240,7 +242,9 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
 
     @QtCore.Slot(QtCore.QModelIndex)
     def emitAssetId(self, modelindex):
-        clickedItem = self.ui.ListAssetsViewModel.itemFromIndex(self.ui.ListAssetsSortModel.mapToSource(modelindex))
+        clickedItem = self.ui.ListAssetsViewModel.itemFromIndex(
+            self.ui.ListAssetsSortModel.mapToSource(modelindex)
+        )
         self.clickedAssetSignal.emit(clickedItem.id)
 
     @QtCore.Slot(int)

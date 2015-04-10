@@ -1,3 +1,5 @@
+import os
+import uuid
 from ftrack_connect.connector import base as maincon
 import maya.cmds as mc
 import maya.OpenMayaUI as mui
@@ -131,9 +133,12 @@ class Connector(maincon.Connector):
 
     @staticmethod
     def importAsset(iAObj):
-        iAObj.assetName = iAObj.assetType.upper() + "_" + iAObj.assetName + "_AST"
+        iAObj.assetName = "_".join(
+            [iAObj.assetType.upper(), iAObj.assetName, "AST"]
+        )
         # Maya converts - to _ so let's do that as well
         iAObj.assetName = iAObj.assetName.replace('-', '_')
+
         # Check if this AssetName already exists in scene
         iAObj.assetName = Connector.getUniqueSceneName(iAObj.assetName)
 
@@ -155,9 +160,9 @@ class Connector(maincon.Connector):
 
     @staticmethod
     def removeObject(applicationObject=''):
-        ftrackNode = mc.listConnections(applicationObject + '.ftrack', \
-                                        d=False, \
-                                        s=True)
+        ftrackNode = mc.listConnections(
+            applicationObject + '.ftrack', d=False, s=True
+        )
         ftrackNode = ftrackNode[0]
         assetComponent = mc.getAttr(ftrackNode + ".assetTake")
         assetType = mc.getAttr(ftrackNode + ".assetType")
@@ -230,59 +235,6 @@ class Connector(maincon.Connector):
             return [], 'assetType not supported'
 
     @staticmethod
-    def init_dialogs(ftrackDialogs, availableDialogs=[]):
-        mc.loadPlugin('ftrackMayaPlugin.py', quiet=True)
-
-        if not mc.about(batch=True):
-            addMenu = os.getenv('FTRACK_ADDMENUS', '')
-            if not addMenu == 'FALSE':
-                gMainWindow = mm.eval('$temp1=$gMainWindow')
-                if mc.menu('ftrack', exists=True):
-                    mc.deleteUI('ftrack')
-
-                showMyMenuCtrl = mc.menu(
-                    'ftrack',
-                    parent=gMainWindow,
-                    tearOff=False,
-                    label='ftrack'
-                )
-
-                categories = dict()
-
-                for dialog in availableDialogs:
-                    classObject = getattr(ftrackDialogs, dialog)
-                    accepts = classObject.accepts()
-                    category = classObject.category()
-                    connectorName = Connector.getConnectorName()
-                    if not accepts or connectorName in accepts:
-                        windowName = classObject.__name__ + 'Window'
-                        menuItemCommand = 'from ftrackplugin import ftrackDialogs \n'
-                        menuItemCommand += windowName + ' = ftrackDialogs.'
-                        menuItemCommand += classObject.__name__ + '() \n'
-                        menuItemCommand += windowName + '.show()'
-
-                        if category not in categories:
-                            categories[category] = list()
-
-                        categories[category].append(
-                            (
-                                showMyMenuCtrl,
-                                classObject.__name__.replace('Dialog', '').replace('ftrack', ''),
-                                menuItemCommand
-                            )
-                        )
-
-                for category, menulist in sorted(categories.items()):
-                    for app in sorted(menulist, key=lambda entry: entry[1]):
-                        mc.menuItem(
-                            parent=app[0],
-                            label=app[1],
-                            command=app[2]
-                        )
-
-                    mc.menuItem(divider=True)
-
-    @staticmethod
     def getConnectorName():
         return 'maya'
 
@@ -345,7 +297,10 @@ class Connector(maincon.Connector):
         )
 
         restoreRenderGlobals = False
-        if not ('jpg' in currentFormatStr.lower() or 'jpeg' in currentFormatStr.lower()):
+        if not (
+            'jpg' in currentFormatStr.lower() or
+            'jpeg' in currentFormatStr.lower()
+        ):
             currentFormatInt = mc.getAttr('defaultRenderGlobals.imageFormat')
             mc.setAttr('defaultRenderGlobals.imageFormat', 8)
             restoreRenderGlobals = True
