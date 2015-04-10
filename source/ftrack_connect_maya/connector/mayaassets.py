@@ -1,23 +1,23 @@
-import mayacon
+import os
+import copy
 import maya.cmds as mc
 import ftrack
 
+import mayacon
+
 from ftrack_connect.connector import (
     FTAssetHandlerInstance,
-    FTAssetObject,
     HelpFunctions,
     FTAssetType,
     FTComponent
 )
 
-import os
-import copy
 
 if mayacon.Connector.batch() == False:
     from ftrack_connect.connector import panelcom
 
 
-class GenericAsset(mayacon.FTAssetType):
+class GenericAsset(FTAssetType):
     def __init__(self):
         super(GenericAsset, self).__init__()
         self.importAssetBool = False
@@ -77,13 +77,15 @@ class GenericAsset(mayacon.FTAssetType):
                 self.referenceAssetBool = False
 
             if iAObj.componentName in ['mayaBinaryScene']:
-                if mc.confirmDialog(title='Confirm', \
-                                        message='Replace current scene?', \
-                                        button=['Yes', 'No'], \
-                                        defaultButton='No', \
-                                        cancelButton='No', \
-                                        dismissString='No') == "Yes":
-                    mc.file(new=True, force=True)
+                if mc.confirmDialog(
+                    title='Confirm',
+                    message='Replace current scene?',
+                    button=['Yes', 'No'],
+                    defaultButton='No',
+                    cancelButton='No',
+                    dismissString='No') == "Yes":
+                    mc.file(new=True, force=True
+                )
                 else:
                     return 'Canceled Import'
 
@@ -91,24 +93,26 @@ class GenericAsset(mayacon.FTAssetType):
                 preserveReferences = iAObj.options['mayaReference']
 
             if not iAObj.options.get('mayaNamespace'):
-                nameSpaceStr =  ':'
+                nameSpaceStr = ':'
 
             self.old_data = set(mc.ls())
 
-            nodes = mc.file(iAObj.filePath, \
-                            type=importType, \
-                            i=self.importAssetBool, \
-                            reference=self.referenceAssetBool, \
-                            groupLocator=False, \
-                            groupReference=groupReferenceBool, \
-                            groupName=iAObj.assetName, \
-                            loadReferenceDepth="all", \
-                            sharedNodes="renderLayersByName", \
-                            preserveReferences=preserveReferences, \
-                            mergeNamespacesOnClash=True, \
-                            namespace=nameSpaceStr, \
-                            returnNewNodes=True, \
-                            options="v=0")
+            nodes = mc.file(
+                iAObj.filePath,
+                type=importType,
+                i=self.importAssetBool,
+                reference=self.referenceAssetBool,
+                groupLocator=False,
+                groupReference=groupReferenceBool,
+                groupName=iAObj.assetName,
+                loadReferenceDepth="all",
+                sharedNodes="renderLayersByName",
+                preserveReferences=preserveReferences,
+                mergeNamespacesOnClash=True,
+                namespace=nameSpaceStr,
+                returnNewNodes=True,
+                options="v=0"
+            )
 
             self.new_data = set(mc.ls())
 
@@ -176,9 +180,12 @@ class GenericAsset(mayacon.FTAssetType):
         publishedComponents = []
 
         temporaryPath = HelpFunctions.temporaryFile(suffix='.mb')
-        #publishedComponents[componentName] = temporaryPath
-        publishedComponents.append(mayacon.FTComponent(componentname=componentName, \
-                                       path=temporaryPath))
+        publishedComponents.append(
+            FTComponent(
+                componentname=componentName,
+                path=temporaryPath
+            )
+        )
 
         mc.file(
             temporaryPath,
@@ -198,7 +205,7 @@ class GenericAsset(mayacon.FTAssetType):
         depepdendencies_version = []
         dependencies = mc.ls(type='ftrackAssetNode')
         for dependency in dependencies:
-            dependency_asset_id = mc.getAttr("%s.assetId"% dependency)
+            dependency_asset_id = mc.getAttr("%s.assetId" % dependency)
             if dependency_asset_id:
                 dependency_version = ftrack.AssetVersion(dependency_asset_id)
                 depepdendencies_version.append(dependency_version)
@@ -231,9 +238,13 @@ class GenericAsset(mayacon.FTAssetType):
         nodeAssetPath = iAObj.filePath
 
         if not iAObj.assetName.endswith('_AST'):
-            iAObj.assetName = iAObj.assetType.upper() + "_" + iAObj.assetName + "_AST"
+            iAObj.assetName = '_'.join(
+                iAObj.assetType.upper(),
+                iAObj.assetName,
+                "AST"
+            )
 
-        assetLinkNode = mc.listConnections(ftrackNode + '.assetLink')[0]
+        # assetLinkNode = mc.listConnections(ftrackNode + '.assetLink')[0]
 
         referenceNode = False
         for node in mc.listConnections(ftrackNode+'.assetLink'):
@@ -242,7 +253,7 @@ class GenericAsset(mayacon.FTAssetType):
                     continue
                 referenceNode = node
 
-        if not ':' in applicationObject:
+        if ':' not in applicationObject:
             iAObj.options['mayaNamespace'] = False
         else:
             iAObj.options['nameSpaceStr'] = iAObj.assetName.upper()
@@ -261,13 +272,21 @@ class GenericAsset(mayacon.FTAssetType):
         return True
 
     def updateftrackNode(self, iAObj, ftrackNode):
-        mc.setAttr(ftrackNode + ".assetVersion", int(iAObj.assetVersion))
-        mc.setAttr(ftrackNode + ".assetId", iAObj.assetVersionId, type="string")
-        mc.setAttr(ftrackNode + ".assetPath", iAObj.filePath, type="string")
-        mc.setAttr(ftrackNode + ".assetTake", iAObj.componentName, type="string")
-        mc.setAttr(ftrackNode + ".assetComponentId", \
-                   iAObj.componentId, \
-                   type="string")
+        mc.setAttr(
+            ftrackNode + ".assetVersion", int(iAObj.assetVersion)
+        )
+        mc.setAttr(
+            ftrackNode + ".assetId", iAObj.assetVersionId, type="string"
+        )
+        mc.setAttr(
+            ftrackNode + ".assetPath", iAObj.filePath, type="string"
+        )
+        mc.setAttr(
+            ftrackNode + ".assetTake", iAObj.componentName, type="string"
+        )
+        mc.setAttr(
+            ftrackNode + ".assetComponentId", iAObj.componentId, type="string"
+        )
 
     def linkToFtrackNode(self, iAObj):
         ftNodeName = iAObj.assetName + "_ftrackdata"
@@ -304,9 +323,7 @@ class GenericAsset(mayacon.FTAssetType):
         mc.setAttr(ftNode + ".assetPath", iAObj.filePath, type="string")
         mc.setAttr(ftNode + ".assetTake", iAObj.componentName, type="string")
         mc.setAttr(ftNode + ".assetType", iAObj.assetType, type="string")
-        mc.setAttr(ftNode + ".assetComponentId", \
-                   iAObj.componentId, \
-                   type="string")
+        mc.setAttr(ftNode + ".assetComponentId",iAObj.componentId, type="string")
 
 
 class AudioAsset(GenericAsset):
@@ -350,7 +367,11 @@ class GeometryAsset(GenericAsset):
     def publishAsset(self, iAObj=None):
         publishedComponents = []
 
-        totalSteps = self.getTotalSteps(steps=[iAObj.options['mayaBinary'], iAObj.options['alembic'], iAObj.options['mayaPublishScene']])
+        totalSteps = self.getTotalSteps(
+            steps=[iAObj.options['mayaBinary'],
+            iAObj.options['alembic'],
+            iAObj.options['mayaPublishScene']]
+        )
         panelComInstance = panelcom.PanelComInstance.instance()
         panelComInstance.setTotalExportSteps(totalSteps)
 
@@ -377,8 +398,12 @@ class GeometryAsset(GenericAsset):
             mc.loadPlugin('AbcExport.so', qt=1)
 
             temporaryPath = HelpFunctions.temporaryFile(suffix='.abc')
-            publishedComponents.append(mayacon.FTComponent(componentname='alembic', \
-                                       path=temporaryPath))
+            publishedComponents.append(
+                FTComponent(
+                    componentname='alembic',
+                    path=temporaryPath
+                )
+            )
 
             alembicJobArgs = ''
 
@@ -596,7 +621,7 @@ class CameraAsset(GenericAsset):
         if iAObj.options['cameraAlembic']:
             mc.loadPlugin('AbcExport.so', qt=1)
             temporaryPath = HelpFunctions.temporaryFile(suffix='.abc')
-            publishedComponents.append(mayacon.FTComponent(componentname='alembic', \
+            publishedComponents.append(FTComponent(componentname='alembic', \
                                        path=temporaryPath))
             #publishedComponents['alembic'] = temporaryPath
 
