@@ -26,15 +26,12 @@ class DockedWidget(object):
 
     # Attach QT Gui to application
     def show(self):
-        app = Connector.getMainWindow()
-        foundQtObjects = app.findChildren(QtGui.QDialog, self.dockName)
-        print 'FOUND:', foundQtObjects
-
-        if len(foundQtObjects) > 0:
-            self.qtObject = foundQtObjects[0]
-            mc.dockControl(str(self.qtObject.objectName()), e=True, r=True)
+        has_name = hasattr(self.qtObject, 'dockControlName')
+        if has_name:
+            name = self.qtObject.dockControlName
+            mc.dockControl(name, e=True, r=True)
             if not mc.dockControl(
-                str(self.qtObject.objectName()), q=True, io=True
+                name, q=True, io=True
             ):
                 returnObj = self.qtObject
             else:
