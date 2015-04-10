@@ -52,11 +52,13 @@ class DockedWidget(object):
     def createDockLayout(self):
         gMainWindow = mm.eval('$temp1=$gMainWindow')
         columnLay = mc.paneLayout(parent=gMainWindow, width=200)
-        dockControl = mc.dockControl(l=self.qtObject.windowTitle(),
-                                     allowedArea="all",
-                                     area="right",
-                                     content=columnLay,
-                                     width=self.panelWidth)
+        dockControl = mc.dockControl(
+            l=self.qtObject.windowTitle().replace('ftrack', ''),
+            allowedArea="all",
+            area="right",
+            content=columnLay,
+            width=self.panelWidth
+        )
         mc.control(str(self.qtObject.objectName()), e=True, p=columnLay)
         self.qtObject.dockControlName = dockControl
         return
