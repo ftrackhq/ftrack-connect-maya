@@ -1,6 +1,8 @@
 import os
 import maya.cmds as mc
 import maya.mel as mm
+import logging
+import ftrack
 
 from ftrack_connect_maya.connector import Connector
 from ftrack_connect_maya.connector.mayacon import DockedWidget
@@ -20,14 +22,14 @@ dialogs = [
 
 
 def loadAndInit():
-    # load the ftrack maya plugin
+    # Load the ftrack maya plugin
     mc.loadPlugin('ftrackMayaPlugin.py', quiet=True)
 
-    # create new maya connector and register the assets
+    # Create new maya connector and register the assets
     connector = Connector()
     connector.registerAssets()
 
-    # check if maya is in batch mode
+    # Check if maya is in batch mode
     if mc.about(batch=True):
         return
 
@@ -42,6 +44,7 @@ def loadAndInit():
         label='ftrack'
     )
 
+    # Register and hook the dialog in ftrack menu
     for Dialog in dialogs:
         ftrack_dialog = Dialog(connector=connector)
         ftrack_docked_dialog = DockedWidget(ftrack_dialog)
@@ -52,20 +55,19 @@ def loadAndInit():
             command=lambda x, dialog=ftrack_docked_dialog: dialog.show(),
         )
 
-    import ftrack
+    # Run ftrack setup
     ftrack.setup()
 
 
 def checkForNewAssets():
     allObjects = mc.ls(type='ftrackAssetNode')
     message = ''
-    import ftrack
     for ftNode in allObjects:
         if not mc.referenceQuery(ftNode, isNodeReferenced=True):
             assetVersion = mc.getAttr(ftNode + ".assetVersion")
             assetId = mc.getAttr(ftNode + ".assetId")
             if assetId is None:
-                print 'WARNING: FTrack node "%s" does not contain data!' % ftNode
+                mc.warning('FTrack node "%s" does not contain data!' % ftNode)
             assetTake = mc.getAttr(ftNode + ".assetTake")
             assetversion = ftrack.AssetVersion(assetId)
             asset = assetversion.getAsset()
@@ -112,6 +114,7 @@ def framerate_init():
     }
 
     fps_type = mapping.get(fps, 'pal')
+    mc.warning('Setting current unit to  %s ' % fps)
     mc.currentUnit(time=fps_type)
 
 
@@ -123,7 +126,7 @@ def timeline_init():
     shot = ftrack.Shot(id=shot_id)
     handles = float(shot.get('handles'))
 
-    print 'Setting timeline to %s %s ' % (start_frame, end_frame)
+    mc.warning('Setting timeline to %s %s ' % (start_frame, end_frame))
 
     # add handles to start and end frame
     hsf = start_frame - handles
@@ -132,7 +135,6 @@ def timeline_init():
     mc.playbackOptions(
         minTime=hsf,
         maxTime=hef,
-
         animationStartTime=hsf,
         animationEndTime=hef
     )
@@ -145,6 +147,5 @@ if not Connector.batch():
     mc.evalDeferred("framerate_init()")
     mc.evalDeferred("timeline_init()")
 
-import logging
 
 logging.getLogger().setLevel(logging.INFO)
