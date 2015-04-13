@@ -184,9 +184,19 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
         self.ui.AssetTaskComboBoxModel = QtGui.QStandardItemModel()
         self.ui.AssetTaskComboBox.setModel(self.ui.AssetTaskComboBoxModel)
 
+        self.ui.ListAssetNamesComboBox.currentIndexChanged[str].connect(self.on_asset_changed)
+
         if browseMode == 'Task':
             self.ui.AssetTaskComboBox.hide()
             self.ui.assetTaskLabel.hide()
+
+    def on_asset_changed(self, asset_name):
+        if asset_name != 'New':
+            self.ui.AssetNameLineEdit.setEnabled(False)
+            self.ui.AssetNameLineEdit.setText(asset_name)
+        else:
+            self.ui.AssetNameLineEdit.setEnabled(True)
+            self.ui.AssetNameLineEdit.setText('')
 
     @QtCore.Slot(object)
     def updateView(self, ftrack_entity):
@@ -293,8 +303,6 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
 
         if not existingAssetFound:
             self.ui.AssetNameLineEdit.setText(assetName)
-
-        print 'existingAssetFound', existingAssetFound
 
     def getAssetType(self):
         return self.currentAssetType
