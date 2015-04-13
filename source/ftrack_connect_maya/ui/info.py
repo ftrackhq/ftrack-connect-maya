@@ -13,3 +13,7 @@ class FtrackMayaInfoDialog(FtrackInfoDialog):
             QtGui.QSizePolicy.Expanding,
             QtGui.QSizePolicy.Fixed
         )
+
+    def keyPressEvent(self, e):
+        if not e.key() == QtCore.Qt.Key_Escape:
+            super(FtrackMayaInfoDialog, self).keyPressEvent(e)

@@ -47,3 +47,7 @@ class FtrackTasksDialog(QtGui.QDialog):
 
         self.setObjectName('ftrackTasks')
         self.setWindowTitle("ftrackTasks")
+
+    def keyPressEvent(self, e):
+        if not e.key() == QtCore.Qt.Key_Escape:
+            super(FtrackTasksDialog, self).keyPressEvent(e)

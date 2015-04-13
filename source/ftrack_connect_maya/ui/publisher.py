@@ -222,6 +222,10 @@ class FtrackPublishAssetDialog(QtGui.QDialog):
             self.exportAssetOptionsWidget.ui.ListAssetsComboBox.currentIndex()
         )
 
+    def keyPressEvent(self, e):
+        if not e.key() == QtCore.Qt.Key_Escape:
+            super(FtrackPublishAssetDialog, self).keyPressEvent(e)
+
     def getShotPath(self, shot):
         shotparents = shot.getParents()
         shotpath = ''
