@@ -2,7 +2,6 @@ from PySide import QtCore, QtGui
 from ftrack_connect import connector as ftrack_connector
 
 import getpass
-from ftrack_connect.ui.widget.browse_tasks_small import BrowseTasksSmallWidget
 from ftrack_connect_maya.ui.export_asset_options_widget import ExportAssetOptionsWidget
 from ftrack_connect_maya.ui.export_options_widget import ExportOptionsWidget
 
@@ -21,6 +20,7 @@ class ContextSelector(QtGui.QWidget):
         self._entity = None
 
         self.entityBrowser = entity_browser.EntityBrowser()
+        self.entityBrowser.setMinimumWidth(600)
         self.entity_path = entity_path.EntityPath()
         self.entityBrowseButton = QtGui.QPushButton('Browse')
 
@@ -38,11 +38,11 @@ class ContextSelector(QtGui.QWidget):
             self._onEntityBrowserSelectionChanged
         )
 
-        self.reset()
-
     def reset(self):
         current_entity = os.getenv('FTRACK_TASKID', os.getenv('FTRACK_SHOTID'))
-        self.entity_path.setEntity(ftrack.Task(current_entity))
+        entity = ftrack.Task(current_entity)
+        self.entity_path.setEntity(entity)
+        self.entityChanged.emit(entity)
 
     def setEntity(self, entity):
         '''Set the *entity* for the view.'''
@@ -171,25 +171,23 @@ class FtrackPublishAssetDialog(QtGui.QDialog):
         panelComInstance.addSwitchedShotListener(self.browseTasksWidget.reset)
         panelComInstance.addSwitchedShotListener(self.resetOptions)
 
-        QtCore.QObject.connect(
-            self.exportAssetOptionsWidget,
-            QtCore.SIGNAL('clickedAssetTypeSignal(QString)'),
+        self.exportAssetOptionsWidget.clickedAssetTypeSignal.connect(
             self.exportOptionsWidget.setStackedWidget
         )
 
-        QtCore.QObject.connect(
-            self.exportOptionsWidget.ui.publishButton,
-            QtCore.SIGNAL('clicked()'),
+        self.browseTasksWidget.entityChanged.connect(
+            self.exportAssetOptionsWidget.updateView
+        )
+
+        self.exportOptionsWidget.ui.publishButton.clicked.connect(
             self.publishAsset
         )
 
-        QtCore.QObject.connect(
-            panelComInstance,
-            QtCore.SIGNAL('publishProgressSignal(int)'),
+        panelComInstance.publishProgressSignal.connect(
             self.exportOptionsWidget.setProgress
         )
 
-        self.browseTasksWidget.update()
+        self.browseTasksWidget.reset()
 
     def resetOptions(self):
         self.exportOptionsWidget.resetOptions()
@@ -198,9 +196,14 @@ class FtrackPublishAssetDialog(QtGui.QDialog):
         self.exportOptionsWidget.setComment('')
         self.exportOptionsWidget.ui.thumbnailLineEdit.setText('')
 
-        taskid = os.environ['FTRACK_TASKID']
-        self.exportAssetOptionsWidget.updateTasks(ftrackId=taskid)
-        self.exportAssetOptionsWidget.updateView(ftrackId=taskid)
+        task = ftrack.Task(
+            os.getenv('FTRACK_TASKID',
+                os.getenv('FTRACK_SHOTID')
+            )
+        )
+
+        self.exportAssetOptionsWidget.updateTasks(ftrack_entity=task)
+        self.exportAssetOptionsWidget.updateView(ftrack_entity=task)
 
     def setAssetType(self, assetType):
         self.exportAssetOptionsWidget.setAssetType(assetType)
@@ -214,13 +217,13 @@ class FtrackPublishAssetDialog(QtGui.QDialog):
         self.exportOptionsWidget.setComment(comment)
 
     def publishAsset(self):
-        taskId = self.exportAssetOptionsWidget.getTaskId()
-        shotid = self.exportAssetOptionsWidget.getShotId()
+        task = self.exportAssetOptionsWidget.getTask()
+        taskId = task.getId()
+        shot = self.exportAssetOptionsWidget.getShot()
 
         assettype = self.exportAssetOptionsWidget.getAssetType()
         assetName = self.exportAssetOptionsWidget.getAssetName()
         status = self.exportAssetOptionsWidget.getStatus()
-        print 'STATUS', status
 
         comment = self.exportOptionsWidget.getComment()
         options = self.exportOptionsWidget.getOptions()
@@ -241,7 +244,7 @@ class FtrackPublishAssetDialog(QtGui.QDialog):
             return
 
         self.exportOptionsWidget.setProgress(0)
-        asset = ftrack.Task(shotid).createAsset(assetName, assettype)
+        asset = shot.createAsset(assetName, assettype)
 
         assetVersion = asset.createVersion(comment=comment, taskid=taskId)
 
