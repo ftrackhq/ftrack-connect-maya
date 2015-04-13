@@ -3,6 +3,7 @@ from PySide import QtGui
 
 from ftrack_connect.ui.widget.web_view import WebViewWidget
 from ftrack_connect.ui.widget.header import Header
+from ftrack_connect.ui.theme import applyTheme
 
 import ftrack
 
@@ -19,6 +20,7 @@ class FtrackTasksDialog(QtGui.QDialog):
         if not parent:
             self.parent = self.connector.getMainWindow()
         super(FtrackTasksDialog, self).__init__(self.parent)
+        applyTheme(self, 'integration')
         self.setSizePolicy(
             QtGui.QSizePolicy(
                 QtGui.QSizePolicy.Expanding,

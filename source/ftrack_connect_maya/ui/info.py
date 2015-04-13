@@ -1,5 +1,6 @@
 from PySide import QtGui
 from ftrack_connect.ui.widget.info import FtrackInfoDialog
+from ftrack_connect.ui.theme import applyTheme
 
 
 class FtrackMayaInfoDialog(FtrackInfoDialog):
@@ -13,3 +14,4 @@ class FtrackMayaInfoDialog(FtrackInfoDialog):
             QtGui.QSizePolicy.Expanding,
             QtGui.QSizePolicy.Fixed
         )
+        applyTheme(self, 'integration')
