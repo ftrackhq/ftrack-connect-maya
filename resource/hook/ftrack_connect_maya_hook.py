@@ -249,13 +249,19 @@ class ApplicationLauncher(ftrack_connect.application.ApplicationLauncher):
         environment['FTRACK_SHOTID'] = task.get('parent_id')
 
         maya_plugin_path = os.path.split(self.plugin_path)[0]
+        maya_source_folder = os.path.split(maya_plugin_path)[0]
+        maya_source_folder = os.path.join(maya_source_folder, 'source')
 
         environment = ftrack_connect.application.appendPath(
-            maya_plugin_path, 'PYTHONPATH', environment
+            maya_source_folder, 'PYTHONPATH', environment
         )
 
-        maya_script_path = os.path.join(maya_plugin_path, 'scripts')
+        maya_plugins_path = os.path.join(maya_plugin_path, 'plug_ins')
 
+        environment = ftrack_connect.application.appendPath(
+            maya_plugins_path, 'MAYA_PLUG_IN_PATH', environment
+        )
+        maya_script_path = os.path.join(maya_plugin_path, 'scripts')
         environment = ftrack_connect.application.appendPath(
             maya_script_path, 'PYTHONPATH', environment
         )
