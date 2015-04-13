@@ -5,9 +5,91 @@ import getpass
 from ftrack_connect.ui.widget.browse_tasks_small import BrowseTasksSmallWidget
 from ftrack_connect_maya.ui.export_asset_options_widget import ExportAssetOptionsWidget
 from ftrack_connect_maya.ui.export_options_widget import ExportOptionsWidget
+
+from ftrack_connect.ui.widget import entity_path
+from ftrack_connect.ui.widget import entity_browser
 from ftrack_connect.ui.widget import header
 import ftrack
 import os
+
+
+class ContextSelector(QtGui.QWidget):
+    entityChanged = QtCore.Signal(object)
+
+    def __init__(self, parent=None):
+        super(ContextSelector, self).__init__(parent=parent)
+        self._entity = None
+
+        self.entityBrowser = entity_browser.EntityBrowser()
+        self.entity_path = entity_path.EntityPath()
+        self.entityBrowseButton = QtGui.QPushButton('Browse')
+
+        layout = QtGui.QHBoxLayout()
+        self.setLayout(layout)
+
+        layout.addWidget(self.entity_path)
+        layout.addWidget(self.entityBrowseButton)
+
+        self.entityBrowseButton.clicked.connect(
+            self._onEntityBrowseButtonClicked
+        )
+        self.entityChanged.connect(self.entity_path.setEntity)
+        self.entityBrowser.selectionChanged.connect(
+            self._onEntityBrowserSelectionChanged
+        )
+
+        self.reset()
+
+    def reset(self):
+        current_entity = os.getenv('FTRACK_TASKID', os.getenv('FTRACK_SHOTID'))
+        self.entity_path.setEntity(ftrack.Task(current_entity))
+
+    def setEntity(self, entity):
+        '''Set the *entity* for the view.'''
+        self._entity = entity
+        self.entityChanged.emit(entity)
+
+    def _onEntityBrowseButtonClicked(self):
+        '''Handle entity browse button clicked.'''
+        # Ensure browser points to parent of currently selected entity.
+        if self._entity is not None:
+            location = []
+            try:
+                parents = self._entity.getParents()
+            except AttributeError:
+                pass
+            else:
+                for parent in parents:
+                    location.append(parent.getId())
+
+            location.reverse()
+            self.entityBrowser.setLocation(location)
+
+        # Launch browser.
+        if self.entityBrowser.exec_():
+            selected = self.entityBrowser.selected()
+            if selected:
+                self.setEntity(selected[0])
+            else:
+                self.setEntity(None)
+
+    def _onEntityBrowserSelectionChanged(self, selection):
+        '''Handle selection of entity in browser.'''
+        self.entityBrowser.acceptButton.setDisabled(True)
+        if len(selection) == 1:
+            entity = selection[0]
+
+            # Prevent selecting Projects or Tasks directly under a Project to
+            # match web interface behaviour.
+            if isinstance(entity, ftrack.Task):
+                objectType = entity.getObjectType()
+                if (
+                    objectType == 'Task'
+                    and isinstance(entity.getParent(), ftrack.Project)
+                ):
+                    return
+
+                self.entityBrowser.acceptButton.setDisabled(False)
 
 
 class FtrackPublishAssetDialog(QtGui.QDialog):
@@ -53,24 +135,18 @@ class FtrackPublishAssetDialog(QtGui.QDialog):
         self.scrollArea.setWidget(self.mainWidget)
 
         self.headerWidget = header.Header(getpass.getuser(), self)
-        # self.headerWidget.setTitle('Publish Asset')
         self.scrollLayout.addWidget(self.headerWidget)
 
-        # BrowseTasksSmallWidget uses a floating position so it needs
-        # to know where its top is
         if 'FTRACK_TASKID' in os.environ:
             self.browseMode = 'Task'
         else:
             self.browseMode = 'Shot'
 
-        self.browseTasksWidget = BrowseTasksSmallWidget(
-            self, browseMode=self.browseMode
+        self.browseTasksWidget = ContextSelector(
+            self
         )
 
         self.scrollLayout.addWidget(self.browseTasksWidget)
-        pos = self.headerWidget.rect().bottomRight().y()
-        self.browseTasksWidget.setTopPosition(pos)
-        self.browseTasksWidget.setLabelText('Publish to')
 
         self.exportAssetOptionsWidget = ExportAssetOptionsWidget(
             self, browseMode=self.browseMode
@@ -92,20 +168,8 @@ class FtrackPublishAssetDialog(QtGui.QDialog):
         self.setObjectName('ftrackPublishAsset')
         self.setWindowTitle("ftrackPublishAsset")
         panelComInstance = ftrack_connector.panelcom.PanelComInstance.instance()
-        panelComInstance.addSwitchedShotListener(self.browseTasksWidget.updateTask)
+        panelComInstance.addSwitchedShotListener(self.browseTasksWidget.reset)
         panelComInstance.addSwitchedShotListener(self.resetOptions)
-
-        QtCore.QObject.connect(
-            self.browseTasksWidget,
-            QtCore.SIGNAL('clickedIdSignal(QString)'),
-            self.exportAssetOptionsWidget.updateView
-        )
-
-        QtCore.QObject.connect(
-            self.browseTasksWidget,
-            QtCore.SIGNAL('clickedIdSignal(QString)'),
-            self.exportAssetOptionsWidget.updateTasks
-        )
 
         QtCore.QObject.connect(
             self.exportAssetOptionsWidget,
