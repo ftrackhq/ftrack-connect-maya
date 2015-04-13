@@ -248,25 +248,31 @@ class ApplicationLauncher(ftrack_connect.application.ApplicationLauncher):
         environment['FTRACK_TASKID'] = task.getId()
         environment['FTRACK_SHOTID'] = task.get('parent_id')
 
-        maya_plugin_path = os.path.split(self.plugin_path)[0]
-        maya_source_folder = os.path.split(maya_plugin_path)[0]
-        maya_source_folder = os.path.join(maya_source_folder, 'source')
+        maya_connect_source = os.path.join(self.plugin_path, 'source')
+        maya_connect_resources = os.path.join(self.plugin_path, 'resource')
+
+        maya_connect_scripts = os.path.join(maya_connect_resources, 'scripts')
+        maya_connect_plugins = os.path.join(maya_connect_resources, 'plug_ins')
 
         environment = ftrack_connect.application.appendPath(
-            maya_source_folder, 'PYTHONPATH', environment
-        )
-
-        maya_plugins_path = os.path.join(maya_plugin_path, 'plug_ins')
-
-        environment = ftrack_connect.application.appendPath(
-            maya_plugins_path, 'MAYA_PLUG_IN_PATH', environment
-        )
-        maya_script_path = os.path.join(maya_plugin_path, 'scripts')
-        environment = ftrack_connect.application.appendPath(
-            maya_script_path, 'PYTHONPATH', environment
+            maya_connect_source,
+            'PYTHONPATH',
+            environment
         )
         environment = ftrack_connect.application.appendPath(
-            maya_script_path, 'MAYA_SCRIPT_PATH', environment
+            maya_connect_scripts,
+            'PYTHONPATH',
+            environment
+        )
+        environment = ftrack_connect.application.appendPath(
+            maya_connect_scripts,
+            'MAYA_SCRIPT_PATH',
+            environment
+        )
+        environment = ftrack_connect.application.appendPath(
+            maya_connect_plugins,
+            'MAYA_PLUG_IN_PATH',
+            environment
         )
         return environment
 
@@ -278,17 +284,13 @@ def register(registry, **kw):
     application_store = ApplicationStore()
 
     # Create a launcher with the store containing applications.
-    launcher = ApplicationLauncher(
-        application_store,
-        plugin_path=os.environ.get(
-            'FTRACK_CONNECT_MAYA_PLUGINS_PATH',
-            os.path.abspath(
-                os.path.join(
-                    os.path.dirname(__file__), '..', 'ftrack_connect_maya'
-                )
-            )
-        )
-    )
+    plugin_path = os.environ.get('FTRACK_CONNECT_MAYA_PLUGINS_PATH')
+    if not plugin_path:
+        plugin_path = os.path.split(os.path.dirname(__file__))[0]
+        plugin_path = os.path.split(plugin_path)[0]
+    plugin_path = os.path.abspath(plugin_path)
+
+    launcher = ApplicationLauncher(application_store, plugin_path=plugin_path)
 
     # Create action and register to respond to discover and launch actions.
     action = LaunchApplicationAction(application_store, launcher)
