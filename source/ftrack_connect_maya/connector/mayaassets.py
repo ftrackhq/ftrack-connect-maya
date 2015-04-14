@@ -76,19 +76,6 @@ class GenericAsset(FTAssetType):
                 self.importAssetBool = True
                 self.referenceAssetBool = False
 
-            if iAObj.componentName in ['mayaBinaryScene']:
-                if mc.confirmDialog(
-                    title='Confirm',
-                    message='Replace current scene?',
-                    button=['Yes', 'No'],
-                    defaultButton='No',
-                    cancelButton='No',
-                    dismissString='No') == "Yes":
-                    mc.file(new=True, force=True
-                )
-                else:
-                    return 'Canceled Import'
-
             if 'mayaReference' in iAObj.options and iAObj.options['mayaReference']:
                 preserveReferences = iAObj.options['mayaReference']
 
@@ -814,26 +801,6 @@ class SceneAsset(GenericAsset):
         iAObj.customComponentName = 'mayaBinaryScene'
         components, message = GenericAsset.publishAsset(self, iAObj)
         return components, message
-
-    @staticmethod
-    def importOptions():
-        xml = """
-        <tab name="Options">
-            <row name="Import mode" accepts="maya">
-                <option type="radio" name="importMode">
-                    <optionitem name="Import" value="True"/>
-                </option>
-            </row>
-            <row name="Preserve References" accepts="maya">
-                <option type="checkbox" name="mayaReference" value="True"/>
-            </row>
-            <row name="Add Asset Namespace" accepts="maya">
-                <option type="checkbox" name="mayaNamespace" value="False"/>
-                <option type="string" name="nameSpaceStr" value=""/>
-            </row>
-        </tab>
-        """
-        return xml
 
     @staticmethod
     def exportOptions():
