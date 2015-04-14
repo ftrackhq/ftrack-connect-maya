@@ -39,10 +39,13 @@ class ContextSelector(QtGui.QWidget):
         )
 
     def reset(self):
-        current_entity = os.getenv('FTRACK_TASKID', os.getenv('FTRACK_SHOTID'))
+        current_entity = os.getenv(
+            'FTRACK_TASKID',
+            os.getenv('FTRACK_SHOTID')
+        )
         entity = ftrack.Task(current_entity)
         self.entity_path.setEntity(entity)
-        self.entityChanged.emit(entity)
+        self.setEntity(entity)
 
     def setEntity(self, entity):
         '''Set the *entity* for the view.'''
@@ -141,6 +144,8 @@ class FtrackPublishAssetDialog(QtGui.QDialog):
             self.browseMode = 'Task'
         else:
             self.browseMode = 'Shot'
+
+        print 'MODE', self.browseMode
 
         self.browseTasksWidget = ContextSelector(
             self

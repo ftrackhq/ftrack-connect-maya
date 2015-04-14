@@ -77,9 +77,9 @@ class Ui_ExportAssetOptions(object):
 
         self.retranslateUi(ExportAssetOptions)
 
-        # self.ListAssetsComboBox.currentIndexChanged[int].connect(
-        #     ExportAssetOptions.setFilter
-        # )
+        self.ListAssetsComboBox.currentIndexChanged[int].connect(
+            ExportAssetOptions.setFilter
+        )
 
         self.ListAssetsComboBox.currentIndexChanged[int].connect(
             ExportAssetOptions.emitAssetType
@@ -184,7 +184,9 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
         self.ui.AssetTaskComboBoxModel = QtGui.QStandardItemModel()
         self.ui.AssetTaskComboBox.setModel(self.ui.AssetTaskComboBoxModel)
 
-        self.ui.ListAssetNamesComboBox.currentIndexChanged[str].connect(self.on_asset_changed)
+        self.ui.ListAssetNamesComboBox.currentIndexChanged[str].connect(
+            self.on_asset_changed
+        )
 
         if browseMode == 'Task':
             self.ui.AssetTaskComboBox.hide()
@@ -272,15 +274,15 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
             self.clickedAssetTypeSignal.emit(comboItem.type)
             self.currentAssetType = comboItem.type
 
-    # @QtCore.Slot(int)
-    # def setFilter(self, comboBoxIndex):
-    #     if comboBoxIndex:
-    #         comboItem = self.ui.ListAssetsComboBoxModel.item(comboBoxIndex)
-    #         newItem = self.ui.ListAssetsViewModel.item(0, 1)
-    #         newItem.setText(comboItem.type)
-    #         self.ui.ListAssetsSortModel.setFilterFixedString(comboItem.type)
-    #     else:
-    #         self.ui.ListAssetsSortModel.setFilterFixedString('')
+    @QtCore.Slot(int)
+    def setFilter(self, comboBoxIndex):
+        if comboBoxIndex:
+            comboItem = self.ui.ListAssetsComboBoxModel.item(comboBoxIndex)
+            newItem = self.ui.ListAssetsViewModel.item(0, 1)
+            newItem.setText(comboItem.type)
+            self.ui.ListAssetsSortModel.setFilterFixedString(comboItem.type)
+        else:
+            self.ui.ListAssetsSortModel.setFilterFixedString('')
 
     def setAssetType(self, assetType):
         for position, item in enumerate(self.assetTypes):
@@ -297,6 +299,7 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
         for i in range(rows):
             index = self.ui.ListAssetsSortModel.index(i, 0)
             datas = self.ui.ListAssetsSortModel.data(index)
+            'setAssetName:', datas, assetName
             if datas == assetName:
                 self.ui.ListAssetNamesComboBox.setCurrentIndex(int(i))
                 existingAssetFound = True
