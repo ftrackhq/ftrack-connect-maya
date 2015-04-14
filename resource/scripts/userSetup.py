@@ -12,6 +12,8 @@ from ftrack_connect_maya.ui.info import FtrackMayaInfoDialog
 from ftrack_connect_maya.ui.publisher import FtrackPublishAssetDialog
 from ftrack_connect_maya.ui.tasks import FtrackTasksDialog
 
+ftrack.setup()
+
 dialogs = [
     FtrackImportAssetDialog,
     FtrackAssetManagerDialog,
@@ -55,8 +57,6 @@ def loadAndInit():
             command=lambda x, dialog=ftrack_docked_dialog: dialog.show(),
         )
     mc.menuItem(divider=True)
-    # Run ftrack setup
-    ftrack.setup()
 
 
 def checkForNewAssets():
