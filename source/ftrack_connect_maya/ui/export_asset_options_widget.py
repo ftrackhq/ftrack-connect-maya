@@ -1,3 +1,6 @@
+# :coding: utf-8
+# :copyright: Copyright (c) 2015 ftrack
+
 import os
 import maya.cmds as cmds
 from PySide import QtCore, QtGui

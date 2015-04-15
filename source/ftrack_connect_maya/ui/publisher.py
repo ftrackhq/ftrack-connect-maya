@@ -1,3 +1,6 @@
+# :coding: utf-8
+# :copyright: Copyright (c) 2015 ftrack
+
 from PySide import QtCore, QtGui
 from ftrack_connect import connector as ftrack_connector
 

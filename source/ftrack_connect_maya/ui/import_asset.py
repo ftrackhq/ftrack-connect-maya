@@ -1,3 +1,6 @@
+# :coding: utf-8
+# :copyright: Copyright (c) 2015 ftrack
+
 import ftrack
 from ftrack_connect.connector import PanelComInstance
 from ftrack_connect.ui.widget.import_asset import (
