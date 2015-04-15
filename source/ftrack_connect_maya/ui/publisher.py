@@ -6,6 +6,7 @@ from ftrack_connect_maya.ui.context_selector import ContextSelector
 from ftrack_connect_maya.ui.export_asset_options_widget import ExportAssetOptionsWidget
 from ftrack_connect_maya.ui.export_options_widget import ExportOptionsWidget
 from ftrack_connect.ui.widget import header
+from ftrack_connect.ui.theme import applyTheme
 import ftrack
 import os
 
@@ -28,6 +29,7 @@ class FtrackPublishAssetDialog(QtGui.QDialog):
                 QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding
             )
         )
+        applyTheme(self, 'integration')
 
         self.assetType = None
         self.assetName = None
