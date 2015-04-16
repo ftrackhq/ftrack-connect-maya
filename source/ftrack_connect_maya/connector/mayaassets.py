@@ -261,7 +261,6 @@ class GenericAsset(FTAssetType):
             mc.file(nodeAssetPath, loadReference=referenceNode)
         else:
             nodes = mc.listConnections(ftrackNode + '.assetLink')
-            nodes.append(ftrackNode)
             mc.delete(nodes)
             iAObj.options['importMode'] = 'Import'
             iAObj.options['mayaReference'] = False
