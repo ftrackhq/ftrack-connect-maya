@@ -1,6 +1,7 @@
 # :coding: utf-8
 # :copyright: Copyright (c) 2015 ftrack
 
+import os
 import ftrack
 from ftrack_connect.connector import PanelComInstance
 from ftrack_connect.ui.widget.import_asset import (
@@ -14,8 +15,17 @@ class FtrackImportAssetDialog(_FtrackImportAssetDialog):
         super(FtrackImportAssetDialog, self).__init__(
             parent=parent, connector=connector
         )
+
+        self.currentEntity = ftrack.Task(
+            os.getenv('FTRACK_TASKID',
+                os.getenv('FTRACK_SHOTID')
+            )
+        )
+
         self.browseTasksWidget.setParent(None)
-        self.browseTasksWidget = ContextSelector(self)
+        self.browseTasksWidget = ContextSelector(
+            currentEntity=self.currentEntity, parent=self
+        )
         self.verticalLayout.insertWidget(1, self.browseTasksWidget)
 
         panelComInstance = PanelComInstance.instance()
