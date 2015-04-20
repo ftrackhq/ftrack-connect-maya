@@ -27,6 +27,7 @@ class FtrackImportAssetDialog(_FtrackImportAssetDialog):
 
     def clickedIdSignal(self, ftrack_entity):
         '''Handle click signal.'''
+        ftrackId = None
 
         if isinstance(ftrack_entity, ftrack.Task):
             ftrackId = ftrack_entity.getId()
