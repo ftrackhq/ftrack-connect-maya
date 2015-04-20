@@ -302,7 +302,7 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
         for i in range(rows):
             index = self.ui.ListAssetsSortModel.index(i, 0)
             datas = self.ui.ListAssetsSortModel.data(index)
-            'setAssetName:', datas, assetName
+
             if datas == assetName:
                 self.ui.ListAssetNamesComboBox.setCurrentIndex(int(i))
                 existingAssetFound = True
