@@ -7,6 +7,7 @@ from PySide import QtCore, QtGui
 
 from ftrack_connect.ui.widget import entity_path as entityPath
 from ftrack_connect.ui.widget import entity_browser as entityBrowser
+from ftrack_connect.ui.theme import applyTheme
 
 
 class ContextSelector(QtGui.QWidget):
@@ -19,6 +20,7 @@ class ContextSelector(QtGui.QWidget):
         super(ContextSelector, self).__init__(parent=parent)
         self._entity = currentEntity
         self.entityBrowser = entityBrowser.EntityBrowser()
+        applyTheme(self.entityBrowser, 'integration')
         self.entityBrowser.setMinimumWidth(600)
         self.entityPath = entityPath.EntityPath()
         self.entityBrowseButton = QtGui.QPushButton('Browse')
