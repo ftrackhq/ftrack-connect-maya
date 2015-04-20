@@ -5,8 +5,8 @@ import os
 import ftrack
 from PySide import QtCore, QtGui
 
-from ftrack_connect.ui.widget import entity_path
-from ftrack_connect.ui.widget import entity_browser
+from ftrack_connect.ui.widget import entity_path as entityPath
+from ftrack_connect.ui.widget import entity_browser as entityBrowser
 
 
 class ContextSelector(QtGui.QWidget):
@@ -16,21 +16,21 @@ class ContextSelector(QtGui.QWidget):
         super(ContextSelector, self).__init__(parent=parent)
         self._entity = None
 
-        self.entityBrowser = entity_browser.EntityBrowser()
+        self.entityBrowser = entityBrowser.EntityBrowser()
         self.entityBrowser.setMinimumWidth(600)
-        self.entity_path = entity_path.EntityPath()
+        self.entityPath = entityPath.EntityPath()
         self.entityBrowseButton = QtGui.QPushButton('Browse')
 
         layout = QtGui.QHBoxLayout()
         self.setLayout(layout)
 
-        layout.addWidget(self.entity_path)
+        layout.addWidget(self.entityPath)
         layout.addWidget(self.entityBrowseButton)
 
         self.entityBrowseButton.clicked.connect(
             self._onEntityBrowseButtonClicked
         )
-        self.entityChanged.connect(self.entity_path.setEntity)
+        self.entityChanged.connect(self.entityPath.setEntity)
         self.entityBrowser.selectionChanged.connect(
             self._onEntityBrowserSelectionChanged
         )
@@ -41,7 +41,7 @@ class ContextSelector(QtGui.QWidget):
             os.getenv('FTRACK_SHOTID')
         )
         entity = ftrack.Task(current_entity)
-        self.entity_path.setEntity(entity)
+        self.entityPath.setEntity(entity)
         self.setEntity(entity)
 
     def setEntity(self, entity):
