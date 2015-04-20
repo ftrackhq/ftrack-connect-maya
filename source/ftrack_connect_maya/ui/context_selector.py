@@ -1,12 +1,12 @@
 # :coding: utf-8
 # :copyright: Copyright (c) 2015 ftrack
 
+import os
+import ftrack
 from PySide import QtCore, QtGui
 
 from ftrack_connect.ui.widget import entity_path
 from ftrack_connect.ui.widget import entity_browser
-import ftrack
-import os
 
 
 class ContextSelector(QtGui.QWidget):
