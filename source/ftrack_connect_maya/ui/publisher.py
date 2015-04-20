@@ -1,17 +1,17 @@
 # :coding: utf-8
 # :copyright: Copyright (c) 2015 ftrack
 
-from PySide import QtCore, QtGui
-from ftrack_connect import connector as ftrack_connector
-
+import os
 import getpass
+from PySide import QtCore, QtGui
+import ftrack
+
+from ftrack_connect import connector as ftrack_connector
+from ftrack_connect.ui.widget import header
+from ftrack_connect.ui.theme import applyTheme
 from ftrack_connect_maya.ui.context_selector import ContextSelector
 from ftrack_connect_maya.ui.export_asset_options_widget import ExportAssetOptionsWidget
 from ftrack_connect_maya.ui.export_options_widget import ExportOptionsWidget
-from ftrack_connect.ui.widget import header
-from ftrack_connect.ui.theme import applyTheme
-import ftrack
-import os
 
 
 class FtrackPublishAssetDialog(QtGui.QDialog):
