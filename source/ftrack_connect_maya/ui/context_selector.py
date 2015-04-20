@@ -12,10 +12,9 @@ from ftrack_connect.ui.widget import entity_browser as entityBrowser
 class ContextSelector(QtGui.QWidget):
     entityChanged = QtCore.Signal(object)
 
-    def __init__(self, parent=None):
+    def __init__(self, currentEntity, parent=None):
         super(ContextSelector, self).__init__(parent=parent)
-        self._entity = None
-
+        self._entity = currentEntity
         self.entityBrowser = entityBrowser.EntityBrowser()
         self.entityBrowser.setMinimumWidth(600)
         self.entityPath = entityPath.EntityPath()
@@ -35,14 +34,9 @@ class ContextSelector(QtGui.QWidget):
             self._onEntityBrowserSelectionChanged
         )
 
-    def reset(self):
-        current_entity = os.getenv(
-            'FTRACK_TASKID',
-            os.getenv('FTRACK_SHOTID')
-        )
-        entity = ftrack.Task(current_entity)
-        self.entityPath.setEntity(entity)
-        self.setEntity(entity)
+    def reset(self, entity=None):
+        self.entityPath.setEntity(currentEntity)
+        self.setEntity(currentEntity)
 
     def setEntity(self, entity):
         '''Set the *entity* for the view.'''

@@ -26,6 +26,12 @@ class FtrackPublishAssetDialog(QtGui.QDialog):
         if not parent:
             self.parent = self.connector.getMainWindow()
 
+        self.currentEntity = ftrack.Task(
+            os.getenv('FTRACK_TASKID',
+                os.getenv('FTRACK_SHOTID')
+            )
+        )
+
         super(FtrackPublishAssetDialog, self).__init__(self.parent)
         self.setSizePolicy(
             QtGui.QSizePolicy(
@@ -66,7 +72,7 @@ class FtrackPublishAssetDialog(QtGui.QDialog):
             self.browseMode = 'Shot'
 
         self.browseTasksWidget = ContextSelector(
-            self
+            currentEntity=self.currentEntity, parent=self
         )
 
         self.scrollLayout.addWidget(self.browseTasksWidget)
@@ -119,14 +125,12 @@ class FtrackPublishAssetDialog(QtGui.QDialog):
         self.exportOptionsWidget.setComment('')
         self.exportOptionsWidget.ui.thumbnailLineEdit.setText('')
 
-        task = ftrack.Task(
-            os.getenv('FTRACK_TASKID',
-                os.getenv('FTRACK_SHOTID')
-            )
+        self.exportAssetOptionsWidget.updateTasks(
+            ftrack_entity=self.currentEntity
         )
-
-        self.exportAssetOptionsWidget.updateTasks(ftrack_entity=task)
-        self.exportAssetOptionsWidget.updateView(ftrack_entity=task)
+        self.exportAssetOptionsWidget.updateView(
+            ftrack_entity=self.currentEntity
+        )
 
     def setAssetType(self, assetType):
         self.exportAssetOptionsWidget.setAssetType(assetType)
