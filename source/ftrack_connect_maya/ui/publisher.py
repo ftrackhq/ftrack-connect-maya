@@ -65,8 +65,6 @@ class FtrackPublishAssetDialog(QtGui.QDialog):
         else:
             self.browseMode = 'Shot'
 
-        print 'MODE', self.browseMode
-
         self.browseTasksWidget = ContextSelector(
             self
         )
