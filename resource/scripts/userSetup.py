@@ -10,7 +10,7 @@ from ftrack_connect.ui.widget.asset_manager import FtrackAssetManagerDialog
 from ftrack_connect_maya.ui.info import FtrackMayaInfoDialog
 from ftrack_connect_maya.ui.publisher import FtrackPublishAssetDialog
 from ftrack_connect_maya.ui.tasks import FtrackTasksDialog
-from ftrack_connect.ui.import_asset import FtrackImportAssetDialog
+from ftrack_connect.ui.widget.import_asset import FtrackImportAssetDialog
 
 ftrack.setup()
 
