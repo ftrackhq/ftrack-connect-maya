@@ -4,6 +4,7 @@
 import os
 import getpass
 from PySide import QtCore, QtGui
+
 import ftrack
 
 from ftrack_connect import connector as ftrack_connector
