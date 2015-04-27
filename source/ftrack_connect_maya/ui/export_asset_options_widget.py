@@ -188,14 +188,14 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
         self.ui.AssetTaskComboBox.setModel(self.ui.AssetTaskComboBoxModel)
 
         self.ui.ListAssetNamesComboBox.currentIndexChanged[str].connect(
-            self.on_asset_changed
+            self.onAssetChanged
         )
 
         if browseMode == 'Task':
             self.ui.AssetTaskComboBox.hide()
             self.ui.assetTaskLabel.hide()
 
-    def on_asset_changed(self, asset_name):
+    def onAssetChanged(self, asset_name):
         if asset_name != 'New':
             self.ui.AssetNameLineEdit.setEnabled(False)
             self.ui.AssetNameLineEdit.setText(asset_name)
