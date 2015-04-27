@@ -149,7 +149,7 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
         self.ui = Ui_ExportAssetOptions()
         self.ui.setupUi(self)
         self.currentAssetType = None
-        self.current_task = None
+        self.currentTask = None
         self.browseMode = browseMode
         self.ui.ListAssetsViewModel = QtGui.QStandardItemModel()
 
@@ -206,27 +206,27 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
     @QtCore.Slot(object)
     def updateView(self, ftrack_entity):
         try:
-            self.current_task = ftrack_entity
-            project = self.current_task.getProject()
+            self.currentTask = ftrack_entity
+            project = self.currentTask.getProject()
             taskid = '11c137c0-ee7e-4f9c-91c5-8c77cec22b2c'
             # Populate statuses based on task if it is a task.
-            if self.current_task.get('object_typeid') == taskid:
+            if self.currentTask.get('object_typeid') == taskid:
                 self.ui.ListStatusComboBox.show()
                 self.ui.assetTaskLabel_2.show()
                 self.ui.ListStatusComboBox.clear()
                 statuses = project.getTaskStatuses(
-                    self.current_task.get('typeid')
+                    self.currentTask.get('typeid')
                 )
                 for index, status, in enumerate(statuses):
                     self.ui.ListStatusComboBox.addItem(status.getName())
-                    if status.get('statusid') == self.current_task.get('statusid'):
+                    if status.get('statusid') == self.currentTask.get('statusid'):
                         self.ui.ListStatusComboBox.setCurrentIndex(index)
             else:
                 self.ui.ListStatusComboBox.hide()
                 self.ui.assetTaskLabel_2.hide()
 
             if self.browseMode == 'Task':
-                task = self.current_task.getParent()
+                task = self.currentTask.getParent()
 
             assets = task.getAssets(assetTypes=self.assetTypesStr)
             assets = sorted(assets, key=lambda a: a.getName().lower())
@@ -315,16 +315,16 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
 
     @QtCore.Slot(object)
     def updateTasks(self, ftrack_entity):
-        self.current_task = ftrack_entity
+        self.currentTask = ftrack_entity
         try:
-            shotpath = self.current_task.getName()
-            taskParents = self.current_task.getParents()
+            shotpath = self.currentTask.getName()
+            taskParents = self.currentTask.getParents()
 
             for parent in taskParents:
                 shotpath = parent.getName() + '.' + shotpath
 
             self.ui.AssetTaskComboBox.clear()
-            tasks = self.current_task.getTasks()
+            tasks = self.currentTask.getTasks()
             curIndex = 0
             ftrackuser = ftrack.User(os.environ['LOGNAME'])
             taskids = [x.getId() for x in ftrackuser.getTasks()]
@@ -350,9 +350,9 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
 
     def getShot(self):
         if self.browseMode == 'Shot':
-            return self.current_task
+            return self.currentTask
         else:
-            return self.current_task.getParent()
+            return self.currentTask.getParent()
 
     def getTask(self):
         if self.browseMode == 'Shot':
@@ -364,7 +364,7 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
             else:
                 return None
         else:
-            return self.current_task
+            return self.currentTask
 
     def getStatus(self):
         return self.ui.ListStatusComboBox.currentText()
