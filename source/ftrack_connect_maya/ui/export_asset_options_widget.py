@@ -204,9 +204,9 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
             self.ui.AssetNameLineEdit.setText('')
 
     @QtCore.Slot(object)
-    def updateView(self, ftrack_entity):
+    def updateView(self, ftrackEntity):
         try:
-            self.currentTask = ftrack_entity
+            self.currentTask = ftrackEntity
             project = self.currentTask.getProject()
             taskid = '11c137c0-ee7e-4f9c-91c5-8c77cec22b2c'
             # Populate statuses based on task if it is a task.
@@ -314,8 +314,8 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
         return self.currentAssetType
 
     @QtCore.Slot(object)
-    def updateTasks(self, ftrack_entity):
-        self.currentTask = ftrack_entity
+    def updateTasks(self, ftrackEntity):
+        self.currentTask = ftrackEntity
         try:
             shotpath = self.currentTask.getName()
             taskParents = self.currentTask.getParents()
