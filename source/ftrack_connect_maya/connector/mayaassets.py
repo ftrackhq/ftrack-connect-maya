@@ -419,13 +419,8 @@ class GeometryAsset(GenericAsset):
                 alembicJobArgs += '-frameRange %s %s -step %s ' % (iAObj.options['frameStart'], iAObj.options['frameEnd'], iAObj.options['alembicEval'])
 
             alembicJobArgs += ' ' + objCommand + '-file ' + temporaryPath
-            print alembicJobArgs
-            try:
-                mc.AbcExport(j=alembicJobArgs)
-            except:
-                import traceback
-                var = traceback.format_exc()
-                return None, var
+
+            mc.AbcExport(j=alembicJobArgs)
 
             if selectednodes:
                 mc.select(selectednodes)

@@ -187,8 +187,13 @@ class FtrackPublishAssetDialog(QtGui.QDialog):
             assetVersionId=assetVersion.getId(),
             options=options
         )
+        try:
+            publishedComponents, message = self.connector.publishAsset(pubObj)
+        except:
+            self.exportOptionsWidget.setProgress(100)
+            self.showError('Publish failed. Please check the console.')
+            raise
 
-        publishedComponents, message = self.connector.publishAsset(pubObj)
         if publishedComponents:
             self.connector.publishAssetFiles(
                 publishedComponents, assetVersion, pubObj
@@ -239,3 +244,6 @@ class FtrackPublishAssetDialog(QtGui.QDialog):
 
     def showWarning(self, subject, message):
         self.headerWidget.setMessage(message, 'warning')
+
+    def showError(self, message):
+        self.headerWidget.setMessage(message, 'error')
