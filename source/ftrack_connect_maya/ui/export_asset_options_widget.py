@@ -2,10 +2,15 @@
 # :copyright: Copyright (c) 2015 ftrack
 
 import os
-import maya.cmds as cmds
+import logging
 from PySide import QtCore, QtGui
 import ftrack
+
+import maya.cmds as cmds
+
 from ftrack_connect.connector import FTAssetHandlerInstance
+
+log = logging.getLogger(__file__)
 
 
 class Ui_ExportAssetOptions(object):
@@ -175,7 +180,7 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
             try:
                 assetType = ftrack.AssetType(assetTypeStr)
             except:
-                cmds.warning(assetTypeStr + ' not available in ftrack')
+                log.warning(assetTypeStr + ' not available in ftrack')
                 continue
             assetTypeItem = QtGui.QStandardItem(assetType.getName())
             assetTypeItem.type = assetType.getShort()
