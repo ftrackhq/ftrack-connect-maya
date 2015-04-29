@@ -69,9 +69,9 @@ class Connector(maincon.Connector):
 
         for ftrackobj in allObjects:
             if not mc.referenceQuery(ftrackobj, isNodeReferenced=True):
-                assetcomponentid = mc.getAttr(ftrackobj + ".assetComponentId")
+                assetcomponentid = mc.getAttr(ftrackobj + '.assetComponentId')
                 nameInScene = mc.listConnections(
-                    ftrackobj + ".assetLink",
+                    ftrackobj + '.assetLink',
                     type='transform'
                 )
                 if not nameInScene:
@@ -165,7 +165,7 @@ class Connector(maincon.Connector):
         )
         ftrackNode = ftrackNode[0]
         referenceNode = False
-        for node in mc.listConnections(ftrackNode+'.assetLink'):
+        for node in mc.listConnections(ftrackNode + '.assetLink'):
             if mc.nodeType(node) == 'reference':
                 if 'sharedReferenceNode' in node:
                     continue
