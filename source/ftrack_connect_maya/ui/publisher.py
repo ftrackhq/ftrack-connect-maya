@@ -15,8 +15,8 @@ from ftrack_connect_maya.ui.export_asset_options_widget import ExportAssetOption
 from ftrack_connect_maya.ui.export_options_widget import ExportOptionsWidget
 
 
-class FtrackPublishAssetDialog(QtGui.QDialog):
-    def __init__(self, parent=None, connector=None):
+class PublishAssetDialog(QtGui.QDialog):
+    def __init__(self, parent=None, connector=None, currentEntity=None):
         if not connector:
             raise ValueError(
                 'Please provide a connector object for {0}'.format(
@@ -27,13 +27,9 @@ class FtrackPublishAssetDialog(QtGui.QDialog):
         if not parent:
             self.parent = self.connector.getMainWindow()
 
-        self.currentEntity = ftrack.Task(
-            os.getenv('FTRACK_TASKID',
-                os.getenv('FTRACK_SHOTID')
-            )
-        )
+        self.currentEntity = currentEntity
 
-        super(FtrackPublishAssetDialog, self).__init__(self.parent)
+        super(PublishAssetDialog, self).__init__(self.parent)
         self.setSizePolicy(
             QtGui.QSizePolicy(
                 QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding
@@ -219,7 +215,7 @@ class FtrackPublishAssetDialog(QtGui.QDialog):
 
     def keyPressEvent(self, e):
         if not e.key() == QtCore.Qt.Key_Escape:
-            super(FtrackPublishAssetDialog, self).keyPressEvent(e)
+            super(PublishAssetDialog, self).keyPressEvent(e)
 
     def getShotPath(self, shot):
         shotparents = shot.getParents()

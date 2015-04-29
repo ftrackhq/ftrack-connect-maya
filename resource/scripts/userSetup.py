@@ -7,17 +7,17 @@ import ftrack
 from ftrack_connect_maya.connector import Connector
 from ftrack_connect_maya.connector.mayacon import DockedWidget
 from ftrack_connect.ui.widget.asset_manager import FtrackAssetManagerDialog
-from ftrack_connect_maya.ui.info import FtrackMayaInfoDialog
-from ftrack_connect_maya.ui.publisher import FtrackPublishAssetDialog
-from ftrack_connect_maya.ui.tasks import FtrackTasksDialog
 from ftrack_connect.ui.widget.import_asset import FtrackImportAssetDialog
+from ftrack_connect_maya.ui.info import FtrackMayaInfoDialog
+from ftrack_connect_maya.ui.publisher import PublishAssetDialog
+from ftrack_connect_maya.ui.tasks import FtrackTasksDialog
 
 ftrack.setup()
 
 dialogs = [
     FtrackImportAssetDialog,
     FtrackAssetManagerDialog,
-    FtrackPublishAssetDialog,
+    PublishAssetDialog,
     FtrackMayaInfoDialog,
     FtrackTasksDialog
 ]
@@ -46,9 +46,22 @@ def loadAndInit():
         label='ftrack'
     )
 
+    current_entity = ftrack.Task(
+        os.getenv('FTRACK_TASKID',
+            os.getenv('FTRACK_SHOTID')
+        )
+    )
+
     # Register and hook the dialog in ftrack menu
     for Dialog in dialogs:
-        ftrack_dialog = Dialog(connector=connector)
+
+        if Dialog.__name__ == 'PublishAssetDialog':
+            ftrack_dialog = Dialog(
+                connector=connector, currentEntity=current_entity
+            )
+        else:
+            ftrack_dialog = Dialog(connector=connector)
+
         ftrack_docked_dialog = DockedWidget(ftrack_dialog)
 
         mc.menuItem(
