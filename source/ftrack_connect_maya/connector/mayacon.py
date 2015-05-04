@@ -69,16 +69,18 @@ class Connector(maincon.Connector):
 
         for ftrackobj in allObjects:
             if not mc.referenceQuery(ftrackobj, isNodeReferenced=True):
-                assetcomponentid = mc.getAttr(ftrackobj + ".assetComponentId")
-                try:
-                    nameInScene = mc.connectionInfo(
-                        ftrackobj + ".assetLink",
-                        destinationFromSource=True
+                assetcomponentid = mc.getAttr(ftrackobj + '.assetComponentId')
+                nameInScene = mc.listConnections(
+                    ftrackobj + '.assetLink',
+                    type='transform'
+                )
+                if not nameInScene:
+                    mc.warning(
+                        'AssetLink broken for assetNode ' + str(ftrackobj)
                     )
-                    nameInScene = nameInScene[0].split(".")[0]
-                except:
-                    print 'AssetLink broken for assetNode ' + str(ftrackobj)
                     continue
+                else:
+                    nameInScene = nameInScene[0]
 
                 componentIds.append((assetcomponentid, nameInScene))
         return componentIds
@@ -162,24 +164,21 @@ class Connector(maincon.Connector):
             applicationObject + '.ftrack', d=False, s=True
         )
         ftrackNode = ftrackNode[0]
-        assetComponent = mc.getAttr(ftrackNode + ".assetTake")
-        assetType = mc.getAttr(ftrackNode + ".assetType")
+        referenceNode = False
+        for node in mc.listConnections(ftrackNode + '.assetLink'):
+            if mc.nodeType(node) == 'reference':
+                if 'sharedReferenceNode' in node:
+                    continue
+                referenceNode = node
 
-        removeReference = True
-        if assetComponent == 'alembic':
-            removeReference = False
-
-        if assetType == 'anim' and assetComponent == 'mayamc':
-            removeReference = False
-
-        if removeReference:
+        if referenceNode:
             referenceNode = Connector.getReferenceNode(applicationObject)
             if referenceNode:
                 mc.file(rfn=referenceNode, rr=True)
-        try:
-            mc.delete(applicationObject)  # remove group
-        except:
-            print 'Asset or grp already deleted'
+        else:
+            nodes = mc.listConnections(ftrackNode + '.assetLink')
+            nodes.append(ftrackNode)
+            mc.delete(nodes)
 
     @staticmethod
     def changeVersion(applicationObject=None, iAObj=None):
