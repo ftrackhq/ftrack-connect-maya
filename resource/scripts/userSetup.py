@@ -3,6 +3,7 @@ import maya.cmds as mc
 import maya.mel as mm
 import logging
 import ftrack
+import functools
 
 from ftrack_connect_maya.connector import Connector
 from ftrack_connect_maya.connector.mayacon import DockedWidget
@@ -14,10 +15,20 @@ from ftrack_connect_maya.ui.tasks import FtrackTasksDialog
 
 ftrack.setup()
 
+currentEntity = ftrack.Task(
+    os.getenv('FTRACK_TASKID',
+        os.getenv('FTRACK_SHOTID')
+    )
+)
+
+
 dialogs = [
     FtrackImportAssetDialog,
     FtrackAssetManagerDialog,
-    PublishAssetDialog,
+    functools.partial(
+        PublishAssetDialog,
+        currentEntity=currentEntity
+    ),
     FtrackMayaInfoDialog,
     FtrackTasksDialog
 ]
@@ -46,22 +57,9 @@ def loadAndInit():
         label='ftrack'
     )
 
-    current_entity = ftrack.Task(
-        os.getenv('FTRACK_TASKID',
-            os.getenv('FTRACK_SHOTID')
-        )
-    )
-
     # Register and hook the dialog in ftrack menu
     for Dialog in dialogs:
-
-        if Dialog.__name__ == 'PublishAssetDialog':
-            ftrack_dialog = Dialog(
-                connector=connector, currentEntity=current_entity
-            )
-        else:
-            ftrack_dialog = Dialog(connector=connector)
-
+        ftrack_dialog = Dialog(connector=connector)
         ftrack_docked_dialog = DockedWidget(ftrack_dialog)
 
         mc.menuItem(
