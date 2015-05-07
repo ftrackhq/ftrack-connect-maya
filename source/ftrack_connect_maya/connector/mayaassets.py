@@ -15,6 +15,9 @@ from ftrack_connect.connector import (
     FTComponent
 )
 
+currentStartFrame = mc.playbackOptions(min=True, q=True)
+currentEndFrame = mc.playbackOptions(max=True, q=True)
+
 
 if mayacon.Connector.batch() == False:
     from ftrack_connect.connector import panelcom
@@ -56,9 +59,11 @@ class GenericAsset(FTAssetType):
             # remove the last bit, which usually is the version
             fileAssetNameSpace = '_'.join(fileAssetNameSpace.split('_')[:-1])
 
-            nameSpaceStr = iAObj.options.get('nameSpaceStr', None) or fileAssetNameSpace
+            nameSpaceStr = (
+                iAObj.options.get('nameSpaceStr', None) or fileAssetNameSpace
+            )
+
             importType = 'mayaBinary'
-            createFTNode = True
 
             if iAObj.componentName in [
                 'mayaBinary', 'main', 'mayaBinaryScene',
@@ -68,8 +73,8 @@ class GenericAsset(FTAssetType):
                     if iAObj.options['importMode'] == 'Import':
                         self.importAssetBool = True
                         self.referenceAssetBool = False
-                        createFTNode = False
-                        groupReferenceBool = False  # do not group when importing
+                        # do not group when importing
+                        groupReferenceBool = False
 
                 if iAObj.componentName in ('mayaAscii', 'mayaAsciiScene'):
                     importType = 'mayaAscii'
@@ -80,19 +85,22 @@ class GenericAsset(FTAssetType):
                 self.referenceAssetBool = False
 
             if iAObj.componentName in ['mayaBinaryScene']:
-                if mc.confirmDialog(
+                confirmDialog = mc.confirmDialog(
                     title='Confirm',
                     message='Replace current scene?',
                     button=['Yes', 'No'],
                     defaultButton='No',
                     cancelButton='No',
-                    dismissString='No') == "Yes":
-                    mc.file(new=True, force=True
-                )
+                    dismissString='No')
+                if confirmDialog == "Yes":
+                    mc.file(new=True, force=True)
                 else:
                     return 'Canceled Import'
 
-            if 'mayaReference' in iAObj.options and iAObj.options['mayaReference']:
+            if (
+                'mayaReference' in iAObj.options and
+                iAObj.options['mayaReference']
+            ):
                 preserveReferences = iAObj.options['mayaReference']
 
             if not iAObj.options.get('mayaNamespace'):
@@ -155,25 +163,25 @@ class GenericAsset(FTAssetType):
         expressions = False
         shader = False
 
-        if 'mayaHistory' in iAObj.options and iAObj.options['mayaHistory']:
+        if iAObj.options.get('mayaHistory'):
             constructionHistory = iAObj.options['mayaHistory']
 
-        if 'mayaChannels' in iAObj.options and iAObj.options['mayaChannels']:
+        if iAObj.options.get('mayaChannels'):
             channels = iAObj.options['mayaChannels']
 
-        if 'mayaPreserveref' in iAObj.options and iAObj.options['mayaPreserveref']:
+        if iAObj.options.get('mayaPreserveref'):
             preserveReferences = iAObj.options['mayaPreserveref']
 
-        if 'mayaShaders' in iAObj.options and iAObj.options['mayaShaders']:
+        if iAObj.options.get('mayaShaders'):
             shader = iAObj.options['mayaShaders']
 
-        if 'mayaConstraints' in iAObj.options and iAObj.options['mayaConstraints']:
+        if iAObj.options.get('mayaConstraints'):
             constraints = iAObj.options['mayaConstraints']
 
-        if 'mayaExpressions' in iAObj.options and iAObj.options['mayaExpressions']:
+        if iAObj.options.get('mayaExpressions'):
             expressions = iAObj.options['mayaExpressions']
 
-        if 'exportMode' in iAObj.options and iAObj.options['exportMode'] == 'Selection':
+        if iAObj.options.get('exportMode') == 'Selection':
             exportSelectedMode = True
             exportAllMode = False
         else:
@@ -275,23 +283,28 @@ class GenericAsset(FTAssetType):
 
     def updateftrackNode(self, iAObj, ftrackNode):
         mc.setAttr(
-            ftrackNode + ".assetVersion", int(iAObj.assetVersion)
+           "%s.assetVersion" % ftrackNode,
+           int(iAObj.assetVersion)
         )
         mc.setAttr(
-            ftrackNode + ".assetId", iAObj.assetVersionId, type="string"
+            "%s.assetId" % ftrackNode,
+            iAObj.assetVersionId, type="string"
         )
         mc.setAttr(
-            ftrackNode + ".assetPath", iAObj.filePath, type="string"
+            "%s.assetPath" % ftrackNode,
+            iAObj.filePath, type="string"
         )
         mc.setAttr(
-            ftrackNode + ".assetTake", iAObj.componentName, type="string"
+            "%s.assetTake" % ftrackNode,
+            iAObj.componentName, type="string"
         )
         mc.setAttr(
-            ftrackNode + ".assetComponentId", iAObj.componentId, type="string"
+            "%s .assetComponentId" % ftrackNode,
+            iAObj.componentId, type="string"
         )
 
     def linkToFtrackNode(self, iAObj):
-        ftNodeName = iAObj.assetName + "_ftrackdata"
+        ftNodeName = "%s_ftrackdata" % iAObj.assetName
         count = 0
         while 1:
             if mc.objExists(ftNodeName):
@@ -320,12 +333,12 @@ class GenericAsset(FTAssetType):
             if not mc.listConnections(item + ".ftrack"):
                 mc.connectAttr(ftNode + ".assetLink", item + ".ftrack")
 
-        mc.setAttr(ftNode + ".assetVersion", int(iAObj.assetVersion))
-        mc.setAttr(ftNode + ".assetId", iAObj.assetVersionId, type="string")
-        mc.setAttr(ftNode + ".assetPath", iAObj.filePath, type="string")
-        mc.setAttr(ftNode + ".assetTake", iAObj.componentName, type="string")
-        mc.setAttr(ftNode + ".assetType", iAObj.assetType, type="string")
-        mc.setAttr(ftNode + ".assetComponentId",iAObj.componentId, type="string")
+        mc.setAttr("%s.assetVersion" % ftNode, int(iAObj.assetVersion))
+        mc.setAttr("%s.assetId" % ftNode, iAObj.assetVersionId, type="string")
+        mc.setAttr("%s.assetPath" % ftNode, iAObj.filePath, type="string")
+        mc.setAttr("%s.assetTake" % ftNode, iAObj.componentName, type="string")
+        mc.setAttr("%s.assetType" % ftNode, iAObj.assetType, type="string")
+        mc.setAttr("%s.assetComponentId" % ftNode, iAObj.componentId, type="string")
 
 
 class AudioAsset(GenericAsset):
@@ -370,9 +383,11 @@ class GeometryAsset(GenericAsset):
         publishedComponents = []
 
         totalSteps = self.getTotalSteps(
-            steps=[iAObj.options['mayaBinary'],
-            iAObj.options['alembic'],
-            iAObj.options['mayaPublishScene']]
+            steps=[
+                iAObj.options['mayaBinary'],
+                iAObj.options['alembic'],
+                iAObj.options['mayaPublishScene']
+            ]
         )
         panelComInstance = panelcom.PanelComInstance.instance()
         panelComInstance.setTotalExportSteps(totalSteps)
@@ -387,8 +402,8 @@ class GeometryAsset(GenericAsset):
             sceneComponents, message = GenericAsset.publishAsset(self, iAObjCopy)
             publishedComponents += sceneComponents
 
-        if iAObj.options['alembic']:
-            if 'alembicExportMode' in iAObj.options and iAObj.options['alembicExportMode'] == 'Selection':
+        if iAObj.options.get('alembic'):
+            if iAObj.options.get('alembicExportMode') == 'Selection':
                 nodes = mc.ls(sl=True, long=True)
                 selectednodes = None
             else:
@@ -409,17 +424,21 @@ class GeometryAsset(GenericAsset):
 
             alembicJobArgs = ''
 
-            if 'alembicUvwrite' in iAObj.options and iAObj.options['alembicUvwrite']:
+            if iAObj.options.get('alembicUvwrite'):
                 alembicJobArgs += '-uvWrite '
 
-            if 'alembicWorldspace' in iAObj.options and iAObj.options['alembicWorldspace']:
+            if iAObj.options.get('alembicWorldspace'):
                 alembicJobArgs += '-worldSpace '
 
-            if 'alembicWritevisibility' in iAObj.options and iAObj.options['alembicWritevisibility']:
+            if iAObj.options.get('alembicWritevisibility'):
                 alembicJobArgs += '-writeVisibility '
 
-            if 'alembicAnimation' in iAObj.options and iAObj.options['alembicAnimation']:
-                alembicJobArgs += '-frameRange %s %s -step %s ' % (iAObj.options['frameStart'], iAObj.options['frameEnd'], iAObj.options['alembicEval'])
+            if iAObj.options.get('alembicAnimation'):
+                alembicJobArgs += '-frameRange %s %s -step %s ' % (
+                    iAObj.options['frameStart'],
+                    iAObj.options['frameEnd'],
+                    iAObj.options['alembicEval']
+                )
 
             alembicJobArgs += ' ' + objCommand + '-file ' + temporaryPath
 
@@ -504,8 +523,8 @@ class GeometryAsset(GenericAsset):
         except:
             alembicEnabled = False
 
-        s = os.getenv('FS', 1001)
-        e = os.getenv('FE', 1101)
+        s = os.getenv('FS', currentStartFrame)
+        e = os.getenv('FE', currentEndFrame)
         xml = xml.format(s, e, str(alembicEnabled))
         return xml
 
@@ -541,7 +560,14 @@ class CameraAsset(GenericAsset):
         iAObj.options['exportMode'] = 'Selection'
         publishedComponents = []
 
-        totalSteps = self.getTotalSteps(steps=[iAObj.options['cameraBake'], iAObj.options['cameraMaya'], iAObj.options['cameraAlembic'], iAObj.options['mayaPublishScene']])
+        totalSteps = self.getTotalSteps(
+            steps=[
+                iAObj.options['cameraBake'],
+                iAObj.options['cameraMaya'],
+                iAObj.options['cameraAlembic'],
+                iAObj.options['mayaPublishScene']
+            ]
+        )
         panelComInstance = panelcom.PanelComInstance.instance()
         panelComInstance.setTotalExportSteps(totalSteps + 1)
 
@@ -554,14 +580,19 @@ class CameraAsset(GenericAsset):
             if mc.nodeType(node) == 'camera':
                 cameraShape = node
             else:
-                cameraShapes = mc.listRelatives(node, allDescendents=True, type='camera')
+                cameraShapes = mc.listRelatives(
+                    node, allDescendents=True, type='camera'
+                )
                 if len(cameraShapes) > 0:
-                    cameraShape = cameraShapes[0]  # We only care about one camera
+                    # We only care about one camera
+                    cameraShape = cameraShapes[0]
 
         if cameraShape == '':
             return None, 'No camera selected'
 
-        cameraTransform = mc.listRelatives(cameraShape, type='transform', parent=True)
+        cameraTransform = mc.listRelatives(
+            cameraShape, type='transform', parent=True
+        )
         cameraTransform = cameraTransform[0]
 
         if iAObj.options['cameraBake']:
@@ -569,19 +600,23 @@ class CameraAsset(GenericAsset):
             if mc.nodeType(tmpCamComponents[0]) == 'transform':
                 tmpCam = tmpCamComponents[0]
             else:
-                tmpCam = cmds.ls(tmpCamComponents, type='transform')[0]
+                tmpCam = mc.ls(tmpCamComponents, type='transform')[0]
             pConstraint = mc.parentConstraint(cameraTransform, tmpCam)
             try:
                 mc.parent(tmpCam, world=True)
             except RuntimeError:
                 print 'camera already in world space'
 
-            mc.bakeResults(tmpCam, \
-                           simulation=True, \
-                           t=(float(iAObj.options['frameStart']), float(iAObj.options['frameEnd'])), \
-                           sb=1, \
-                           at=["tx", "ty", "tz", "rx", "ry", "rz"], \
-                           hi="below")
+            mc.bakeResults(
+                tmpCam,
+                simulation=True,
+                t=(
+                    float(iAObj.options['frameStart']),
+                    float(iAObj.options['frameEnd'])
+                ),
+                sb=1,
+                at=["tx", "ty", "tz", "rx", "ry", "rz"],
+                hi="below")
 
             mc.delete(pConstraint)
             cameraTransform = tmpCam
@@ -618,12 +653,17 @@ class CameraAsset(GenericAsset):
         if iAObj.options['cameraAlembic']:
             mc.loadPlugin('AbcExport.so', qt=1)
             temporaryPath = HelpFunctions.temporaryFile(suffix='.abc')
-            publishedComponents.append(FTComponent(componentname='alembic', \
-                                       path=temporaryPath))
-            #publishedComponents['alembic'] = temporaryPath
+            publishedComponents.append(
+                FTComponent(
+                    componentname='alembic',
+                    path=temporaryPath)
+                )
 
             alembicJobArgs = ''
-            alembicJobArgs += '-fr ' + iAObj.options['frameStart'] + ' ' + iAObj.options['frameEnd'] + ' '
+            alembicJobArgs += '-fr %s %s' % (
+                iAObj.options['frameStart'],
+                iAObj.options['frameEnd']
+            )
             objCommand = '-root ' + cameraTransform + ' '
             alembicJobArgs += ' ' + objCommand + '-file ' + temporaryPath
             alembicJobArgs += ' -step ' + str(iAObj.options['alembicSteps'])
@@ -739,8 +779,8 @@ class CameraAsset(GenericAsset):
         except:
             alembicEnabled = False
 
-        s = os.getenv('FS', 1001)
-        e = os.getenv('FE', 1101)
+        s = os.getenv('FS', currentStartFrame)
+        e = os.getenv('FE', currentEndFrame)
         xml = xml.format(s, e, str(alembicEnabled))
         return xml
 
@@ -750,7 +790,9 @@ class RigAsset(GenericAsset):
         super(RigAsset, self).__init__()
 
     def publishAsset(self, iAObj=None):
-        totalSteps = self.getTotalSteps(steps=[True, iAObj.options['mayaPublishScene']])
+        totalSteps = self.getTotalSteps(
+            steps=[True, iAObj.options['mayaPublishScene']]
+        )
         panelComInstance = panelcom.PanelComInstance.instance()
         panelComInstance.setTotalExportSteps(totalSteps)
 
@@ -869,7 +911,9 @@ class LightRigAsset(GenericAsset):
         super(LightRigAsset, self).__init__()
 
     def publishAsset(self, iAObj=None):
-        totalSteps = self.getTotalSteps(steps=[True, iAObj.options['mayaPublishScene']])
+        totalSteps = self.getTotalSteps(
+            steps=[True, iAObj.options['mayaPublishScene']]
+        )
         panelComInstance = panelcom.PanelComInstance.instance()
         panelComInstance.setTotalExportSteps(totalSteps)
 
