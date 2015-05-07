@@ -348,12 +348,13 @@ class Connector(maincon.Connector):
         result, message = super(Connector, cls).prePublish(iAObj)
         if not result:
             return result, message
+
         nodes = mc.ls(sl=True)
         if len(nodes) == 0:
             if (
                 'exportMode' in iAObj.options and
                 iAObj.options['exportMode'] == 'Selection'
-                ):
+            ):
                 return None, 'Nothing selected'
             if (
                 'alembicExportMode' in iAObj.options and
