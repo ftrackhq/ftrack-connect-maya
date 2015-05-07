@@ -82,6 +82,8 @@ def checkForNewAssets():
             assetId = mc.getAttr(ftNode + ".assetId")
             if assetId is None:
                 mc.warning('FTrack node "%s" does not contain data!' % ftNode)
+                continue
+
             assetTake = mc.getAttr(ftNode + ".assetTake")
             assetversion = ftrack.AssetVersion(assetId)
             asset = assetversion.getAsset()
