@@ -5,6 +5,7 @@ import os
 import logging
 from PySide import QtCore, QtGui
 import ftrack
+import getpass
 
 import maya.cmds as cmds
 
@@ -331,7 +332,7 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
             self.ui.AssetTaskComboBox.clear()
             tasks = self.currentTask.getTasks()
             curIndex = 0
-            ftrackuser = ftrack.User(os.environ['LOGNAME'])
+            ftrackuser = ftrack.User(getpass.getuser())
             taskids = [x.getId() for x in ftrackuser.getTasks()]
 
             for i in range(len(tasks)):
@@ -339,10 +340,7 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
                 assetTaskItem.id = tasks[i].getId()
                 self.ui.AssetTaskComboBoxModel.appendRow(assetTaskItem)
 
-                if (
-                    'FTRACK_TASKID' in os.environ and
-                    os.environ['FTRACK_TASKID'] == assetTaskItem.id
-                ):
+                if (os.environ.get('FTRACK_TASKID') == assetTaskItem.id):
                     curIndex = i
                 else:
                     if assetTaskItem.id in taskids:

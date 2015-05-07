@@ -2,7 +2,7 @@
 # :copyright: Copyright (c) 2015 ftrack
 
 import getpass
-from PySide import QtGui
+from PySide import QtGui, QtCore
 
 from ftrack_connect.ui.widget.web_view import WebViewWidget
 from ftrack_connect.ui.widget.header import Header

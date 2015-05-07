@@ -80,12 +80,46 @@ class Ui_ExportOptions(object):
         QtCore.QMetaObject.connectSlotsByName(ExportOptions)
 
     def retranslateUi(self, ExportOptions):
-        ExportOptions.setWindowTitle(QtGui.QApplication.translate("ExportOptions", "Form", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_4.setText(QtGui.QApplication.translate("ExportOptions", "Thumbnail:", None, QtGui.QApplication.UnicodeUTF8))
-        self.pushButton.setText(QtGui.QApplication.translate("ExportOptions", "Browse", None, QtGui.QApplication.UnicodeUTF8))
-        self.screenshotButton.setText(QtGui.QApplication.translate("ExportOptions", "Screenshot", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_5.setText(QtGui.QApplication.translate("ExportOptions", "Comment:", None, QtGui.QApplication.UnicodeUTF8))
-        self.publishButton.setText(QtGui.QApplication.translate("ExportOptions", "Publish!", None, QtGui.QApplication.UnicodeUTF8))
+        ExportOptions.setWindowTitle(
+            QtGui.QApplication.translate(
+                "ExportOptions", "Form", None,
+                QtGui.QApplication.UnicodeUTF8
+            )
+        )
+        self.label_4.setText(
+            QtGui.QApplication.translate(
+                "ExportOptions", "Thumbnail:", None,
+                QtGui.QApplication.UnicodeUTF8
+            )
+        )
+
+        self.pushButton.setText(
+            QtGui.QApplication.translate(
+                "ExportOptions", "Browse", None,
+                QtGui.QApplication.UnicodeUTF8
+            )
+        )
+
+        self.screenshotButton.setText(
+            QtGui.QApplication.translate(
+                "ExportOptions", "Screenshot", None,
+                QtGui.QApplication.UnicodeUTF8
+            )
+        )
+
+        self.label_5.setText(
+            QtGui.QApplication.translate(
+                "ExportOptions", "Comment:", None,
+                QtGui.QApplication.UnicodeUTF8
+            )
+        )
+
+        self.publishButton.setText(
+            QtGui.QApplication.translate(
+                "ExportOptions", "Publish!", None,
+                QtGui.QApplication.UnicodeUTF8
+            )
+        )
 
 
 class ExportOptionsWidget(QtGui.QWidget):

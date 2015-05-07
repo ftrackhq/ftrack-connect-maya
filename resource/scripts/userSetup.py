@@ -93,12 +93,15 @@ def checkForNewAssets():
                 )
 
     if message != '':
-        confirm = mc.confirmDialog(title='New assets',
-                                   message=message,
-                                   button=['Open AssetManager', 'Close'],
-                                   defaultButton='Close',
-                                   cancelButton='Close',
-                                   dismissString='Close')
+        confirm = mc.confirmDialog(
+            title='New assets',
+            message=message,
+            button=['Open AssetManager', 'Close'],
+            defaultButton='Close',
+            cancelButton='Close',
+            dismissString='Close'
+        )
+
         if confirm != 'Close':
             global assetManagerDialog
             assetManagerDialog = FtrackAssetManagerDialog(connector=connector)
