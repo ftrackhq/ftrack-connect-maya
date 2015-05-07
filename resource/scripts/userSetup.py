@@ -3,21 +3,32 @@ import maya.cmds as mc
 import maya.mel as mm
 import logging
 import ftrack
+import functools
 
 from ftrack_connect_maya.connector import Connector
 from ftrack_connect_maya.connector.mayacon import DockedWidget
-from ftrack_connect.ui.widget.import_asset import FtrackImportAssetDialog
 from ftrack_connect.ui.widget.asset_manager import FtrackAssetManagerDialog
+from ftrack_connect.ui.widget.import_asset import FtrackImportAssetDialog
 from ftrack_connect_maya.ui.info import FtrackMayaInfoDialog
-from ftrack_connect_maya.ui.publisher import FtrackPublishAssetDialog
+from ftrack_connect_maya.ui.publisher import PublishAssetDialog
 from ftrack_connect_maya.ui.tasks import FtrackTasksDialog
 
 ftrack.setup()
 
+currentEntity = ftrack.Task(
+    os.getenv('FTRACK_TASKID',
+        os.getenv('FTRACK_SHOTID')
+    )
+)
+
+
 dialogs = [
     FtrackImportAssetDialog,
     FtrackAssetManagerDialog,
-    FtrackPublishAssetDialog,
+    functools.partial(
+        PublishAssetDialog,
+        currentEntity=currentEntity
+    ),
     FtrackMayaInfoDialog,
     FtrackTasksDialog
 ]

@@ -1,3 +1,6 @@
+# :coding: utf-8
+# :copyright: Copyright (c) 2015 ftrack
+
 import os
 from PySide import QtCore, QtGui
 import ftrack

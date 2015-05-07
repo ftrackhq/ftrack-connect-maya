@@ -1,3 +1,6 @@
+# :coding: utf-8
+# :copyright: Copyright (c) 2015 ftrack
+
 import os
 import uuid
 from ftrack_connect.connector import base as maincon

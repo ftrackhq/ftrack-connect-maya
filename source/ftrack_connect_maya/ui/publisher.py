@@ -1,18 +1,22 @@
-from PySide import QtCore, QtGui
-from ftrack_connect import connector as ftrack_connector
+# :coding: utf-8
+# :copyright: Copyright (c) 2015 ftrack
 
+import os
 import getpass
-from ftrack_connect.ui.widget.browse_tasks_small import BrowseTasksSmallWidget
-from ftrack_connect_maya.ui.export_asset_options_widget import ExportAssetOptionsWidget
-from ftrack_connect_maya.ui.export_options_widget import ExportOptionsWidget
+
+from PySide import QtCore, QtGui
+import ftrack
+
+from ftrack_connect import connector as ftrack_connector
 from ftrack_connect.ui.widget import header
 from ftrack_connect.ui.theme import applyTheme
-import ftrack
-import os
+from ftrack_connect.ui.widget.context_selector import ContextSelector
+from ftrack_connect_maya.ui.export_asset_options_widget import ExportAssetOptionsWidget
+from ftrack_connect_maya.ui.export_options_widget import ExportOptionsWidget
 
 
-class FtrackPublishAssetDialog(QtGui.QDialog):
-    def __init__(self, parent=None, connector=None):
+class PublishAssetDialog(QtGui.QDialog):
+    def __init__(self, parent=None, connector=None, currentEntity=None):
         if not connector:
             raise ValueError(
                 'Please provide a connector object for {0}'.format(
@@ -23,7 +27,9 @@ class FtrackPublishAssetDialog(QtGui.QDialog):
         if not parent:
             self.parent = self.connector.getMainWindow()
 
-        super(FtrackPublishAssetDialog, self).__init__(self.parent)
+        self.currentEntity = currentEntity
+
+        super(PublishAssetDialog, self).__init__(self.parent)
         self.setSizePolicy(
             QtGui.QSizePolicy(
                 QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding
@@ -55,24 +61,18 @@ class FtrackPublishAssetDialog(QtGui.QDialog):
         self.scrollArea.setWidget(self.mainWidget)
 
         self.headerWidget = header.Header(getpass.getuser(), self)
-        # self.headerWidget.setTitle('Publish Asset')
         self.scrollLayout.addWidget(self.headerWidget)
 
-        # BrowseTasksSmallWidget uses a floating position so it needs
-        # to know where its top is
         if 'FTRACK_TASKID' in os.environ:
             self.browseMode = 'Task'
         else:
             self.browseMode = 'Shot'
 
-        self.browseTasksWidget = BrowseTasksSmallWidget(
-            self, browseMode=self.browseMode
+        self.browseTasksWidget = ContextSelector(
+            currentEntity=self.currentEntity, parent=self
         )
 
         self.scrollLayout.addWidget(self.browseTasksWidget)
-        pos = self.headerWidget.rect().bottomRight().y()
-        self.browseTasksWidget.setTopPosition(pos)
-        self.browseTasksWidget.setLabelText('Publish to')
 
         self.exportAssetOptionsWidget = ExportAssetOptionsWidget(
             self, browseMode=self.browseMode
@@ -94,40 +94,26 @@ class FtrackPublishAssetDialog(QtGui.QDialog):
         self.setObjectName('ftrackPublishAsset')
         self.setWindowTitle("ftrackPublishAsset")
         panelComInstance = ftrack_connector.panelcom.PanelComInstance.instance()
-        panelComInstance.addSwitchedShotListener(self.browseTasksWidget.updateTask)
+        panelComInstance.addSwitchedShotListener(self.browseTasksWidget.reset)
         panelComInstance.addSwitchedShotListener(self.resetOptions)
 
-        QtCore.QObject.connect(
-            self.browseTasksWidget,
-            QtCore.SIGNAL('clickedIdSignal(QString)'),
-            self.exportAssetOptionsWidget.updateView
-        )
-
-        QtCore.QObject.connect(
-            self.browseTasksWidget,
-            QtCore.SIGNAL('clickedIdSignal(QString)'),
-            self.exportAssetOptionsWidget.updateTasks
-        )
-
-        QtCore.QObject.connect(
-            self.exportAssetOptionsWidget,
-            QtCore.SIGNAL('clickedAssetTypeSignal(QString)'),
+        self.exportAssetOptionsWidget.clickedAssetTypeSignal.connect(
             self.exportOptionsWidget.setStackedWidget
         )
 
-        QtCore.QObject.connect(
-            self.exportOptionsWidget.ui.publishButton,
-            QtCore.SIGNAL('clicked()'),
+        self.browseTasksWidget.entityChanged.connect(
+            self.exportAssetOptionsWidget.updateView
+        )
+
+        self.exportOptionsWidget.ui.publishButton.clicked.connect(
             self.publishAsset
         )
 
-        QtCore.QObject.connect(
-            panelComInstance,
-            QtCore.SIGNAL('publishProgressSignal(int)'),
+        panelComInstance.publishProgressSignal.connect(
             self.exportOptionsWidget.setProgress
         )
 
-        self.browseTasksWidget.update()
+        self.browseTasksWidget.reset()
 
     def resetOptions(self):
         self.exportOptionsWidget.resetOptions()
@@ -136,9 +122,12 @@ class FtrackPublishAssetDialog(QtGui.QDialog):
         self.exportOptionsWidget.setComment('')
         self.exportOptionsWidget.ui.thumbnailLineEdit.setText('')
 
-        taskid = os.environ['FTRACK_TASKID']
-        self.exportAssetOptionsWidget.updateTasks(ftrackId=taskid)
-        self.exportAssetOptionsWidget.updateView(ftrackId=taskid)
+        self.exportAssetOptionsWidget.updateTasks(
+            ftrack_entity=self.currentEntity
+        )
+        self.exportAssetOptionsWidget.updateView(
+            ftrack_entity=self.currentEntity
+        )
 
     def setAssetType(self, assetType):
         self.exportAssetOptionsWidget.setAssetType(assetType)
@@ -152,13 +141,13 @@ class FtrackPublishAssetDialog(QtGui.QDialog):
         self.exportOptionsWidget.setComment(comment)
 
     def publishAsset(self):
-        taskId = self.exportAssetOptionsWidget.getTaskId()
-        shotid = self.exportAssetOptionsWidget.getShotId()
+        task = self.exportAssetOptionsWidget.getTask()
+        taskId = task.getId()
+        shot = self.exportAssetOptionsWidget.getShot()
 
         assettype = self.exportAssetOptionsWidget.getAssetType()
         assetName = self.exportAssetOptionsWidget.getAssetName()
         status = self.exportAssetOptionsWidget.getStatus()
-        print 'STATUS', status
 
         comment = self.exportOptionsWidget.getComment()
         options = self.exportOptionsWidget.getOptions()
@@ -179,7 +168,7 @@ class FtrackPublishAssetDialog(QtGui.QDialog):
             return
 
         self.exportOptionsWidget.setProgress(0)
-        asset = ftrack.Task(shotid).createAsset(assetName, assettype)
+        asset = shot.createAsset(assetName, assettype)
 
         assetVersion = asset.createVersion(comment=comment, taskid=taskId)
 
@@ -231,7 +220,7 @@ class FtrackPublishAssetDialog(QtGui.QDialog):
 
     def keyPressEvent(self, e):
         if not e.key() == QtCore.Qt.Key_Escape:
-            super(FtrackPublishAssetDialog, self).keyPressEvent(e)
+            super(PublishAssetDialog, self).keyPressEvent(e)
 
     def getShotPath(self, shot):
         shotparents = shot.getParents()

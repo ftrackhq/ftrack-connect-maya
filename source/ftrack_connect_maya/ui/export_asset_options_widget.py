@@ -1,7 +1,16 @@
+# :coding: utf-8
+# :copyright: Copyright (c) 2015 ftrack
+
 import os
+import logging
 from PySide import QtCore, QtGui
 import ftrack
+
+import maya.cmds as cmds
+
 from ftrack_connect.connector import FTAssetHandlerInstance
+
+log = logging.getLogger(__file__)
 
 
 class Ui_ExportAssetOptions(object):
@@ -75,9 +84,11 @@ class Ui_ExportAssetOptions(object):
         self.verticalLayout.addLayout(self.gridLayout)
 
         self.retranslateUi(ExportAssetOptions)
+
         self.ListAssetsComboBox.currentIndexChanged[int].connect(
             ExportAssetOptions.setFilter
         )
+
         self.ListAssetsComboBox.currentIndexChanged[int].connect(
             ExportAssetOptions.emitAssetType
         )
@@ -135,14 +146,15 @@ class Ui_ExportAssetOptions(object):
 
 
 class ExportAssetOptionsWidget(QtGui.QWidget):
-    clickedAssetSignal = QtCore.Signal(str, name='clickedAssetSignal')
-    clickedAssetTypeSignal = QtCore.Signal(str, name='clickedAssetTypeSignal')
+    clickedAssetSignal = QtCore.Signal(str)
+    clickedAssetTypeSignal = QtCore.Signal(str)
 
-    def __init__(self, parent, task=None, browseMode='Shot'):
+    def __init__(self, parent, browseMode='Shot'):
         QtGui.QWidget.__init__(self, parent)
         self.ui = Ui_ExportAssetOptions()
         self.ui.setupUi(self)
         self.currentAssetType = None
+        self.currentTask = None
         self.browseMode = browseMode
         self.ui.ListAssetsViewModel = QtGui.QStandardItemModel()
 
@@ -168,7 +180,7 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
             try:
                 assetType = ftrack.AssetType(assetTypeStr)
             except:
-                print assetTypeStr + ' not available in ftrack'
+                log.warning(assetTypeStr + ' not available in ftrack')
                 continue
             assetTypeItem = QtGui.QStandardItem(assetType.getName())
             assetTypeItem.type = assetType.getShort()
@@ -180,32 +192,47 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
         self.ui.AssetTaskComboBoxModel = QtGui.QStandardItemModel()
         self.ui.AssetTaskComboBox.setModel(self.ui.AssetTaskComboBoxModel)
 
+        self.ui.ListAssetNamesComboBox.currentIndexChanged[str].connect(
+            self.onAssetChanged
+        )
+
         if browseMode == 'Task':
             self.ui.AssetTaskComboBox.hide()
             self.ui.assetTaskLabel.hide()
 
-    @QtCore.Slot(str)
-    def updateView(self, ftrackId):
+    def onAssetChanged(self, asset_name):
+        if asset_name != 'New':
+            self.ui.AssetNameLineEdit.setEnabled(False)
+            self.ui.AssetNameLineEdit.setText(asset_name)
+        else:
+            self.ui.AssetNameLineEdit.setEnabled(True)
+            self.ui.AssetNameLineEdit.setText('')
+
+    @QtCore.Slot(object)
+    def updateView(self, ftrackEntity):
         try:
-            task = ftrack.Task(ftrackId)
-            project = task.getProject()
+            self.currentTask = ftrackEntity
+            project = self.currentTask.getProject()
             taskid = '11c137c0-ee7e-4f9c-91c5-8c77cec22b2c'
             # Populate statuses based on task if it is a task.
-            if task.get('object_typeid') == taskid:
+            if self.currentTask.get('object_typeid') == taskid:
                 self.ui.ListStatusComboBox.show()
                 self.ui.assetTaskLabel_2.show()
                 self.ui.ListStatusComboBox.clear()
-                statuses = project.getTaskStatuses(task.get('typeid'))
+                statuses = project.getTaskStatuses(
+                    self.currentTask.get('typeid')
+                )
                 for index, status, in enumerate(statuses):
                     self.ui.ListStatusComboBox.addItem(status.getName())
-                    if status.get('statusid') == task.get('statusid'):
+                    if status.get('statusid') == self.currentTask.get('statusid'):
                         self.ui.ListStatusComboBox.setCurrentIndex(index)
             else:
                 self.ui.ListStatusComboBox.hide()
                 self.ui.assetTaskLabel_2.hide()
 
             if self.browseMode == 'Task':
-                task = task.getParent()
+                task = self.currentTask.getParent()
+
             assets = task.getAssets(assetTypes=self.assetTypesStr)
             assets = sorted(assets, key=lambda a: a.getName().lower())
             self.ui.ListAssetsViewModel.clear()
@@ -280,6 +307,7 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
         for i in range(rows):
             index = self.ui.ListAssetsSortModel.index(i, 0)
             datas = self.ui.ListAssetsSortModel.data(index)
+
             if datas == assetName:
                 self.ui.ListAssetNamesComboBox.setCurrentIndex(int(i))
                 existingAssetFound = True
@@ -290,20 +318,18 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
     def getAssetType(self):
         return self.currentAssetType
 
-    @QtCore.Slot(str)
-    def updateTasks(self, ftrackId):
-        self.currentId = ftrackId
+    @QtCore.Slot(object)
+    def updateTasks(self, ftrackEntity):
+        self.currentTask = ftrackEntity
         try:
-            task = ftrack.Task(ftrackId)
-            shotpath = task.getName()
-
-            taskParents = task.getParents()
+            shotpath = self.currentTask.getName()
+            taskParents = self.currentTask.getParents()
 
             for parent in taskParents:
                 shotpath = parent.getName() + '.' + shotpath
 
             self.ui.AssetTaskComboBox.clear()
-            tasks = task.getTasks()
+            tasks = self.currentTask.getTasks()
             curIndex = 0
             ftrackuser = ftrack.User(os.environ['LOGNAME'])
             taskids = [x.getId() for x in ftrackuser.getTasks()]
@@ -327,23 +353,23 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
         except:
             print 'Not a task'
 
-    def getShotId(self):
+    def getShot(self):
         if self.browseMode == 'Shot':
-            return self.currentId
+            return self.currentTask
         else:
-            return ftrack.Task(self.currentId).getParent().getId()
+            return self.currentTask.getParent()
 
-    def getTaskId(self):
+    def getTask(self):
         if self.browseMode == 'Shot':
             comboItem = self.ui.AssetTaskComboBoxModel.item(
                 self.ui.AssetTaskComboBox.currentIndex()
             )
             if comboItem:
-                return comboItem.id
+                return ftrack.Task(comboItem.id)
             else:
                 return None
         else:
-            return self.currentId
+            return self.currentTask
 
     def getStatus(self):
         return self.ui.ListStatusComboBox.currentText()

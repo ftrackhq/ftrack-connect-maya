@@ -1,3 +1,6 @@
+# :coding: utf-8
+# :copyright: Copyright (c) 2015 ftrack
+
 from PySide import QtGui
 from ftrack_connect.ui.widget.info import FtrackInfoDialog
 from ftrack_connect.ui.theme import applyTheme
