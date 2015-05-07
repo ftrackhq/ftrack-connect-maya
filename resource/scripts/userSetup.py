@@ -1,3 +1,6 @@
+# :coding: utf-8
+# :copyright: Copyright (c) 2015 ftrack
+
 import os
 import maya.cmds as mc
 import maya.mel as mm
