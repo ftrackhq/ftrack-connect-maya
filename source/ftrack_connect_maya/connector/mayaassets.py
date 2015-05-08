@@ -766,7 +766,7 @@ class CameraAsset(GenericAsset):
 
     @staticmethod
     def importOptions():
-        xml = """
+        xml = '''
         <tab name="Options">
             <row name="Set all cameras renderable" accepts="maya">
                 <option type="checkbox" name="cameraRenderableMaya" value="True"/>
@@ -785,12 +785,12 @@ class CameraAsset(GenericAsset):
                 <option type="string" name="nameSpaceStr" value=""/>
             </row>
         </tab>
-        """
+        '''
         return xml
 
     @staticmethod
     def exportOptions():
-        xml = """
+        xml = '''
         <tab name="Options">
             <row name="Frame range">
                 <option type="string" name="frameStart" value="{0}"/>
@@ -836,7 +836,7 @@ class CameraAsset(GenericAsset):
                 <option type="float" name="alembicSteps" value="1.0"/>
             </row>
         </tab>
-        """
+        '''
         try:
             mc.loadPlugin('AbcImport.so', qt=1)
             alembicEnabled = True
@@ -875,7 +875,7 @@ class RigAsset(GenericAsset):
 
     @staticmethod
     def exportOptions():
-        xml = """
+        xml = '''
         <tab name="Options">
             <row name="Preserve references" accepts="maya">
                 <option type="checkbox" name="mayaPreserveref" value="True"/>
@@ -905,7 +905,7 @@ class RigAsset(GenericAsset):
                 </option>
             </row>
         </tab>
-        """
+        '''
         return xml
 
 
@@ -922,7 +922,7 @@ class SceneAsset(GenericAsset):
 
     @staticmethod
     def importOptions():
-        xml = """
+        xml = '''
         <tab name="Options">
             <row name="Import mode" accepts="maya">
                 <option type="radio" name="importMode">
@@ -937,12 +937,12 @@ class SceneAsset(GenericAsset):
                 <option type="string" name="nameSpaceStr" value=""/>
             </row>
         </tab>
-        """
+        '''
         return xml
 
     @staticmethod
     def exportOptions():
-        xml = """
+        xml = '''
         <tab name="Options">
             <row name="Preserve references" accepts="maya">
                 <option type="checkbox" name="mayaPreserveref" value="True"/>
@@ -968,7 +968,7 @@ class SceneAsset(GenericAsset):
                 </option>
             </row>
         </tab>
-        """
+        '''
         return xml
 
 
@@ -998,7 +998,7 @@ class LightRigAsset(GenericAsset):
 
     @staticmethod
     def exportOptions():
-        xml = """
+        xml = '''
         <tab name="Options">
             <row name="Preserve references" accepts="maya">
                 <option type="checkbox" name="mayaPreserveref"/>
@@ -1028,7 +1028,7 @@ class LightRigAsset(GenericAsset):
                 </option>
             </row>
         </tab>
-        """
+        '''
         return xml
 
 
