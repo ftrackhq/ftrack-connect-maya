@@ -100,14 +100,16 @@ def nodeInitializer():
 
 
 def initializePlugin(mobject):
-    print "Loading ftrack plugin - version %s" % version
+    print "Loading ftrack plugin - version {0}".format(version)
     mplugin = OpenMayaMPx.MFnPlugin(mobject, "ftrack", version, "Any")
     try:
         mplugin.registerNode(
             kPluginNodeTypeName, kPluginNodeId, nodeCreator, nodeInitializer
         )
     except:
-        sys.stderr.write("Failed to register node: %s" % kPluginNodeTypeName)
+        sys.stderr.write("Failed to register node: {0}".format(
+            kPluginNodeTypeName
+        ))
         raise
 
 
@@ -116,5 +118,7 @@ def uninitializePlugin(mobject):
     try:
         mplugin.deregisterNode(kPluginNodeId)
     except:
-        sys.stderr.write("Failed to deregister node: %s" % kPluginNodeTypeName)
+        sys.stderr.write("Failed to deregister node: {0}".format(
+            kPluginNodeTypeName
+        ))
         raise

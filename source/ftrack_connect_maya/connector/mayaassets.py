@@ -36,7 +36,7 @@ class GenericAsset(FTAssetType):
             except:
                 return 'Failed to load alembic plugin'
 
-            self.old_data = set(mc.ls())
+            self.oldData = set(mc.ls())
 
             mc.createNode('transform', n=iAObj.assetName)
             mc.AbcImport(
@@ -45,7 +45,7 @@ class GenericAsset(FTAssetType):
                 reparent=iAObj.assetName
             )
 
-            self.new_data = set(mc.ls())
+            self.newData = set(mc.ls())
 
             self.linkToFtrackNode(iAObj)
         else:
@@ -106,7 +106,7 @@ class GenericAsset(FTAssetType):
             if not iAObj.options.get('mayaNamespace'):
                 nameSpaceStr = ':'
 
-            self.old_data = set(mc.ls())
+            self.oldData = set(mc.ls())
 
             nodes = mc.file(
                 iAObj.filePath,
@@ -125,7 +125,7 @@ class GenericAsset(FTAssetType):
                 options='v=0'
             )
 
-            self.new_data = set(mc.ls())
+            self.newData = set(mc.ls())
 
             # Find the actual groupName
             if iAObj.componentName in ['audio']:
@@ -315,7 +315,7 @@ class GenericAsset(FTAssetType):
 
         ftNode = mc.createNode('ftrackAssetNode', name=ftNodeName)
 
-        diff = self.new_data.difference(self.old_data)
+        diff = self.newData.difference(self.oldData)
         if not diff:
             print 'no diff found in scene'
             return
@@ -567,7 +567,7 @@ class CameraAsset(GenericAsset):
                     iAObj.assetName, allDescendents=True, type='camera'
                 )
             else:
-                diff = list(self.new_data.difference(self.old_data))
+                diff = list(self.newData.difference(self.oldData))
                 cameras = mc.ls(diff, type='camera')
             for cam in cameras:
                 mc.setAttr('{0}.renderable'.format(cam), True)

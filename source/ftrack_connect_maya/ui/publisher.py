@@ -191,20 +191,20 @@ class PublishAssetDialog(QtGui.QDialog):
             self.exportOptionsWidget.setProgress(100)
 
         # Update status of task.
-        ft_task = ftrack.Task(id=taskId)
+        ftTask = ftrack.Task(id=taskId)
         if (
-            ft_task and
-            ft_task.get('object_typeid') == '11c137c0-ee7e-4f9c-91c5-8c77cec22b2c'
+            ftTask and
+            ftTask.get('object_typeid') == '11c137c0-ee7e-4f9c-91c5-8c77cec22b2c'
         ):
             for taskStatus in ftrack.getTaskStatuses():
                 if (
                     taskStatus.getName() == status and
-                    taskStatus.get('statusid') != ft_task.get('statusid')
+                    taskStatus.get('statusid') != ftTask.get('statusid')
                 ):
                     try:
-                        ft_task.setStatus(taskStatus)
+                        ftTask.setStatus(taskStatus)
                     except Exception, error:
-                        print 'warning: %s ' % error
+                        print 'warning: {0}'.format(error)
 
                     break
 

@@ -22,8 +22,8 @@ class DockedWidget(object):
 
     # Attach QT Gui to application
     def show(self):
-        has_name = hasattr(self.qtObject, 'dockControlName')
-        if has_name:
+        hasName = hasattr(self.qtObject, 'dockControlName')
+        if hasName:
             name = self.qtObject.dockControlName
             mc.dockControl(name, e=True, r=True)
             if not mc.dockControl(
