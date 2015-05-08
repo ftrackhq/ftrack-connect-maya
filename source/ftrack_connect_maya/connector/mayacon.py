@@ -74,12 +74,14 @@ class Connector(maincon.Connector):
             if not mc.referenceQuery(ftrackobj, isNodeReferenced=True):
                 assetcomponentid = mc.getAttr(ftrackobj + '.assetComponentId')
                 nameInScene = mc.listConnections(
-                    ftrackobj + '.assetLink',
+                    '{0}.assetLink'.format(ftrackobj),
                     type='transform'
                 )
                 if not nameInScene:
                     mc.warning(
-                        'AssetLink broken for assetNode ' + str(ftrackobj)
+                        'AssetLink broken for assetNode {0}'.format(
+                            str(ftrackobj)
+                        )
                     )
                     continue
                 else:
@@ -164,11 +166,11 @@ class Connector(maincon.Connector):
     @staticmethod
     def removeObject(applicationObject=''):
         ftrackNode = mc.listConnections(
-            applicationObject + '.ftrack', d=False, s=True
+            '{0}.ftrack'.format(applicationObject), d=False, s=True
         )
         ftrackNode = ftrackNode[0]
         referenceNode = False
-        for node in mc.listConnections(ftrackNode + '.assetLink'):
+        for node in mc.listConnections('{0}.assetLink'.format(ftrackNode)):
             if mc.nodeType(node) == 'reference':
                 if 'sharedReferenceNode' in node:
                     continue
@@ -179,7 +181,7 @@ class Connector(maincon.Connector):
             if referenceNode:
                 mc.file(rfn=referenceNode, rr=True)
         else:
-            nodes = mc.listConnections(ftrackNode + '.assetLink')
+            nodes = mc.listConnections('{0}.assetLink'.format(ftrackNode))
             nodes.append(ftrackNode)
             mc.delete(nodes)
 
@@ -204,7 +206,7 @@ class Connector(maincon.Connector):
         selectedObjects = []
         for node in selection:
             try:
-                mc.listConnections(node + '.ftrack', d=False, s=True)
+                mc.listConnections('{0}.ftrack'.format(node), d=False, s=True)
                 selectedObjects.append(node)
             except:
                 transformParents = mc.listRelatives(
@@ -212,7 +214,9 @@ class Connector(maincon.Connector):
                 )
                 for parent in transformParents:
                     try:
-                        mc.listConnections(parent + '.ftrack', d=False, s=True)
+                        mc.listConnections(
+                            '{0}.ftrack'.format(parent), d=False, s=True
+                        )
                         selectedObjects.append(parent)
                         break
                     except:
