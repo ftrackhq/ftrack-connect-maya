@@ -216,7 +216,7 @@ class GenericAsset(FTAssetType):
         depepdendencies_version = []
         dependencies = mc.ls(type='ftrackAssetNode')
         for dependency in dependencies:
-            dependency_asset_id = mc.getAttr('%s.assetId' % dependency)
+            dependency_asset_id = mc.getAttr('{0}.assetId'.format(dependency))
             if dependency_asset_id:
                 dependency_version = ftrack.AssetVersion(dependency_asset_id)
                 depepdendencies_version.append(dependency_version)
@@ -283,28 +283,28 @@ class GenericAsset(FTAssetType):
 
     def updateftrackNode(self, iAObj, ftrackNode):
         mc.setAttr(
-            '%s.assetVersion' % ftrackNode,
+            '{0}.assetVersion'.format(ftrackNode),
             int(iAObj.assetVersion)
         )
         mc.setAttr(
-            '%s.assetId' % ftrackNode,
+            '{0}.assetId'.format(ftrackNode),
             iAObj.assetVersionId, type='string'
         )
         mc.setAttr(
-            '%s.assetPath' % ftrackNode,
+            '{0}.assetPath'.format(ftrackNode),
             iAObj.filePath, type='string'
         )
         mc.setAttr(
-            '%s.assetTake' % ftrackNode,
+            '{0}.assetTake'.format(ftrackNode),
             iAObj.componentName, type='string'
         )
         mc.setAttr(
-            '%s .assetComponentId' % ftrackNode,
+            '{0}.assetComponentId'.format(ftrackNode),
             iAObj.componentId, type='string'
         )
 
     def linkToFtrackNode(self, iAObj):
-        ftNodeName = '%s_ftrackdata' % iAObj.assetName
+        ftNodeName = '{0}_ftrackdata'.format(iAObj.assetName)
         count = 0
         while 1:
             if mc.objExists(ftNodeName):
@@ -333,13 +333,33 @@ class GenericAsset(FTAssetType):
             if not mc.listConnections(item + '.ftrack'):
                 mc.connectAttr(ftNode + '.assetLink', item + '.ftrack')
 
-        mc.setAttr('%s.assetVersion' % ftNode, int(iAObj.assetVersion))
-        mc.setAttr('%s.assetId' % ftNode, iAObj.assetVersionId, type='string')
-        mc.setAttr('%s.assetPath' % ftNode, iAObj.filePath, type='string')
-        mc.setAttr('%s.assetTake' % ftNode, iAObj.componentName, type='string')
-        mc.setAttr('%s.assetType' % ftNode, iAObj.assetType, type='string')
         mc.setAttr(
-            '%s.assetComponentId' % ftNode,
+            '{0}.assetVersion'.format(ftNode),
+            int(iAObj.assetVersion)
+        )
+
+        mc.setAttr(
+            '{0}.assetId'.format(ftNode),
+            iAObj.assetVersionId, type='string'
+        )
+
+        mc.setAttr(
+            '{0}.assetPath'.format(ftNode),
+            iAObj.filePath, type='string'
+        )
+
+        mc.setAttr(
+            '{0}.assetTake'.format(ftNode),
+            iAObj.componentName, type='string'
+        )
+
+        mc.setAttr(
+            '{0}.assetType'.format(ftNode),
+            iAObj.assetType, type='string'
+        )
+
+        mc.setAttr(
+            '{0}.assetComponentId'.format(ftNode),
             iAObj.componentId, type='string'
         )
 
@@ -439,7 +459,7 @@ class GeometryAsset(GenericAsset):
                 alembicJobArgs += '-writeVisibility '
 
             if iAObj.options.get('alembicAnimation'):
-                alembicJobArgs += '-frameRange %s %s -step %s ' % (
+                alembicJobArgs += '-frameRange {0} {1} -step {2} '.format(
                     iAObj.options['frameStart'],
                     iAObj.options['frameEnd'],
                     iAObj.options['alembicEval']
@@ -550,7 +570,7 @@ class CameraAsset(GenericAsset):
                 diff = list(self.new_data.difference(self.old_data))
                 cameras = mc.ls(diff, type='camera')
             for cam in cameras:
-                mc.setAttr(cam + '.renderable', True)
+                mc.setAttr('{0}.renderable'.format(cam), True)
 
         return result
 
@@ -629,26 +649,62 @@ class CameraAsset(GenericAsset):
 
         if iAObj.options['cameraLock']:
             # Get original lock values so we can revert after exporting
-            origCamLocktx = mc.getAttr(cameraTransform + '.tx', l=True)
-            origCamLockty = mc.getAttr(cameraTransform + '.ty', l=True)
-            origCamLocktz = mc.getAttr(cameraTransform + '.tz', l=True)
-            origCamLockrx = mc.getAttr(cameraTransform + '.rx', l=True)
-            origCamLockry = mc.getAttr(cameraTransform + '.ry', l=True)
-            origCamLockrz = mc.getAttr(cameraTransform + '.rz', l=True)
-            origCamLocksx = mc.getAttr(cameraTransform + '.sx', l=True)
-            origCamLocksy = mc.getAttr(cameraTransform + '.sy', l=True)
-            origCamLocksz = mc.getAttr(cameraTransform + '.sz', l=True)
+            origCamLocktx = mc.getAttr(
+                '{0}.tx'.format(cameraTransform), l=True
+            )
+            origCamLockty = mc.getAttr(
+                '{0}.ty'.format(cameraTransform), l=True
+            )
+            origCamLocktz = mc.getAttr(
+                '{0}.tz'.format(cameraTransform), l=True
+            )
+            origCamLockrx = mc.getAttr(
+                '{0}.rx'.format(cameraTransform), l=True
+            )
+            origCamLockry = mc.getAttr(
+                '{0}.ry'.format(cameraTransform), l=True
+            )
+            origCamLockrz = mc.getAttr(
+                '{0}.rz'.format(cameraTransform), l=True
+            )
+            origCamLocksx = mc.getAttr(
+                '{0}.sx'.format(cameraTransform), l=True
+            )
+            origCamLocksy = mc.getAttr(
+                '{0}.sy'.format(cameraTransform), l=True
+            )
+            origCamLocksz = mc.getAttr(
+                '{0}.sz'.format(cameraTransform), l=True
+            )
 
             # Lock transform
-            mc.setAttr(cameraTransform + '.tx', l=True)
-            mc.setAttr(cameraTransform + '.ty', l=True)
-            mc.setAttr(cameraTransform + '.tz', l=True)
-            mc.setAttr(cameraTransform + '.rx', l=True)
-            mc.setAttr(cameraTransform + '.ry', l=True)
-            mc.setAttr(cameraTransform + '.rz', l=True)
-            mc.setAttr(cameraTransform + '.sx', l=True)
-            mc.setAttr(cameraTransform + '.sy', l=True)
-            mc.setAttr(cameraTransform + '.sz', l=True)
+            mc.setAttr(
+                '{0}.tx'.format(cameraTransform), l=True
+            )
+            mc.setAttr(
+                '{0}.ty'.format(cameraTransform), l=True
+            )
+            mc.setAttr(
+                '{0}.tz'.format(cameraTransform), l=True
+            )
+            mc.setAttr(
+                '{0}.rx'.format(cameraTransform), l=True
+            )
+            mc.setAttr(
+                '{0}.ry'.format(cameraTransform), l=True
+            )
+            mc.setAttr(
+                '{0}.rz'.format(cameraTransform), l=True
+            )
+            mc.setAttr(
+                '{0}.sx'.format(cameraTransform), l=True
+            )
+            mc.setAttr(
+                '{0}.sy'.format(cameraTransform), l=True
+            )
+            mc.setAttr(
+                '{0}.sz'.format(cameraTransform), l=True
+            )
 
         if iAObj.options['cameraMaya']:
             iAObj.setTotalSteps = False
@@ -666,7 +722,7 @@ class CameraAsset(GenericAsset):
             )
 
             alembicJobArgs = ''
-            alembicJobArgs += '-fr %s %s' % (
+            alembicJobArgs += '-fr {0} {1}'.format(
                 iAObj.options['frameStart'],
                 iAObj.options['frameEnd']
             )
@@ -683,15 +739,15 @@ class CameraAsset(GenericAsset):
 
         if iAObj.options['cameraLock']:
             # Revert camera locks to original
-            mc.setAttr(cameraTransform + '.tx', l=origCamLocktx)
-            mc.setAttr(cameraTransform + '.ty', l=origCamLockty)
-            mc.setAttr(cameraTransform + '.tz', l=origCamLocktz)
-            mc.setAttr(cameraTransform + '.rx', l=origCamLockrx)
-            mc.setAttr(cameraTransform + '.ry', l=origCamLockry)
-            mc.setAttr(cameraTransform + '.rz', l=origCamLockrz)
-            mc.setAttr(cameraTransform + '.sx', l=origCamLocksx)
-            mc.setAttr(cameraTransform + '.sy', l=origCamLocksy)
-            mc.setAttr(cameraTransform + '.sz', l=origCamLocksz)
+            mc.setAttr('{0}.tx'.format(cameraTransform), l=origCamLocktx)
+            mc.setAttr('{0}.ty'.format(cameraTransform), l=origCamLockty)
+            mc.setAttr('{0}.tz'.format(cameraTransform), l=origCamLocktz)
+            mc.setAttr('{0}.rx'.format(cameraTransform), l=origCamLockrx)
+            mc.setAttr('{0}.ry'.format(cameraTransform), l=origCamLockry)
+            mc.setAttr('{0}.rz'.format(cameraTransform), l=origCamLockrz)
+            mc.setAttr('{0}.sx'.format(cameraTransform), l=origCamLocksx)
+            mc.setAttr('{0}.sy'.format(cameraTransform), l=origCamLocksy)
+            mc.setAttr('{0}.sz'.format(cameraTransform), l=origCamLocksz)
 
         if iAObj.options['cameraBake']:
             mc.delete(cameraTransform)
