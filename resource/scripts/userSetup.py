@@ -40,6 +40,7 @@ connector = Connector()
 
 
 def loadAndInit():
+    '''Load and Init the maya plugin, build the widgets and set the menu'''
     # Load the ftrack maya plugin
     mc.loadPlugin('ftrackMayaPlugin.py', quiet=True)
     # Create new maya connector and register the assets
@@ -74,6 +75,7 @@ def loadAndInit():
 
 
 def checkForNewAssets():
+    '''Check whether there is any new asset'''
     allObjects = mc.ls(type='ftrackAssetNode')
     message = ''
     for ftNode in allObjects:
@@ -113,12 +115,14 @@ def checkForNewAssets():
 
 
 def refAssetManager():
+    '''Refresh asset manager'''
     from ftrack_connect.connector import panelcom
     panelComInstance = panelcom.PanelComInstance.instance()
     panelComInstance.refreshListeners()
 
 
-def framerate_init():
+def framerateInit():
+    '''Set the initial framerate with the values set on the shot'''
     import ftrack
     shotId = os.getenv('FTRACK_SHOTID')
     shot = ftrack.Shot(id=shotId)
@@ -139,7 +143,8 @@ def framerate_init():
     mc.currentUnit(time=fpsType)
 
 
-def timeline_init():
+def timelineInit():
+    '''Init the timeline with the values set on the shot'''
     import ftrack
     startFrame = float(os.getenv('FS', 1001))
     endFrame = float(os.getenv('FE', 1101))
@@ -165,8 +170,8 @@ if not Connector.batch():
     mc.scriptJob(e=["SceneOpened", "checkForNewAssets()"], permanent=True)
     mc.scriptJob(e=["SceneOpened", "refAssetManager()"], permanent=True)
     mc.evalDeferred("loadAndInit()")
-    mc.evalDeferred("framerate_init()")
-    mc.evalDeferred("timeline_init()")
+    mc.evalDeferred("framerateInit()")
+    mc.evalDeferred("timelineInit()")
 
 
 logging.getLogger().setLevel(logging.INFO)

@@ -20,8 +20,8 @@ class DockedWidget(object):
         self.dockAllowedAreas = ['all']
         self.gotRefresh = None
 
-    # Attach QT Gui to application
     def show(self):
+        '''Show the current widget, return the widget itself'''
         hasName = hasattr(self.qtObject, 'dockControlName')
         if hasName:
             name = self.qtObject.dockControlName
@@ -43,9 +43,11 @@ class DockedWidget(object):
         return self.qtObject
 
     def getWindow(self):
+        '''Return the widget'''
         return self.qtObject
 
     def createDockLayout(self):
+        '''Create a layout for Docked widgets'''
         gMainWindow = mm.eval('$temp1=$gMainWindow')
         columnLay = mc.paneLayout(parent=gMainWindow, width=200)
         dockControl = mc.dockControl(
@@ -66,6 +68,7 @@ class Connector(maincon.Connector):
 
     @staticmethod
     def getAssets():
+        '''Return the available assets in scene, return the *componentId(s)*'''
         allObjects = mc.ls(type='ftrackAssetNode')
 
         componentIds = []
@@ -92,10 +95,12 @@ class Connector(maincon.Connector):
 
     @staticmethod
     def getFileName():
+        '''Return the *current scene* name'''
         return mc.file(query=1, sceneName=True)
 
     @staticmethod
     def getMainWindow():
+        '''Return the *main window* instance'''
         ptr = mui.MQtUtil.mainWindow()
         if ptr is not None:
             import shiboken
@@ -104,9 +109,6 @@ class Connector(maincon.Connector):
 
     @staticmethod
     def wrapinstance(ptr, base=None):
-        import shiboken
-        from PySide import QtGui, QtCore
-
         """
         Utility to convert a pointer to a Qt class instance (PySide/PyQt compatible)
 
@@ -117,6 +119,9 @@ class Connector(maincon.Connector):
         :return: QWidget or subclass instance
         :rtype: QtGui.QWidget
         """
+        import shiboken
+        from PySide import QtGui, QtCore
+
         if ptr is None:
             return None
         ptr = long(ptr)  # Ensure type
@@ -138,6 +143,7 @@ class Connector(maincon.Connector):
 
     @staticmethod
     def importAsset(iAObj):
+        '''Import the asset provided by *iAObj*'''
         iAObj.assetName = "_".join(
             [iAObj.assetType.upper(), iAObj.assetName, "AST"]
         )
@@ -157,14 +163,17 @@ class Connector(maincon.Connector):
 
     @staticmethod
     def selectObject(applicationObject=''):
+        '''Select the *applicationObject*'''
         mc.select(applicationObject, r=True)
 
     @staticmethod
     def selectObjects(selection):
+        '''Select the given *selection*'''
         mc.select(selection)
 
     @staticmethod
     def removeObject(applicationObject=''):
+        '''Remove the *applicationObject* from the scene'''
         ftrackNode = mc.listConnections(
             '{0}.ftrack'.format(applicationObject), d=False, s=True
         )
@@ -187,6 +196,7 @@ class Connector(maincon.Connector):
 
     @staticmethod
     def changeVersion(applicationObject=None, iAObj=None):
+        '''Change version of *iAObj* for the given *applicationObject*'''
         assetHandler = FTAssetHandlerInstance.instance()
         changeAsset = assetHandler.getAssetClass(iAObj.assetType)
         if changeAsset:
@@ -198,10 +208,12 @@ class Connector(maincon.Connector):
 
     @staticmethod
     def getSelectedObjects():
+        '''Return the selected nodes'''
         return mc.ls(selection=True)
 
     @staticmethod
     def getSelectedAssets():
+        '''Return the selected assets'''
         selection = mc.ls(selection=True)
         selectedObjects = []
         for node in selection:
@@ -226,10 +238,12 @@ class Connector(maincon.Connector):
 
     @staticmethod
     def setNodeColor(applicationObject='', latest=True):
+        '''Set the node color'''
         pass
 
     @staticmethod
     def publishAsset(iAObj=None):
+        '''Publish the asset provided by *iAObj*'''
         assetHandler = FTAssetHandlerInstance.instance()
         pubAsset = assetHandler.getAssetClass(iAObj.assetType)
         if pubAsset:
@@ -240,10 +254,12 @@ class Connector(maincon.Connector):
 
     @staticmethod
     def getConnectorName():
+        '''Return the connector name'''
         return 'maya'
 
     @staticmethod
     def getUniqueSceneName(assetName):
+        '''Return a unique scene name for the given *assetName*'''
         currentSelection = mc.ls(sl=True)
         try:
             mc.select(assetName)
@@ -265,6 +281,7 @@ class Connector(maincon.Connector):
 
     @staticmethod
     def getReferenceNode(assetLink):
+        '''Return the references nodes for the given *assetLink*'''
         res = ''
         try:
             res = mc.referenceQuery(assetLink, referenceNode=True)
@@ -289,6 +306,7 @@ class Connector(maincon.Connector):
 
     @staticmethod
     def takeScreenshot():
+        '''Take a screenshot and save it in the temp folder'''
         import tempfile
         nodes = mc.ls(sl=True)
         mc.select(cl=True)
@@ -333,22 +351,27 @@ class Connector(maincon.Connector):
 
     @staticmethod
     def batch():
+        '''Return whether the application is in *batch mode* or not'''
         return mc.about(batch=True)
 
     @classmethod
     def registerAssets(cls):
+        '''Register all the available assets'''
         import mayaassets
         mayaassets.registerAssetTypes()
         super(Connector, cls).registerAssets()
 
     @staticmethod
     def executeInThread(function, arg):
+        '''Execute the given *function* with provided *args* in a separate thread
+        '''
         import maya.utils
         maya.utils.executeInMainThreadWithResult(function, arg)
 
     # Make certain scene validations before actualy publishing
     @classmethod
     def prePublish(cls, iAObj):
+        '''Pre Publish check for given *iAObj*'''
         result, message = super(Connector, cls).prePublish(iAObj)
         if not result:
             return result, message
