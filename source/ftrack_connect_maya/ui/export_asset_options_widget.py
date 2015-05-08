@@ -7,8 +7,6 @@ from PySide import QtCore, QtGui
 import ftrack
 import getpass
 
-import maya.cmds as cmds
-
 from ftrack_connect.connector import FTAssetHandlerInstance
 
 log = logging.getLogger(__file__)
@@ -181,7 +179,9 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
             try:
                 assetType = ftrack.AssetType(assetTypeStr)
             except:
-                log.warning(assetTypeStr + ' not available in ftrack')
+                log.warning(
+                    '{0} not available in ftrack'.format(assetTypeStr)
+                )
                 continue
             assetTypeItem = QtGui.QStandardItem(assetType.getName())
             assetTypeItem.type = assetType.getShort()
@@ -327,7 +327,7 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
             taskParents = self.currentTask.getParents()
 
             for parent in taskParents:
-                shotpath = parent.getName() + '.' + shotpath
+                shotpath = '{0}.{1}'.format(parent.getName(), shotpath)
 
             self.ui.AssetTaskComboBox.clear()
             tasks = self.currentTask.getTasks()
