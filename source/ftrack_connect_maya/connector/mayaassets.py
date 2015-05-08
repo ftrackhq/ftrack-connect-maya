@@ -19,7 +19,7 @@ currentStartFrame = mc.playbackOptions(min=True, q=True)
 currentEndFrame = mc.playbackOptions(max=True, q=True)
 
 
-if mayacon.Connector.batch() == False:
+if mayacon.Connector.batch() is False:
     from ftrack_connect.connector import panelcom
 
 
@@ -92,7 +92,7 @@ class GenericAsset(FTAssetType):
                     defaultButton='No',
                     cancelButton='No',
                     dismissString='No')
-                if confirmDialog == "Yes":
+                if confirmDialog == 'Yes':
                     mc.file(new=True, force=True)
                 else:
                     return 'Canceled Import'
@@ -116,13 +116,13 @@ class GenericAsset(FTAssetType):
                 groupLocator=False,
                 groupReference=groupReferenceBool,
                 groupName=iAObj.assetName,
-                loadReferenceDepth="all",
-                sharedNodes="renderLayersByName",
+                loadReferenceDepth='all',
+                sharedNodes='renderLayersByName',
                 preserveReferences=preserveReferences,
                 mergeNamespacesOnClash=True,
                 namespace=nameSpaceStr,
                 returnNewNodes=True,
-                options="v=0"
+                options='v=0'
             )
 
             self.new_data = set(mc.ls())
@@ -200,8 +200,8 @@ class GenericAsset(FTAssetType):
 
         mc.file(
             temporaryPath,
-            op="v=0",
-            typ="mayaBinary",
+            op='v=0',
+            typ='mayaBinary',
             preserveReferences=preserveReferences,
             constructionHistory=constructionHistory,
             channels=channels,
@@ -216,7 +216,7 @@ class GenericAsset(FTAssetType):
         depepdendencies_version = []
         dependencies = mc.ls(type='ftrackAssetNode')
         for dependency in dependencies:
-            dependency_asset_id = mc.getAttr("%s.assetId" % dependency)
+            dependency_asset_id = mc.getAttr('%s.assetId' % dependency)
             if dependency_asset_id:
                 dependency_version = ftrack.AssetVersion(dependency_asset_id)
                 depepdendencies_version.append(dependency_version)
@@ -252,13 +252,13 @@ class GenericAsset(FTAssetType):
             iAObj.assetName = '_'.join([
                 iAObj.assetType.upper(),
                 iAObj.assetName,
-                "AST"]
+                'AST']
             )
 
         # assetLinkNode = mc.listConnections(ftrackNode + '.assetLink')[0]
 
         referenceNode = False
-        for node in mc.listConnections(ftrackNode+'.assetLink'):
+        for node in mc.listConnections(ftrackNode + '.assetLink'):
             if mc.nodeType(node) == 'reference':
                 if 'sharedReferenceNode' in node:
                     continue
@@ -283,28 +283,28 @@ class GenericAsset(FTAssetType):
 
     def updateftrackNode(self, iAObj, ftrackNode):
         mc.setAttr(
-           "%s.assetVersion" % ftrackNode,
-           int(iAObj.assetVersion)
+            '%s.assetVersion' % ftrackNode,
+            int(iAObj.assetVersion)
         )
         mc.setAttr(
-            "%s.assetId" % ftrackNode,
-            iAObj.assetVersionId, type="string"
+            '%s.assetId' % ftrackNode,
+            iAObj.assetVersionId, type='string'
         )
         mc.setAttr(
-            "%s.assetPath" % ftrackNode,
-            iAObj.filePath, type="string"
+            '%s.assetPath' % ftrackNode,
+            iAObj.filePath, type='string'
         )
         mc.setAttr(
-            "%s.assetTake" % ftrackNode,
-            iAObj.componentName, type="string"
+            '%s.assetTake' % ftrackNode,
+            iAObj.componentName, type='string'
         )
         mc.setAttr(
-            "%s .assetComponentId" % ftrackNode,
-            iAObj.componentId, type="string"
+            '%s .assetComponentId' % ftrackNode,
+            iAObj.componentId, type='string'
         )
 
     def linkToFtrackNode(self, iAObj):
-        ftNodeName = "%s_ftrackdata" % iAObj.assetName
+        ftNodeName = '%s_ftrackdata' % iAObj.assetName
         count = 0
         while 1:
             if mc.objExists(ftNodeName):
@@ -313,7 +313,7 @@ class GenericAsset(FTAssetType):
             else:
                 break
 
-        ftNode = mc.createNode("ftrackAssetNode", name=ftNodeName)
+        ftNode = mc.createNode('ftrackAssetNode', name=ftNodeName)
 
         diff = self.new_data.difference(self.old_data)
         if not diff:
@@ -326,19 +326,22 @@ class GenericAsset(FTAssetType):
 
             if not mc.attributeQuery('ftrack', n=item, exists=True):
                 try:
-                    mc.addAttr(item, ln="ftrack", sn="ft", at="message")
+                    mc.addAttr(item, ln='ftrack', sn='ft', at='message')
                 except:
-                    mc.addAttr(item, ln="ftrack", at="message")
+                    mc.addAttr(item, ln='ftrack', at='message')
 
-            if not mc.listConnections(item + ".ftrack"):
-                mc.connectAttr(ftNode + ".assetLink", item + ".ftrack")
+            if not mc.listConnections(item + '.ftrack'):
+                mc.connectAttr(ftNode + '.assetLink', item + '.ftrack')
 
-        mc.setAttr("%s.assetVersion" % ftNode, int(iAObj.assetVersion))
-        mc.setAttr("%s.assetId" % ftNode, iAObj.assetVersionId, type="string")
-        mc.setAttr("%s.assetPath" % ftNode, iAObj.filePath, type="string")
-        mc.setAttr("%s.assetTake" % ftNode, iAObj.componentName, type="string")
-        mc.setAttr("%s.assetType" % ftNode, iAObj.assetType, type="string")
-        mc.setAttr("%s.assetComponentId" % ftNode, iAObj.componentId, type="string")
+        mc.setAttr('%s.assetVersion' % ftNode, int(iAObj.assetVersion))
+        mc.setAttr('%s.assetId' % ftNode, iAObj.assetVersionId, type='string')
+        mc.setAttr('%s.assetPath' % ftNode, iAObj.filePath, type='string')
+        mc.setAttr('%s.assetTake' % ftNode, iAObj.componentName, type='string')
+        mc.setAttr('%s.assetType' % ftNode, iAObj.assetType, type='string')
+        mc.setAttr(
+            '%s.assetComponentId' % ftNode,
+            iAObj.componentId, type='string'
+        )
 
 
 class AudioAsset(GenericAsset):
@@ -399,7 +402,9 @@ class GeometryAsset(GenericAsset):
 
         if iAObj.options['mayaPublishScene']:
             iAObjCopy = self.getSceneSettingsObj(iAObj)
-            sceneComponents, message = GenericAsset.publishAsset(self, iAObjCopy)
+            sceneComponents, message = GenericAsset.publishAsset(
+                self, iAObjCopy
+            )
             publishedComponents += sceneComponents
 
         if iAObj.options.get('alembic'):
@@ -545,7 +550,7 @@ class CameraAsset(GenericAsset):
                 diff = list(self.new_data.difference(self.old_data))
                 cameras = mc.ls(diff, type='camera')
             for cam in cameras:
-                mc.setAttr(cam + ".renderable", True)
+                mc.setAttr(cam + '.renderable', True)
 
         return result
 
@@ -615,8 +620,8 @@ class CameraAsset(GenericAsset):
                     float(iAObj.options['frameEnd'])
                 ),
                 sb=1,
-                at=["tx", "ty", "tz", "rx", "ry", "rz"],
-                hi="below")
+                at=['tx', 'ty', 'tz', 'rx', 'ry', 'rz'],
+                hi='below')
 
             mc.delete(pConstraint)
             cameraTransform = tmpCam
@@ -624,26 +629,26 @@ class CameraAsset(GenericAsset):
 
         if iAObj.options['cameraLock']:
             # Get original lock values so we can revert after exporting
-            origCamLocktx = mc.getAttr(cameraTransform + ".tx", l=True)
-            origCamLockty = mc.getAttr(cameraTransform + ".ty", l=True)
-            origCamLocktz = mc.getAttr(cameraTransform + ".tz", l=True)
-            origCamLockrx = mc.getAttr(cameraTransform + ".rx", l=True)
-            origCamLockry = mc.getAttr(cameraTransform + ".ry", l=True)
-            origCamLockrz = mc.getAttr(cameraTransform + ".rz", l=True)
-            origCamLocksx = mc.getAttr(cameraTransform + ".sx", l=True)
-            origCamLocksy = mc.getAttr(cameraTransform + ".sy", l=True)
-            origCamLocksz = mc.getAttr(cameraTransform + ".sz", l=True)
+            origCamLocktx = mc.getAttr(cameraTransform + '.tx', l=True)
+            origCamLockty = mc.getAttr(cameraTransform + '.ty', l=True)
+            origCamLocktz = mc.getAttr(cameraTransform + '.tz', l=True)
+            origCamLockrx = mc.getAttr(cameraTransform + '.rx', l=True)
+            origCamLockry = mc.getAttr(cameraTransform + '.ry', l=True)
+            origCamLockrz = mc.getAttr(cameraTransform + '.rz', l=True)
+            origCamLocksx = mc.getAttr(cameraTransform + '.sx', l=True)
+            origCamLocksy = mc.getAttr(cameraTransform + '.sy', l=True)
+            origCamLocksz = mc.getAttr(cameraTransform + '.sz', l=True)
 
             # Lock transform
-            mc.setAttr(cameraTransform + ".tx", l=True)
-            mc.setAttr(cameraTransform + ".ty", l=True)
-            mc.setAttr(cameraTransform + ".tz", l=True)
-            mc.setAttr(cameraTransform + ".rx", l=True)
-            mc.setAttr(cameraTransform + ".ry", l=True)
-            mc.setAttr(cameraTransform + ".rz", l=True)
-            mc.setAttr(cameraTransform + ".sx", l=True)
-            mc.setAttr(cameraTransform + ".sy", l=True)
-            mc.setAttr(cameraTransform + ".sz", l=True)
+            mc.setAttr(cameraTransform + '.tx', l=True)
+            mc.setAttr(cameraTransform + '.ty', l=True)
+            mc.setAttr(cameraTransform + '.tz', l=True)
+            mc.setAttr(cameraTransform + '.rx', l=True)
+            mc.setAttr(cameraTransform + '.ry', l=True)
+            mc.setAttr(cameraTransform + '.rz', l=True)
+            mc.setAttr(cameraTransform + '.sx', l=True)
+            mc.setAttr(cameraTransform + '.sy', l=True)
+            mc.setAttr(cameraTransform + '.sz', l=True)
 
         if iAObj.options['cameraMaya']:
             iAObj.setTotalSteps = False
@@ -656,8 +661,9 @@ class CameraAsset(GenericAsset):
             publishedComponents.append(
                 FTComponent(
                     componentname='alembic',
-                    path=temporaryPath)
+                    path=temporaryPath
                 )
+            )
 
             alembicJobArgs = ''
             alembicJobArgs += '-fr %s %s' % (
@@ -677,15 +683,15 @@ class CameraAsset(GenericAsset):
 
         if iAObj.options['cameraLock']:
             # Revert camera locks to original
-            mc.setAttr(cameraTransform + ".tx", l=origCamLocktx)
-            mc.setAttr(cameraTransform + ".ty", l=origCamLockty)
-            mc.setAttr(cameraTransform + ".tz", l=origCamLocktz)
-            mc.setAttr(cameraTransform + ".rx", l=origCamLockrx)
-            mc.setAttr(cameraTransform + ".ry", l=origCamLockry)
-            mc.setAttr(cameraTransform + ".rz", l=origCamLockrz)
-            mc.setAttr(cameraTransform + ".sx", l=origCamLocksx)
-            mc.setAttr(cameraTransform + ".sy", l=origCamLocksy)
-            mc.setAttr(cameraTransform + ".sz", l=origCamLocksz)
+            mc.setAttr(cameraTransform + '.tx', l=origCamLocktx)
+            mc.setAttr(cameraTransform + '.ty', l=origCamLockty)
+            mc.setAttr(cameraTransform + '.tz', l=origCamLocktz)
+            mc.setAttr(cameraTransform + '.rx', l=origCamLockrx)
+            mc.setAttr(cameraTransform + '.ry', l=origCamLockry)
+            mc.setAttr(cameraTransform + '.rz', l=origCamLockrz)
+            mc.setAttr(cameraTransform + '.sx', l=origCamLocksx)
+            mc.setAttr(cameraTransform + '.sy', l=origCamLocksy)
+            mc.setAttr(cameraTransform + '.sz', l=origCamLocksz)
 
         if iAObj.options['cameraBake']:
             mc.delete(cameraTransform)
@@ -695,7 +701,9 @@ class CameraAsset(GenericAsset):
 
         if iAObj.options['mayaPublishScene']:
             iAObjCopy = self.getSceneSettingsObj(iAObj)
-            sceneComponents, message = GenericAsset.publishAsset(self, iAObjCopy)
+            sceneComponents, message = GenericAsset.publishAsset(
+                self, iAObjCopy
+            )
             publishedComponents += sceneComponents
 
         return publishedComponents, pubMessage
@@ -802,7 +810,9 @@ class RigAsset(GenericAsset):
 
         if iAObj.options['mayaPublishScene']:
             iAObjCopy = self.getSceneSettingsObj(iAObj)
-            sceneComponents, message = GenericAsset.publishAsset(self, iAObjCopy)
+            sceneComponents, message = GenericAsset.publishAsset(
+                self, iAObjCopy
+            )
             publishedComponents += sceneComponents
 
         return publishedComponents, message
@@ -923,7 +933,9 @@ class LightRigAsset(GenericAsset):
 
         if iAObj.options['mayaPublishScene']:
             iAObjCopy = self.getSceneSettingsObj(iAObj)
-            sceneComponents, message = GenericAsset.publishAsset(self, iAObjCopy)
+            sceneComponents, message = GenericAsset.publishAsset(
+                self, iAObjCopy
+            )
             publishedComponents += sceneComponents
 
         return publishedComponents, message
