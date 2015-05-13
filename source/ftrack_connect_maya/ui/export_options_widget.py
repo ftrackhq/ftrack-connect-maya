@@ -2,7 +2,9 @@
 # :copyright: Copyright (c) 2015 ftrack
 
 import os
+
 from PySide import QtCore, QtGui
+
 import ftrack
 from ftrack_connect.ui.widget.stacked_options import StackedOptionsWidget
 from ftrack_connect import connector as ftrack_connector

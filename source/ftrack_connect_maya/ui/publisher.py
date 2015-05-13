@@ -5,8 +5,8 @@ import os
 import getpass
 
 from PySide import QtCore, QtGui
-import ftrack
 
+import ftrack
 from ftrack_connect import connector as ftrack_connector
 from ftrack_connect.ui.widget import header
 from ftrack_connect.ui.theme import applyTheme

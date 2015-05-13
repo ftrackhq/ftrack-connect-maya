@@ -3,7 +3,9 @@
 
 import os
 import copy
+
 import maya.cmds as mc
+
 import ftrack
 
 import mayacon
@@ -216,13 +218,13 @@ class GenericAsset(FTAssetType):
         depepdendencies_version = []
         dependencies = mc.ls(type='ftrackAssetNode')
         for dependency in dependencies:
-            dependency_asset_id = mc.getAttr('{0}.assetId'.format(dependency))
-            if dependency_asset_id:
-                dependency_version = ftrack.AssetVersion(dependency_asset_id)
+            dependencyAssetId = mc.getAttr('{0}.assetId'.format(dependency))
+            if dependencyAssetId:
+                dependency_version = ftrack.AssetVersion(dependencyAssetId)
                 depepdendencies_version.append(dependency_version)
 
-        current_version = ftrack.AssetVersion(iAObj.assetVersionId)
-        current_version.addUsesVersions(versions=depepdendencies_version)
+        currentVersion = ftrack.AssetVersion(iAObj.assetVersionId)
+        currentVersion.addUsesVersions(versions=depepdendencies_version)
 
         panelComInstance.emitPublishProgressStep()
 

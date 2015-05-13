@@ -3,11 +3,12 @@
 
 import os
 import uuid
-from ftrack_connect.connector import base as maincon
+
 import maya.cmds as mc
 import maya.OpenMayaUI as mui
 import maya.mel as mm
 
+from ftrack_connect.connector import base as maincon
 from ftrack_connect.connector import FTAssetHandlerInstance
 
 

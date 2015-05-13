@@ -2,11 +2,12 @@
 # :copyright: Copyright (c) 2015 ftrack
 
 import os
-import logging
-from PySide import QtCore, QtGui
-import ftrack
 import getpass
+import logging
 
+from PySide import QtCore, QtGui
+
+import ftrack
 from ftrack_connect.connector import FTAssetHandlerInstance
 
 log = logging.getLogger(__file__)
@@ -202,6 +203,7 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
             self.ui.assetTaskLabel.hide()
 
     def onAssetChanged(self, asset_name):
+        '''Hanldes the asset name logic on asset change'''
         if asset_name != 'New':
             self.ui.AssetNameLineEdit.setEnabled(False)
             self.ui.AssetNameLineEdit.setText(asset_name)

@@ -54,7 +54,7 @@ def loadAndInit():
     if mc.menu('ftrack', exists=True):
         mc.deleteUI('ftrack')
 
-    ftrack_menu = mc.menu(
+    ftrackMenu = mc.menu(
         'ftrack',
         parent=gMainWindow,
         tearOff=False,
@@ -67,7 +67,7 @@ def loadAndInit():
         ftrack_docked_dialog = DockedWidget(ftrack_dialog)
 
         mc.menuItem(
-            parent=ftrack_menu,
+            parent=ftrackMenu,
             label=ftrack_dialog.windowTitle().replace('ftrack', ''),
             command=lambda x, dialog=ftrack_docked_dialog: dialog.show(),
         )
