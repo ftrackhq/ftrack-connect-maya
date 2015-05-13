@@ -21,5 +21,6 @@ class FtrackMayaInfoDialog(FtrackInfoDialog):
         applyTheme(self, 'integration')
 
     def keyPressEvent(self, e):
+        '''Handle Esc key press event'''
         if not e.key() == QtCore.Qt.Key_Escape:
             super(FtrackMayaInfoDialog, self).keyPressEvent(e)

@@ -32,6 +32,7 @@ class GenericAsset(FTAssetType):
         self.referenceAssetBool = False
 
     def importAsset(self, iAObj=None):
+        '''Import asset defined in *iAObj*'''
         if iAObj.componentName == 'alembic':
             try:
                 mc.loadPlugin('AbcImport.so', qt=1)
@@ -143,6 +144,7 @@ class GenericAsset(FTAssetType):
         return 'Imported ' + iAObj.assetType + ' asset'
 
     def getGroupName(self, nodes, assetName):
+        '''Return the node among the *nodes* containing the given *assetName*.'''
         for node in nodes:
             splitnode = node.split('|')
             for n in splitnode:
@@ -151,6 +153,7 @@ class GenericAsset(FTAssetType):
         return assetName
 
     def publishAsset(self, iAObj=None):
+        '''Publish the asset defined by the provided *iAObj*.'''
         panelComInstance = panelcom.PanelComInstance.instance()
 
         if hasattr(iAObj, 'customComponentName'):
@@ -231,6 +234,7 @@ class GenericAsset(FTAssetType):
         return publishedComponents, 'Published ' + iAObj.assetType + ' asset'
 
     def getSceneSettingsObj(self, iAObj):
+        '''Return default settings for the provided *iAObj*.'''
         iAObjCopy = copy.copy(iAObj)
         iAObjCopy.options['mayaHistory'] = True
         iAObjCopy.options['mayaPreserveref'] = True
@@ -243,6 +247,9 @@ class GenericAsset(FTAssetType):
         return iAObjCopy
 
     def changeVersion(self, iAObj=None, applicationObject=None):
+        '''Change the version of the asset defined in *iAObj*
+        and *applicationObject*
+        '''
         ftrackNode = mc.listConnections(
             applicationObject + '.ftrack',
             d=False,
@@ -284,6 +291,7 @@ class GenericAsset(FTAssetType):
         return True
 
     def updateftrackNode(self, iAObj, ftrackNode):
+        '''Update informations in *ftrackNode* with the provided *iAObj*. '''
         mc.setAttr(
             '{0}.assetVersion'.format(ftrackNode),
             int(iAObj.assetVersion)
@@ -306,6 +314,7 @@ class GenericAsset(FTAssetType):
         )
 
     def linkToFtrackNode(self, iAObj):
+        '''Create ftrackNode and populate the connectino wiht the imported asset'''
         ftNodeName = '{0}_ftrackdata'.format(iAObj.assetName)
         count = 0
         while 1:
@@ -371,16 +380,21 @@ class AudioAsset(GenericAsset):
         super(AudioAsset, self).__init__()
 
     def changeVersion(self, iAObj=None, applicationObject=None):
+        '''Change the version of the asset defined in *iAObj*
+        and *applicationObject*
+        '''
         mc.delete(applicationObject)
         iAObj.assetName = applicationObject
         self.importAsset(iAObj)
         return True
 
     def publishAsset(self, iAObj=None):
+        '''Publish the asset defined by the provided *iAObj*.'''
         return None, 'Can only import audio not export'
 
     @staticmethod
     def importOptions():
+        '''Return import options for the component'''
         xml = """
         <tab name="Options">
             <row name="Import mode" accepts="maya">
@@ -398,6 +412,9 @@ class GeometryAsset(GenericAsset):
         super(GeometryAsset, self).__init__()
 
     def changeVersion(self, iAObj=None, applicationObject=None):
+        '''Change the version of the asset defined in *iAObj*
+        and *applicationObject*
+        '''
         if iAObj.componentName != 'alembic':
             return GenericAsset.changeVersion(self, iAObj, applicationObject)
         else:
@@ -405,6 +422,8 @@ class GeometryAsset(GenericAsset):
             return None
 
     def publishAsset(self, iAObj=None):
+        '''Publish the asset defined by the provided *iAObj*.'''
+
         publishedComponents = []
 
         totalSteps = self.getTotalSteps(
@@ -480,6 +499,8 @@ class GeometryAsset(GenericAsset):
 
     @staticmethod
     def exportOptions():
+        '''Return the options for exporting the component'''
+
         xml = """
         <tab name="Maya binary options" accepts="maya">
             <row name="Maya binary" accepts="maya">
@@ -562,6 +583,8 @@ class CameraAsset(GenericAsset):
         super(CameraAsset, self).__init__()
 
     def importAsset(self, iAObj=None):
+        '''Import asset defined in *iAObj*'''
+
         result = GenericAsset.importAsset(self, iAObj)
         if iAObj.options['cameraRenderableMaya']:
             if self.referenceAssetBool:
@@ -577,10 +600,14 @@ class CameraAsset(GenericAsset):
         return result
 
     def changeVersion(self, iAObj=None, applicationObject=None):
+        '''Change the version of the asset defined in *iAObj*
+        and *applicationObject*
+        '''
         result = GenericAsset.changeVersion(self, iAObj, applicationObject)
         return result
 
     def publishAsset(self, iAObj=None):
+        '''Publish the asset defined by the provided *iAObj*.'''
         pubMessage = 'Published cameraasset asset'
 
         # Only export selection when exporting camera
@@ -768,6 +795,7 @@ class CameraAsset(GenericAsset):
 
     @staticmethod
     def importOptions():
+        '''Return import options for the component'''
         xml = '''
         <tab name="Options">
             <row name="Set all cameras renderable" accepts="maya">
@@ -792,6 +820,7 @@ class CameraAsset(GenericAsset):
 
     @staticmethod
     def exportOptions():
+        '''Return the options for exporting the component'''
         xml = '''
         <tab name="Options">
             <row name="Frame range">
@@ -856,6 +885,8 @@ class RigAsset(GenericAsset):
         super(RigAsset, self).__init__()
 
     def publishAsset(self, iAObj=None):
+        '''Publish the asset defined by the provided *iAObj*.'''
+
         totalSteps = self.getTotalSteps(
             steps=[True, iAObj.options['mayaPublishScene']]
         )
@@ -877,6 +908,8 @@ class RigAsset(GenericAsset):
 
     @staticmethod
     def exportOptions():
+        '''Return the options for exporting the component'''
+
         xml = '''
         <tab name="Options">
             <row name="Preserve references" accepts="maya">
@@ -916,6 +949,7 @@ class SceneAsset(GenericAsset):
         super(SceneAsset, self).__init__()
 
     def publishAsset(self, iAObj=None):
+        '''Publish the asset defined by the provided *iAObj*.'''
         panelComInstance = panelcom.PanelComInstance.instance()
         panelComInstance.setTotalExportSteps(1)
         iAObj.customComponentName = 'mayaBinaryScene'
@@ -924,6 +958,8 @@ class SceneAsset(GenericAsset):
 
     @staticmethod
     def importOptions():
+        '''Return import options for the component'''
+
         xml = '''
         <tab name="Options">
             <row name="Import mode" accepts="maya">
@@ -944,6 +980,8 @@ class SceneAsset(GenericAsset):
 
     @staticmethod
     def exportOptions():
+        '''Return the options for exporting the component'''
+
         xml = '''
         <tab name="Options">
             <row name="Preserve references" accepts="maya">
@@ -979,6 +1017,8 @@ class LightRigAsset(GenericAsset):
         super(LightRigAsset, self).__init__()
 
     def publishAsset(self, iAObj=None):
+        '''Publish the asset defined by the provided *iAObj*.'''
+
         totalSteps = self.getTotalSteps(
             steps=[True, iAObj.options['mayaPublishScene']]
         )
@@ -1000,6 +1040,8 @@ class LightRigAsset(GenericAsset):
 
     @staticmethod
     def exportOptions():
+        '''Return the options for exporting the component'''
+
         xml = '''
         <tab name="Options">
             <row name="Preserve references" accepts="maya">

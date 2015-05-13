@@ -116,6 +116,7 @@ class PublishAssetDialog(QtGui.QDialog):
         self.browseTasksWidget.reset()
 
     def resetOptions(self):
+        '''Reset options'''
         self.exportOptionsWidget.resetOptions()
         self.exportAssetOptionsWidget.setAssetType(self.assetType)
         self.exportAssetOptionsWidget.setAssetName(self.assetName)
@@ -130,17 +131,21 @@ class PublishAssetDialog(QtGui.QDialog):
         )
 
     def setAssetType(self, assetType):
+        '''Set to the provided *assetType*'''
         self.exportAssetOptionsWidget.setAssetType(assetType)
         self.assetType = assetType
 
     def setAssetName(self, assetName):
+        '''Set to the provided *assetName*'''
         self.exportAssetOptionsWidget.setAssetName(assetName)
         self.assetName = assetName
 
     def setComment(self, comment):
+        '''Set the provided *comment*'''
         self.exportOptionsWidget.setComment(comment)
 
     def publishAsset(self):
+        '''Publish the asset'''
         task = self.exportAssetOptionsWidget.getTask()
         taskId = task.getId()
         shot = self.exportAssetOptionsWidget.getShot()
@@ -219,10 +224,12 @@ class PublishAssetDialog(QtGui.QDialog):
         )
 
     def keyPressEvent(self, e):
+        '''Handle Escape key press'''
         if not e.key() == QtCore.Qt.Key_Escape:
             super(PublishAssetDialog, self).keyPressEvent(e)
 
     def getShotPath(self, shot):
+        '''Return the full path to the shot'''
         shotparents = shot.getParents()
         shotpath = ''
 
@@ -232,7 +239,9 @@ class PublishAssetDialog(QtGui.QDialog):
         return shotpath
 
     def showWarning(self, subject, message):
+        '''Helper method for *showWarning*'''
         self.headerWidget.setMessage(message, 'warning')
 
     def showError(self, message):
+        '''Helper method for *showError'''
         self.headerWidget.setMessage(message, 'error')

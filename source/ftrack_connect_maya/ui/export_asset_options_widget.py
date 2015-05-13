@@ -213,6 +213,7 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
 
     @QtCore.Slot(object)
     def updateView(self, ftrackEntity):
+        '''Update view with the provided *ftrackEntity*'''
         try:
             self.currentTask = ftrackEntity
             project = self.currentTask.getProject()
@@ -273,6 +274,7 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
 
     @QtCore.Slot(QtCore.QModelIndex)
     def emitAssetId(self, modelindex):
+        '''Signal for emitting changes on the assetId for the give *modelIndex*'''
         clickedItem = self.ui.ListAssetsViewModel.itemFromIndex(
             self.ui.ListAssetsSortModel.mapToSource(modelindex)
         )
@@ -280,6 +282,8 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
 
     @QtCore.Slot(int)
     def emitAssetType(self, comboIndex):
+        '''Signal for emitting changes on the assetId for the give *comboIndex*'''
+
         comboItem = self.ui.ListAssetsComboBoxModel.item(comboIndex)
         if type(comboItem.type) is str:
             self.clickedAssetTypeSignal.emit(comboItem.type)
@@ -287,6 +291,7 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
 
     @QtCore.Slot(int)
     def setFilter(self, comboBoxIndex):
+        '''Set filtering for the given *comboBoxIndex*'''
         if comboBoxIndex:
             comboItem = self.ui.ListAssetsComboBoxModel.item(comboBoxIndex)
             newItem = self.ui.ListAssetsViewModel.item(0, 1)
@@ -296,6 +301,7 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
             self.ui.ListAssetsSortModel.setFilterFixedString('')
 
     def setAssetType(self, assetType):
+        '''Set the asset to the given *assetType*'''
         for position, item in enumerate(self.assetTypes):
             if item == assetType:
                 assetTypeIndex = int(position)
@@ -304,6 +310,7 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
                 self.ui.ListAssetsComboBox.setCurrentIndex(assetTypeIndex)
 
     def setAssetName(self, assetName):
+        '''Set the asset to the given *assetName*'''
         self.ui.AssetNameLineEdit.setText('')
         rows = self.ui.ListAssetsSortModel.rowCount()
         existingAssetFound = False
@@ -319,10 +326,12 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
             self.ui.AssetNameLineEdit.setText(assetName)
 
     def getAssetType(self):
+        '''Return the current asset type'''
         return self.currentAssetType
 
     @QtCore.Slot(object)
     def updateTasks(self, ftrackEntity):
+        '''Update task with the provided *ftrackEntity*'''
         self.currentTask = ftrackEntity
         try:
             shotpath = self.currentTask.getName()
@@ -354,12 +363,14 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
             print 'Not a task'
 
     def getShot(self):
+        '''Return the current shot'''
         if self.browseMode == 'Shot':
             return self.currentTask
         else:
             return self.currentTask.getParent()
 
     def getTask(self):
+        '''Return the current task'''
         if self.browseMode == 'Shot':
             comboItem = self.ui.AssetTaskComboBoxModel.item(
                 self.ui.AssetTaskComboBox.currentIndex()
@@ -372,9 +383,11 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
             return self.currentTask
 
     def getStatus(self):
+        '''Return the current asset status'''
         return self.ui.ListStatusComboBox.currentText()
 
     def getAssetName(self):
+        '''Retain logic for defining a new asset name'''
         if self.ui.ListAssetNamesComboBox.currentText() == 'New':
             return self.ui.AssetNameLineEdit.text()
         else:

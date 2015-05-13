@@ -164,6 +164,7 @@ class ExportOptionsWidget(QtGui.QWidget):
         return xml
 
     def resetOptions(self):
+        '''Reset IO options'''
         xml = self.getXml()
         self.stackedOptionsWidget.resetOptions(xml)
 
@@ -172,16 +173,20 @@ class ExportOptionsWidget(QtGui.QWidget):
         self.stackedOptionsWidget.setCurrentPage(stackName)
 
     def getOptions(self):
+        '''Return the options'''
         return self.stackedOptionsWidget.getOptions()
 
     def getComment(self):
+        '''Return the comment'''
         return self.ui.commentTextEdit.toPlainText()
 
     def getThumbnail(self):
+        '''Return the thumbnail'''
         return self.ui.thumbnailLineEdit.text()
 
     @QtCore.Slot()
     def setThumbnailFilename(self):
+        '''Handle the thumbnail name generation'''
         shot = ftrack.Task(os.environ['FTRACK_SHOTID'])
         proj_root = shot.getProject().getRoot()
         fileName = QtGui.QFileDialog.getOpenFileName(
@@ -194,14 +199,17 @@ class ExportOptionsWidget(QtGui.QWidget):
 
     @QtCore.Slot()
     def takeScreenshot(self):
+        '''Take a screenshot of the current window'''
         fileName = ftrack_connector.Connector.takeScreenshot()
         self.ui.thumbnailLineEdit.setText(fileName)
 
     def setComment(self, comment):
+        '''Set comment'''
         self.ui.commentTextEdit.clear()
         self.ui.commentTextEdit.appendPlainText(comment)
 
     def setProgress(self, progressInt):
+        '''Set progress bar to the given progressInt'''
         if not self.ui.progressBar.isVisible():
             self.ui.progressBar.show()
         self.ui.progressBar.setProperty("value", progressInt)
@@ -209,4 +217,5 @@ class ExportOptionsWidget(QtGui.QWidget):
             self.ui.progressBar.hide()
 
     def setMessage(self, message):
+        '''Set message with the provided *message*'''
         self.ui.publishMessageLabel.setText(message)

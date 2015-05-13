@@ -13,6 +13,7 @@ import ftrack
 
 class FtrackTasksDialog(QtGui.QDialog):
     def __init__(self, parent=None, connector=None):
+        ''''Initialize dialog with *parent* and *connector* instance.'''
         if not connector:
             raise ValueError(
                 'Please provide a connector object for {0}'.format(
@@ -54,5 +55,6 @@ class FtrackTasksDialog(QtGui.QDialog):
         self.setWindowTitle("ftrackTasks")
 
     def keyPressEvent(self, e):
+        '''Handle the key press Event'''
         if not e.key() == QtCore.Qt.Key_Escape:
             super(FtrackTasksDialog, self).keyPressEvent(e)
