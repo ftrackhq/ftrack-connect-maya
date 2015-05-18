@@ -218,16 +218,16 @@ class GenericAsset(FTAssetType):
             force=True
         )
 
-        depepdendencies_version = []
+        dependenciesVersion = []
         dependencies = mc.ls(type='ftrackAssetNode')
         for dependency in dependencies:
             dependencyAssetId = mc.getAttr('{0}.assetId'.format(dependency))
             if dependencyAssetId:
-                dependency_version = ftrack.AssetVersion(dependencyAssetId)
-                depepdendencies_version.append(dependency_version)
+                dependencyVersion = ftrack.AssetVersion(dependencyAssetId)
+                dependenciesVersion.append(dependencyVersion)
 
         currentVersion = ftrack.AssetVersion(iAObj.assetVersionId)
-        currentVersion.addUsesVersions(versions=depepdendencies_version)
+        currentVersion.addUsesVersions(versions=dependenciesVersion)
 
         panelComInstance.emitPublishProgressStep()
 
