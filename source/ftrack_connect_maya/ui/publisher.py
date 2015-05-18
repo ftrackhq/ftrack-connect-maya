@@ -123,12 +123,8 @@ class PublishAssetDialog(QtGui.QDialog):
         self.exportOptionsWidget.setComment('')
         self.exportOptionsWidget.ui.thumbnailLineEdit.setText('')
 
-        self.exportAssetOptionsWidget.updateTasks(
-            ftrack_entity=self.currentEntity
-        )
-        self.exportAssetOptionsWidget.updateView(
-            ftrack_entity=self.currentEntity
-        )
+        self.exportAssetOptionsWidget.updateTasks(self.currentEntity)
+        self.exportAssetOptionsWidget.updateView(self.currentEntity)
 
     def setAssetType(self, assetType):
         '''Set to the provided *assetType*'''
