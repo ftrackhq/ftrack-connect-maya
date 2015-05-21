@@ -284,13 +284,16 @@ def register(registry, **kw):
     application_store = ApplicationStore()
 
     # Create a launcher with the store containing applications.
-    plugin_path = os.environ.get('FTRACK_CONNECT_MAYA_PLUGINS_PATH')
-    if not plugin_path:
-        plugin_path = os.path.split(os.path.dirname(__file__))[0]
-        plugin_path = os.path.split(plugin_path)[0]
-    plugin_path = os.path.abspath(plugin_path)
-
-    launcher = ApplicationLauncher(application_store, plugin_path=plugin_path)
+    launcher = ApplicationLauncher(
+        application_store, plugin_path=os.environ.get(
+            'FTRACK_CONNECT_MAYA_PLUGINS_PATH',
+            os.path.abspath(
+                os.path.join(
+                    os.path.dirname(__file__), '..', 'ftrack_connect_maya'
+                )
+            )
+        )
+    )
 
     # Create action and register to respond to discover and launch actions.
     action = LaunchApplicationAction(application_store, launcher)
