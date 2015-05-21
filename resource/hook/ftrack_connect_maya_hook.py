@@ -248,17 +248,9 @@ class ApplicationLauncher(ftrack_connect.application.ApplicationLauncher):
         environment['FTRACK_TASKID'] = task.getId()
         environment['FTRACK_SHOTID'] = task.get('parent_id')
 
-        maya_connect_source = os.path.join(self.plugin_path, 'source')
-        maya_connect_resources = os.path.join(self.plugin_path, 'resource')
+        maya_connect_scripts = os.path.join(self.plugin_path, 'scripts')
+        maya_connect_plugins = os.path.join(self.plugin_path, 'plug_ins')
 
-        maya_connect_scripts = os.path.join(maya_connect_resources, 'scripts')
-        maya_connect_plugins = os.path.join(maya_connect_resources, 'plug_ins')
-
-        environment = ftrack_connect.application.appendPath(
-            maya_connect_source,
-            'PYTHONPATH',
-            environment
-        )
         environment = ftrack_connect.application.appendPath(
             maya_connect_scripts,
             'PYTHONPATH',
