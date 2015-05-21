@@ -2,12 +2,12 @@
 # :copyright: Copyright (c) 2015 ftrack
 
 import os
+import getpass
 import logging
+
 from PySide import QtCore, QtGui
+
 import ftrack
-
-import maya.cmds as cmds
-
 from ftrack_connect.connector import FTAssetHandlerInstance
 
 log = logging.getLogger(__file__)
@@ -180,7 +180,9 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
             try:
                 assetType = ftrack.AssetType(assetTypeStr)
             except:
-                log.warning(assetTypeStr + ' not available in ftrack')
+                log.warning(
+                    '{0} not available in ftrack'.format(assetTypeStr)
+                )
                 continue
             assetTypeItem = QtGui.QStandardItem(assetType.getName())
             assetTypeItem.type = assetType.getShort()
@@ -201,6 +203,7 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
             self.ui.assetTaskLabel.hide()
 
     def onAssetChanged(self, asset_name):
+        '''Hanldes the asset name logic on asset change'''
         if asset_name != 'New':
             self.ui.AssetNameLineEdit.setEnabled(False)
             self.ui.AssetNameLineEdit.setText(asset_name)
@@ -210,6 +213,7 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
 
     @QtCore.Slot(object)
     def updateView(self, ftrackEntity):
+        '''Update view with the provided *ftrackEntity*'''
         try:
             self.currentTask = ftrackEntity
             project = self.currentTask.getProject()
@@ -270,6 +274,7 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
 
     @QtCore.Slot(QtCore.QModelIndex)
     def emitAssetId(self, modelindex):
+        '''Signal for emitting changes on the assetId for the give *modelIndex*'''
         clickedItem = self.ui.ListAssetsViewModel.itemFromIndex(
             self.ui.ListAssetsSortModel.mapToSource(modelindex)
         )
@@ -277,6 +282,8 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
 
     @QtCore.Slot(int)
     def emitAssetType(self, comboIndex):
+        '''Signal for emitting changes on the assetId for the give *comboIndex*'''
+
         comboItem = self.ui.ListAssetsComboBoxModel.item(comboIndex)
         if type(comboItem.type) is str:
             self.clickedAssetTypeSignal.emit(comboItem.type)
@@ -284,6 +291,7 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
 
     @QtCore.Slot(int)
     def setFilter(self, comboBoxIndex):
+        '''Set filtering for the given *comboBoxIndex*'''
         if comboBoxIndex:
             comboItem = self.ui.ListAssetsComboBoxModel.item(comboBoxIndex)
             newItem = self.ui.ListAssetsViewModel.item(0, 1)
@@ -293,6 +301,7 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
             self.ui.ListAssetsSortModel.setFilterFixedString('')
 
     def setAssetType(self, assetType):
+        '''Set the asset to the given *assetType*'''
         for position, item in enumerate(self.assetTypes):
             if item == assetType:
                 assetTypeIndex = int(position)
@@ -301,6 +310,7 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
                 self.ui.ListAssetsComboBox.setCurrentIndex(assetTypeIndex)
 
     def setAssetName(self, assetName):
+        '''Set the asset to the given *assetName*'''
         self.ui.AssetNameLineEdit.setText('')
         rows = self.ui.ListAssetsSortModel.rowCount()
         existingAssetFound = False
@@ -316,22 +326,24 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
             self.ui.AssetNameLineEdit.setText(assetName)
 
     def getAssetType(self):
+        '''Return the current asset type'''
         return self.currentAssetType
 
     @QtCore.Slot(object)
     def updateTasks(self, ftrackEntity):
+        '''Update task with the provided *ftrackEntity*'''
         self.currentTask = ftrackEntity
         try:
             shotpath = self.currentTask.getName()
             taskParents = self.currentTask.getParents()
 
             for parent in taskParents:
-                shotpath = parent.getName() + '.' + shotpath
+                shotpath = '{0}.{1}'.format(parent.getName(), shotpath)
 
             self.ui.AssetTaskComboBox.clear()
             tasks = self.currentTask.getTasks()
             curIndex = 0
-            ftrackuser = ftrack.User(os.environ['LOGNAME'])
+            ftrackuser = ftrack.User(getpass.getuser())
             taskids = [x.getId() for x in ftrackuser.getTasks()]
 
             for i in range(len(tasks)):
@@ -339,10 +351,7 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
                 assetTaskItem.id = tasks[i].getId()
                 self.ui.AssetTaskComboBoxModel.appendRow(assetTaskItem)
 
-                if (
-                    'FTRACK_TASKID' in os.environ and
-                    os.environ['FTRACK_TASKID'] == assetTaskItem.id
-                ):
+                if (os.environ.get('FTRACK_TASKID') == assetTaskItem.id):
                     curIndex = i
                 else:
                     if assetTaskItem.id in taskids:
@@ -354,12 +363,14 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
             print 'Not a task'
 
     def getShot(self):
+        '''Return the current shot'''
         if self.browseMode == 'Shot':
             return self.currentTask
         else:
             return self.currentTask.getParent()
 
     def getTask(self):
+        '''Return the current task'''
         if self.browseMode == 'Shot':
             comboItem = self.ui.AssetTaskComboBoxModel.item(
                 self.ui.AssetTaskComboBox.currentIndex()
@@ -372,9 +383,11 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
             return self.currentTask
 
     def getStatus(self):
+        '''Return the current asset status'''
         return self.ui.ListStatusComboBox.currentText()
 
     def getAssetName(self):
+        '''Retain logic for defining a new asset name'''
         if self.ui.ListAssetNamesComboBox.currentText() == 'New':
             return self.ui.AssetNameLineEdit.text()
         else:

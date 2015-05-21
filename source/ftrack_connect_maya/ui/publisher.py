@@ -5,8 +5,8 @@ import os
 import getpass
 
 from PySide import QtCore, QtGui
-import ftrack
 
+import ftrack
 from ftrack_connect import connector as ftrack_connector
 from ftrack_connect.ui.widget import header
 from ftrack_connect.ui.theme import applyTheme
@@ -116,31 +116,32 @@ class PublishAssetDialog(QtGui.QDialog):
         self.browseTasksWidget.reset()
 
     def resetOptions(self):
+        '''Reset options'''
         self.exportOptionsWidget.resetOptions()
         self.exportAssetOptionsWidget.setAssetType(self.assetType)
         self.exportAssetOptionsWidget.setAssetName(self.assetName)
         self.exportOptionsWidget.setComment('')
         self.exportOptionsWidget.ui.thumbnailLineEdit.setText('')
 
-        self.exportAssetOptionsWidget.updateTasks(
-            ftrack_entity=self.currentEntity
-        )
-        self.exportAssetOptionsWidget.updateView(
-            ftrack_entity=self.currentEntity
-        )
+        self.exportAssetOptionsWidget.updateTasks(self.currentEntity)
+        self.exportAssetOptionsWidget.updateView(self.currentEntity)
 
     def setAssetType(self, assetType):
+        '''Set to the provided *assetType*'''
         self.exportAssetOptionsWidget.setAssetType(assetType)
         self.assetType = assetType
 
     def setAssetName(self, assetName):
+        '''Set to the provided *assetName*'''
         self.exportAssetOptionsWidget.setAssetName(assetName)
         self.assetName = assetName
 
     def setComment(self, comment):
+        '''Set the provided *comment*'''
         self.exportOptionsWidget.setComment(comment)
 
     def publishAsset(self):
+        '''Publish the asset'''
         task = self.exportAssetOptionsWidget.getTask()
         taskId = task.getId()
         shot = self.exportAssetOptionsWidget.getShot()
@@ -191,20 +192,20 @@ class PublishAssetDialog(QtGui.QDialog):
             self.exportOptionsWidget.setProgress(100)
 
         # Update status of task.
-        ft_task = ftrack.Task(id=taskId)
+        ftTask = ftrack.Task(id=taskId)
         if (
-            ft_task and
-            ft_task.get('object_typeid') == '11c137c0-ee7e-4f9c-91c5-8c77cec22b2c'
+            ftTask and
+            ftTask.get('object_typeid') == '11c137c0-ee7e-4f9c-91c5-8c77cec22b2c'
         ):
             for taskStatus in ftrack.getTaskStatuses():
                 if (
                     taskStatus.getName() == status and
-                    taskStatus.get('statusid') != ft_task.get('statusid')
+                    taskStatus.get('statusid') != ftTask.get('statusid')
                 ):
                     try:
-                        ft_task.setStatus(taskStatus)
+                        ftTask.setStatus(taskStatus)
                     except Exception, error:
-                        print 'warning: %s ' % error
+                        print 'warning: {0}'.format(error)
 
                     break
 
@@ -219,10 +220,12 @@ class PublishAssetDialog(QtGui.QDialog):
         )
 
     def keyPressEvent(self, e):
+        '''Handle Escape key press'''
         if not e.key() == QtCore.Qt.Key_Escape:
             super(PublishAssetDialog, self).keyPressEvent(e)
 
     def getShotPath(self, shot):
+        '''Return the full path to the shot'''
         shotparents = shot.getParents()
         shotpath = ''
 
@@ -232,7 +235,9 @@ class PublishAssetDialog(QtGui.QDialog):
         return shotpath
 
     def showWarning(self, subject, message):
+        '''Helper method for *showWarning*'''
         self.headerWidget.setMessage(message, 'warning')
 
     def showError(self, message):
+        '''Helper method for *showError'''
         self.headerWidget.setMessage(message, 'error')

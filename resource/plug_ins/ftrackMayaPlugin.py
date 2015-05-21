@@ -1,3 +1,6 @@
+# :coding: utf-8
+# :copyright: Copyright (c) 2015 ftrack
+
 import sys
 import maya.OpenMaya as OpenMaya
 import maya.OpenMayaMPx as OpenMayaMPx
@@ -44,31 +47,45 @@ def nodeInitializer():
     mAttr = OpenMaya.MFnMessageAttribute()
 
     # boolean attr
-    ftrackAssetNode.aLocked = nAttr.create("locked", "lo", OpenMaya.MFnNumericData.kBoolean, False)
+    ftrackAssetNode.aLocked = nAttr.create(
+        "locked", "lo", OpenMaya.MFnNumericData.kBoolean, False
+    )
     nAttr.setHidden(True)
     nAttr.setStorable(True)
 
     ftrackAssetNode.aAssetLink = mAttr.create("assetLink", "al")
     mAttr.setStorable(True)
 
-    ftrackAssetNode.aAssetTake = tAttr.create("assetTake", "at", OpenMaya.MFnData.kString)
+    ftrackAssetNode.aAssetTake = tAttr.create(
+        "assetTake", "at", OpenMaya.MFnData.kString
+    )
     tAttr.setStorable(True)
 
-    ftrackAssetNode.aAssetType = tAttr.create("assetType", "att", OpenMaya.MFnData.kString)
+    ftrackAssetNode.aAssetType = tAttr.create(
+        "assetType", "att", OpenMaya.MFnData.kString
+    )
     tAttr.setStorable(True)
 
-    ftrackAssetNode.aAssetComponentId = tAttr.create("assetComponentId", "acit", OpenMaya.MFnData.kString)
+    ftrackAssetNode.aAssetComponentId = tAttr.create(
+        "assetComponentId", "acit", OpenMaya.MFnData.kString
+    )
     tAttr.setStorable(True)
     tAttr.setHidden(True)
 
-    ftrackAssetNode.aAssetVersion = nAttr.create("assetVersion", "av", OpenMaya.MFnNumericData.kInt, -1)
+    ftrackAssetNode.aAssetVersion = nAttr.create(
+        "assetVersion", "av", OpenMaya.MFnNumericData.kInt, -1
+    )
     nAttr.setStorable(True)
 
-    ftrackAssetNode.aAssetId = tAttr.create("assetId", "aid", OpenMaya.MFnData.kString)
+    ftrackAssetNode.aAssetId = tAttr.create(
+        "assetId", "aid", OpenMaya.MFnData.kString
+    )
     tAttr.setStorable(True)
     tAttr.setHidden(True)
 
-    ftrackAssetNode.aAssetPath = tAttr.create("assetPath", "ap", OpenMaya.MFnData.kString)
+    ftrackAssetNode.aAssetPath = tAttr.create(
+        "assetPath", "ap", OpenMaya.MFnData.kString
+    )
     tAttr.setStorable(True)
 
     # Add the attributes to the node
@@ -83,12 +100,16 @@ def nodeInitializer():
 
 
 def initializePlugin(mobject):
-    print "Loading ftrack plugin - version %s" % version
+    print "Loading ftrack plugin - version {0}".format(version)
     mplugin = OpenMayaMPx.MFnPlugin(mobject, "ftrack", version, "Any")
     try:
-        mplugin.registerNode(kPluginNodeTypeName, kPluginNodeId, nodeCreator, nodeInitializer)
+        mplugin.registerNode(
+            kPluginNodeTypeName, kPluginNodeId, nodeCreator, nodeInitializer
+        )
     except:
-        sys.stderr.write("Failed to register node: %s" % kPluginNodeTypeName)
+        sys.stderr.write("Failed to register node: {0}".format(
+            kPluginNodeTypeName
+        ))
         raise
 
 
@@ -97,5 +118,7 @@ def uninitializePlugin(mobject):
     try:
         mplugin.deregisterNode(kPluginNodeId)
     except:
-        sys.stderr.write("Failed to deregister node: %s" % kPluginNodeTypeName)
+        sys.stderr.write("Failed to deregister node: {0}".format(
+            kPluginNodeTypeName
+        ))
         raise

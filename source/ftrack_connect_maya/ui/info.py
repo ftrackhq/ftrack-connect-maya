@@ -1,7 +1,8 @@
 # :coding: utf-8
 # :copyright: Copyright (c) 2015 ftrack
 
-from PySide import QtGui
+from PySide import QtGui, QtCore
+
 from ftrack_connect.ui.widget.info import FtrackInfoDialog
 from ftrack_connect.ui.theme import applyTheme
 
@@ -20,5 +21,6 @@ class FtrackMayaInfoDialog(FtrackInfoDialog):
         applyTheme(self, 'integration')
 
     def keyPressEvent(self, e):
+        '''Handle Esc key press event'''
         if not e.key() == QtCore.Qt.Key_Escape:
             super(FtrackMayaInfoDialog, self).keyPressEvent(e)
