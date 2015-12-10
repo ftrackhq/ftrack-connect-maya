@@ -90,6 +90,7 @@ class LaunchApplicationAction(object):
                 'actionIdentifier': self.identifier,
                 'label': label,
                 'icon': application.get('icon', 'default'),
+                'variant': application.get('variant', None),
                 'applicationIdentifier': application_identifier
             })
 
