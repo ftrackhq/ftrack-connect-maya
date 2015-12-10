@@ -166,9 +166,10 @@ class ApplicationStore(ftrack_connect.application.ApplicationStore):
 
             applications.extend(self._searchFilesystem(
                 expression=prefix + ['Autodesk', 'maya.+', 'Maya.app'],
-                label='Maya {version}',
+                label='Maya',
                 applicationIdentifier='maya_{version}',
-                icon='maya'
+                icon='maya',
+                variant='{version}'
             ))
 
         elif sys.platform == 'win32':
@@ -179,9 +180,10 @@ class ApplicationStore(ftrack_connect.application.ApplicationStore):
 
             applications.extend(self._searchFilesystem(
                 expression=prefix + ['Autodesk', 'Maya.+', 'bin', 'maya.exe'],
-                label='Maya {version}',
+                label='Maya',
                 applicationIdentifier='maya_{version}',
-                icon='maya'
+                icon='maya',
+                variant='{version}'
             ))
 
         elif 'linux' in sys.platform:
@@ -197,9 +199,10 @@ class ApplicationStore(ftrack_connect.application.ApplicationStore):
             applications.extend(self._searchFilesystem(
                 expression=prefix + ['bin', 'maya$'],
                 versionExpression=maya_version_expression,
-                label='Maya {version}',
+                label='Maya',
                 applicationIdentifier='maya_{version}',
-                icon='maya'
+                icon='maya',
+                variant='{version}'
             ))
 
         self.logger.debug(
