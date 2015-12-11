@@ -27,11 +27,13 @@ currentEntity = ftrack.Task(
 
 dialogs = [
     FtrackImportAssetDialog,
-    FtrackAssetManagerDialog,
     functools.partial(
         PublishAssetDialog,
         currentEntity=currentEntity
     ),
+    'divider',
+    FtrackAssetManagerDialog,
+    'divider',
     FtrackMayaInfoDialog,
     FtrackTasksDialog
 ]
@@ -63,6 +65,10 @@ def loadAndInit():
 
     # Register and hook the dialog in ftrack menu
     for Dialog in dialogs:
+        if Dialog == 'divider':
+            mc.menuItem(divider=True)
+            continue
+
         ftrack_dialog = Dialog(connector=connector)
         ftrack_docked_dialog = DockedWidget(ftrack_dialog)
 
@@ -71,7 +77,6 @@ def loadAndInit():
             label=ftrack_dialog.windowTitle().replace('ftrack', ''),
             command=lambda x, dialog=ftrack_docked_dialog: dialog.show(),
         )
-    mc.menuItem(divider=True)
 
 
 def checkForNewAssets():
