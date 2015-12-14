@@ -336,10 +336,7 @@ class GenericAsset(FTAssetType):
                 mc.lockNode(item, l=False)
 
             if not mc.attributeQuery('ftrack', n=item, exists=True):
-                try:
-                    mc.addAttr(item, ln='ftrack', sn='ft', at='message')
-                except:
-                    mc.addAttr(item, ln='ftrack', at='message')
+                mc.addAttr(item, ln='ftrack', at='message')
 
             if not mc.listConnections(item + '.ftrack'):
                 mc.connectAttr(ftNode + '.assetLink', item + '.ftrack')
