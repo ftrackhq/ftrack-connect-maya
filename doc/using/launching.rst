@@ -7,7 +7,7 @@
 Launching
 *********
 
-The primary way of launchingMaya with the ftrack integration is to download and
+The primary way of launching Maya with the ftrack integration is to download and
 use the
 :ref:`ftrack Connect package <using/installing_ftrack_connect_package>`.
 
