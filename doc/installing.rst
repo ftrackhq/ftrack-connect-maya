@@ -7,11 +7,32 @@
 Installing
 **********
 
+Using ftrack Connect
+====================
+
+The primary way of installing and launching the Maya integration is
+through the ftrack Connect package. Go to 
+`ftrack Connect package <https://www.ftrack.com/portfolio/connect>`_ and
+download it for your platform.
+
+.. seealso::
+
+    Once ftrack Connect package is installed please follow this
+    :ref:`article <using/launching>` to launch Maya with the ftrack
+    integration.
+
+Installing with pip
+===================
+
 .. highlight:: bash
 
 Installation is simple with `pip <http://www.pip-installer.org/>`_::
 
-    pip install ftrack connect maya
+    pip install ftrack-connect-maya
+
+.. note::
+
+    This project is not yet available on PyPi.
 
 Building from source
 ====================
@@ -43,25 +64,15 @@ Then view in your browser::
 
     file:///path/to/ftrack-connect-maya/build/doc/html/index.html
 
-Running tests against the source
---------------------------------
-
-With a copy of the source it is also possible to run the unit tests::
-
-    python setup.py test
-
 Dependencies
 ============
 
 * `Python <http://python.org>`_ >= 2.6, < 3
+* `ftrack connect <https://bitbucket.org/ftrack/ftrack-connect>`_ >= 0.1.2, < 2
+* `Maya <http://www.autodesk.com/products/maya/overview>`_ >= 2014, <= 2016
 
 Additional For building
 -----------------------
 
 * `Sphinx <http://sphinx-doc.org/>`_ >= 1.2.2, < 2
 * `sphinx_rtd_theme <https://github.com/snide/sphinx_rtd_theme>`_ >= 0.1.6, < 1
-
-Additional For testing
-----------------------
-
-* `Pytest <http://pytest.org>`_  >= 2.3.5
