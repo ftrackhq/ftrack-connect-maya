@@ -7,7 +7,7 @@
 Release Notes
 *************
 
-.. release:: 0.1.0
+.. release:: 0.2.0
     :date: 2016-01-08
 
     .. change:: new
