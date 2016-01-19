@@ -94,8 +94,9 @@ class PublishAssetDialog(QtGui.QDialog):
         self.setObjectName('ftrackPublishAsset')
         self.setWindowTitle("ftrackPublishAsset")
         panelComInstance = ftrack_connector.panelcom.PanelComInstance.instance()
-        panelComInstance.addSwitchedShotListener(self.browseTasksWidget.reset)
+        panelComInstance.addSwitchedShotListener(self.reset_context_browser)
         panelComInstance.addSwitchedShotListener(self.resetOptions)
+
 
         self.exportAssetOptionsWidget.clickedAssetTypeSignal.connect(
             self.exportOptionsWidget.setStackedWidget
@@ -114,6 +115,11 @@ class PublishAssetDialog(QtGui.QDialog):
         )
 
         self.browseTasksWidget.reset()
+
+    def reset_context_browser(self):
+        entity_id = os.getenv('FTRACK_TASKID', os.getenv('FTRACK_SHOTID'))
+        entity = ftrack.Task(entity_id)
+        self.browseTasksWidget.reset(entity)
 
     def resetOptions(self):
         '''Reset options'''
