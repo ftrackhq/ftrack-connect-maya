@@ -7,7 +7,6 @@ import pprint
 import logging
 import re
 import os
-import copy
 
 import ftrack
 import ftrack_connect.application
@@ -265,30 +264,6 @@ class ApplicationLauncher(ftrack_connect.application.ApplicationLauncher):
 
         environment['FTRACK_TASKID'] = task.getId()
         environment['FTRACK_SHOTID'] = task.get('parent_id')
-
-
-        # Remove PySide and shiboken from python path as it sometimes
-        # conflicts with PySide bundled in various DCC apps.
-        pypath = environment['PYTHONPATH'].split(os.path.pathsep)
-        if pypath:
-            import imp
-            modulesToRemove = ['PySide']
-            pathsToRemove = []
-            for m in modulesToRemove:
-                try:
-                    modulePath = imp.find_module(m)[1]
-                    pathsToRemove.append(os.path.dirname(modulePath).rstrip(os.path.sep))
-                except ImportError:
-                    pass
-            # make a copy of pypath to modify while iterating pypath.
-            tmp_pypath = copy.deepcopy(pypath)
-
-            for i, path in enumerate(pypath):
-                if path.rstrip(os.path.sep) in pathsToRemove:
-                    tmp_pypath.pop(i)
-
-            environment['PYTHONPATH'] = os.path.pathsep.join(tmp_pypath)
-
 
         maya_connect_scripts = os.path.join(self.plugin_path, 'scripts')
         maya_connect_plugins = os.path.join(self.plugin_path, 'plug_ins')
