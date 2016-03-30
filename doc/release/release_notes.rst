@@ -7,6 +7,14 @@
 Release Notes
 *************
 
+.. release:: upcoming
+
+    .. change:: fixed
+        :tags: Ui
+
+        Restore :py:class:`ftrack_connect.panelcom.PanelComInstance` communication with contextSelector,
+        so changes to the environments get reflected into the widgets.
+
 .. release:: 0.2.0
     :date: 2016-01-08
 
