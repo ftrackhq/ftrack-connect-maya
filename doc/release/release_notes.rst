@@ -10,6 +10,11 @@ Release Notes
 .. release:: upcoming
 
     .. change:: fixed
+        :tags: Hook
+
+        Maya versions appear twice in connect.
+
+    .. change:: fixed
         :tags: Ui
 
         Restore :py:class:`ftrack_connect.panelcom.PanelComInstance` communication with contextSelector,
