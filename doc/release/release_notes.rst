@@ -16,6 +16,11 @@ Release Notes
         Maya versions appear twice in connect.
 
     .. change:: fixed
+
+        When taking a screenshot for publish the entire window is captured
+        rather than only the view port.
+
+    .. change:: fixed
         :tags: Ui
 
         Restore :py:class:`ftrack_connect.panelcom.PanelComInstance` communication with contextSelector,
