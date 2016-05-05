@@ -7,7 +7,18 @@
 Release Notes
 *************
 
-.. release:: upcoming
+.. release:: 0.2.1
+    :date: 2016-04-25
+
+    .. change:: fixed
+        :tags: Hook
+
+        Maya versions appear twice in connect.
+
+    .. change:: fixed
+
+        When taking a screenshot for publish the entire window is captured
+        rather than only the view port.
 
     .. change:: fixed
         :tags: Ui

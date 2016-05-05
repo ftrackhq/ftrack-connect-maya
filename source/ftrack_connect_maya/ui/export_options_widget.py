@@ -8,6 +8,7 @@ from PySide import QtCore, QtGui
 import ftrack
 from ftrack_connect.ui.widget.stacked_options import StackedOptionsWidget
 from ftrack_connect import connector as ftrack_connector
+from ftrack_connect_maya.connector.mayacon import Connector as maya_connector
 
 
 class Ui_ExportOptions(object):
@@ -200,7 +201,7 @@ class ExportOptionsWidget(QtGui.QWidget):
     @QtCore.Slot()
     def takeScreenshot(self):
         '''Take a screenshot of the current window'''
-        fileName = ftrack_connector.Connector.takeScreenshot()
+        fileName = maya_connector.takeScreenshot()
         self.ui.thumbnailLineEdit.setText(fileName)
 
     def setComment(self, comment):
