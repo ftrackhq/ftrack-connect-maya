@@ -15,6 +15,15 @@ Release Notes
 
     Allow change version of alembic from asset manager.
 
+
+.. release:: 0.2.2
+    :date: 2016-05-10
+
+    .. change:: fixed
+
+        When taking a screenshot for publish the entire window is captured
+        rather than only the view port.
+
 .. release:: 0.2.1
     :date: 2016-04-25
 
@@ -23,10 +32,6 @@ Release Notes
 
         Maya versions appear twice in connect.
 
-    .. change:: fixed
-
-        When taking a screenshot for publish the entire window is captured
-        rather than only the view port.
 
     .. change:: fixed
         :tags: Ui
