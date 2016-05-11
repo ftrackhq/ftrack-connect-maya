@@ -8,13 +8,11 @@ Release Notes
 *************
 
 .. release:: Upcoming
-  :date: not set
 
   .. change:: fixed
     :tags: Ui
 
     Allow change version of alembic from asset manager.
-
 
 .. release:: 0.2.2
     :date: 2016-05-10
