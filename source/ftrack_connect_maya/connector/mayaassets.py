@@ -412,11 +412,7 @@ class GeometryAsset(GenericAsset):
         '''Change the version of the asset defined in *iAObj*
         and *applicationObject*
         '''
-        if iAObj.componentName != 'alembic':
-            return GenericAsset.changeVersion(self, iAObj, applicationObject)
-        else:
-            print 'Cant change version for alembic :('
-            return None
+        return GenericAsset.changeVersion(self, iAObj, applicationObject)
 
     def publishAsset(self, iAObj=None):
         '''Publish the asset defined by the provided *iAObj*.'''
