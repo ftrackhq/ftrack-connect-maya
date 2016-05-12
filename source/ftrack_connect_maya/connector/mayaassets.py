@@ -409,9 +409,9 @@ class GeometryAsset(GenericAsset):
         super(GeometryAsset, self).__init__()
 
     def _getAlembicRoots(self, iAObj, shape):
-            parent_node = mc.listRelatives(shape, p=True)
+            parent_node = mc.listRelatives(shape, p=True, f=True)
             while True:
-                _temp = mc.listRelatives(parent_node, p=True)
+                _temp = mc.listRelatives(parent_node, p=True, f=True)
                 if not _temp:
                     return parent_node
                 else:
