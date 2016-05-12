@@ -30,7 +30,6 @@ Release Notes
 
         Maya versions appear twice in connect.
 
-
     .. change:: fixed
         :tags: Ui
 
