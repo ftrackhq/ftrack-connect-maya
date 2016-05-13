@@ -432,6 +432,9 @@ class GeometryAsset(GenericAsset):
                 parent_node = _temp
 
     def changeAlembicVersion(self, iAObj=None, applicationObject=None):
+        '''Change the version of Alembic defined in *iAObj*
+        and *applicationObject*
+        '''
         ftNode = mc.listConnections(applicationObject, type='ftrackAssetNode')
         if not ftNode:
             return
