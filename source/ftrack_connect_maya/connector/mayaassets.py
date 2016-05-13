@@ -409,27 +409,27 @@ class GeometryAsset(GenericAsset):
         super(GeometryAsset, self).__init__()
 
     def _getAlembicRoots(self, iAObj, shape):
-            '''Return alembic roots from *iAObj* and *shape*.'''
-            parent_node = mc.listRelatives(shape, p=True, f=True)
-            while True:
-                _temp = mc.listRelatives(parent_node, p=True, f=True)
-                if not _temp:
+        '''Return alembic roots from *iAObj* and *shape*.'''
+        parent_node = mc.listRelatives(shape, p=True, f=True)
+        while True:
+            _temp = mc.listRelatives(parent_node, p=True, f=True)
+            if not _temp:
+                return parent_node
+            else:
+                skip_name = '_'.join(
+                    [iAObj.assetType.upper(), iAObj.assetName, 'AST']
+                )
+
+                if _temp[0] == skip_name:
                     return parent_node
-                else:
-                    skip_name = '_'.join(
-                        [iAObj.assetType.upper(), iAObj.assetName, 'AST']
-                    )
 
-                    if _temp[0] == skip_name:
-                        return parent_node
+                _node = mc.listConnections(
+                    shape, type='ftrackAssetNode'
+                )
+                if not _node:
+                    return parent_node
 
-                    _node = mc.listConnections(
-                        shape, type='ftrackAssetNode'
-                    )
-                    if not _node:
-                        return parent_node
-
-                parent_node = _temp
+            parent_node = _temp
 
     def changeAlembicVersion(self, iAObj=None, applicationObject=None):
         '''Change the version of Alembic defined in *iAObj*
