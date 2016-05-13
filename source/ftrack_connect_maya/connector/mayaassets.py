@@ -416,8 +416,8 @@ class GeometryAsset(GenericAsset):
                 if not _temp:
                     return parent_node
                 else:
-                    skip_name = "_".join(
-                        [iAObj.assetType.upper(), iAObj.assetName, "AST"]
+                    skip_name = '_'.join(
+                        [iAObj.assetType.upper(), iAObj.assetName, 'AST']
                     )
 
                     if _temp[0] == skip_name:
@@ -444,8 +444,8 @@ class GeometryAsset(GenericAsset):
 
         # Remove duplicates.
         root_nodes = ' '.join(list(set(root_nodes)))
-        reparent_node = "_".join(
-            [iAObj.assetType.upper(), iAObj.assetName, "AST"]
+        reparent_node = '_'.join(
+            [iAObj.assetType.upper(), iAObj.assetName, 'AST']
         )
 
         mc.AbcImport(
