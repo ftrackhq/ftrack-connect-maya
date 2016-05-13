@@ -442,7 +442,7 @@ class GeometryAsset(GenericAsset):
             results = self._getAlembicRoots(iAObj, shape)
             root_nodes += results
 
-        # remove duplicates
+        # Remove duplicates.
         root_nodes = ' '.join(list(set(root_nodes)))
         reparent_node = "_".join(
             [iAObj.assetType.upper(), iAObj.assetName, "AST"]
