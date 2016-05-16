@@ -193,7 +193,13 @@ class Connector(maincon.Connector):
         else:
             nodes = mc.listConnections('{0}.assetLink'.format(ftrackNode))
             nodes.append(ftrackNode)
-            mc.delete(nodes)
+            for node in nodes:
+                try:
+                    mc.delete(node)
+                except Exception as error:
+                    print 'Node :{0} could not be deleted, error {1}'.format(
+                        node, error
+                    )
 
     @staticmethod
     def changeVersion(applicationObject=None, iAObj=None):
