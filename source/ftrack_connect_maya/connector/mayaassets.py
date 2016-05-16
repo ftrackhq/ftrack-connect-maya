@@ -422,15 +422,65 @@ class GeometryAsset(GenericAsset):
     def __init__(self):
         super(GeometryAsset, self).__init__()
 
+    def _getAlembicRoots(self, iAObj, shape):
+        '''Return alembic roots from *iAObj* and *shape*.'''
+        parent_node = mc.listRelatives(shape, p=True, f=True)
+        while True:
+            _temp = mc.listRelatives(parent_node, p=True, f=True)
+            if not _temp:
+                return parent_node
+            else:
+                skip_name = '_'.join(
+                    [iAObj.assetType.upper(), iAObj.assetName, 'AST']
+                )
+
+                if _temp[0] == skip_name:
+                    return parent_node
+
+                _node = mc.listConnections(
+                    shape, type='ftrackAssetNode'
+                )
+                if not _node:
+                    return parent_node
+
+            parent_node = _temp
+
+    def changeAlembicVersion(self, iAObj=None, applicationObject=None):
+        '''Change the version of Alembic defined in *iAObj*
+        and *applicationObject*
+        '''
+        ftNode = mc.listConnections(applicationObject, type='ftrackAssetNode')
+        if not ftNode:
+            return
+        ftNode = ftNode[0]        
+        shapes = mc.listConnections(ftNode, sh=True, d=True, s=False, type='shape')
+        root_nodes = []
+        for shape in shapes:
+            results = self._getAlembicRoots(iAObj, shape)
+            root_nodes += results
+
+        # Remove duplicates.
+        root_nodes = ' '.join(list(set(root_nodes)))
+        reparent_node = '_'.join(
+            [iAObj.assetType.upper(), iAObj.assetName, 'AST']
+        )
+
+        mc.AbcImport(
+            iAObj.filePath,
+            mode='import',
+            connect=root_nodes,
+            reparent=reparent_node
+        )
+        return True
+
     def changeVersion(self, iAObj=None, applicationObject=None):
         '''Change the version of the asset defined in *iAObj*
         and *applicationObject*
         '''
-        if iAObj.componentName != 'alembic':
-            return GenericAsset.changeVersion(self, iAObj, applicationObject)
+        if iAObj.componentName == 'alembic':
+            return self.changeAlembicVersion(iAObj, applicationObject)
         else:
-            print 'Cant change version for alembic :('
-            return None
+            return GenericAsset.changeVersion(self, iAObj, applicationObject)
 
     def publishAsset(self, iAObj=None):
         '''Publish the asset defined by the provided *iAObj*.'''
