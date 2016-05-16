@@ -31,6 +31,18 @@ class GenericAsset(FTAssetType):
         self.importAssetBool = False
         self.referenceAssetBool = False
 
+    def setTimeLine(self):
+        '''Set time line'''
+        start_frame = float(os.getenv('FS'))
+        end_frame = float(os.getenv('FE'))
+
+        mc.playbackOptions(
+            minTime=start_frame,
+            maxTime=end_frame,
+            animationStartTime=start_frame,
+            animationEndTime=end_frame
+        )
+
     def importAsset(self, iAObj=None):
         '''Import asset defined in *iAObj*'''
         if iAObj.componentName == 'alembic':
@@ -141,6 +153,8 @@ class GenericAsset(FTAssetType):
             except Exception as error:
                 print error
 
+        # Restore timeline on asset import.
+        self.setTimeLine()
         return 'Imported ' + iAObj.assetType + ' asset'
 
     def getGroupName(self, nodes, assetName):
