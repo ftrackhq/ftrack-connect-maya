@@ -7,6 +7,13 @@
 Release Notes
 *************
 
+.. release:: Upcoming
+
+    .. change:: fixed
+        :tags: Ui
+
+        Cannot switch version of alembic from the asset manager.
+
 .. release:: 0.2.2
     :date: 2016-05-10
 
