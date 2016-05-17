@@ -148,35 +148,12 @@ def framerateInit():
     mc.currentUnit(time=fpsType)
 
 
-def timelineInit():
-    '''Init the timeline with the values set on the shot'''
-    import ftrack
-    startFrame = float(os.getenv('FS', 1001))
-    endFrame = float(os.getenv('FE', 1101))
-    shotId = os.getenv('FTRACK_SHOTID')
-    shot = ftrack.Shot(id=shotId)
-    handles = float(shot.get('handles'))
-
-    mc.warning('Setting timeline to {0} {1} '.format(startFrame, endFrame))
-
-    # add handles to start and end frame
-    hsf = startFrame - handles
-    hef = endFrame + handles
-
-    mc.playbackOptions(
-        minTime=hsf,
-        maxTime=hef,
-        animationStartTime=hsf,
-        animationEndTime=hef
-    )
-
-
 if not Connector.batch():
     mc.scriptJob(e=["SceneOpened", "checkForNewAssets()"], permanent=True)
     mc.scriptJob(e=["SceneOpened", "refAssetManager()"], permanent=True)
     mc.evalDeferred("loadAndInit()")
     mc.evalDeferred("framerateInit()")
-    mc.evalDeferred("timelineInit()")
+    mc.evalDeferred("Connector.setTimeLine()")
 
 
 logging.getLogger().setLevel(logging.INFO)
