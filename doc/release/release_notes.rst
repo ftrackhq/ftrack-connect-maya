@@ -14,7 +14,7 @@ Release Notes
 
         Cannot switch version of alembic from the asset manager.
 
-    .. change:: improvement
+    .. change:: fixed
 
         Restore timeline on asset import.
         Granular nodes deletion.
