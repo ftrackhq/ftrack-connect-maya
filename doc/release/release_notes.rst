@@ -17,6 +17,9 @@ Release Notes
     .. change:: fixed
 
         Restore timeline on asset import.
+
+    .. change:: fixed
+
         Granular nodes deletion.
 
 
