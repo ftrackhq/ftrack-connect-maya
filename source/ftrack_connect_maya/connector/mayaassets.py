@@ -141,6 +141,8 @@ class GenericAsset(FTAssetType):
             except Exception as error:
                 print error
 
+        # Restore timeline on asset import.
+        mayacon.Connector.setTimeLine()
         return 'Imported ' + iAObj.assetType + ' asset'
 
     def getGroupName(self, nodes, assetName):

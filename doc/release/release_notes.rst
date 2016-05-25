@@ -14,6 +14,14 @@ Release Notes
 
         Cannot switch version of alembic from the asset manager.
 
+    .. change:: fixed
+
+        Timeline does not set correctly when importing a scene asset.
+
+    .. change:: fixed
+
+        Assets not always deleted correctly from the Asset manager.
+
 .. release:: 0.2.2
     :date: 2016-05-10
 
