@@ -8,6 +8,11 @@ Release Notes
 *************
 
 .. release:: upcoming
+    
+    .. change:: fixed
+        :tags: Api
+
+        Can not handle asset types which does not contain transforms.
 
     .. change:: fixed
         :tags: Ui
