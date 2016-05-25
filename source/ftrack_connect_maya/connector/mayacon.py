@@ -68,6 +68,29 @@ class Connector(maincon.Connector):
         super(Connector, self).__init__()
 
     @staticmethod
+    def setTimeLine():
+        '''Set time line to FS , FE environment values'''
+        import ftrack
+        startFrame = float(os.getenv('FS', 1001))
+        endFrame = float(os.getenv('FE', 1101))
+        shotId = os.getenv('FTRACK_SHOTID')
+        shot = ftrack.Shot(id=shotId)
+        handles = float(shot.get('handles'))
+
+        mc.warning('Setting timeline to {0} {1} '.format(startFrame, endFrame))
+
+        # add handles to start and end frame
+        hsf = startFrame - handles
+        hef = endFrame + handles
+
+        mc.playbackOptions(
+            minTime=hsf,
+            maxTime=hef,
+            animationStartTime=hsf,
+            animationEndTime=hef
+        )
+
+    @staticmethod
     def getAssets():
         '''Return the available assets in scene, return the *componentId(s)*'''
         allObjects = mc.ls(type='ftrackAssetNode')
@@ -194,7 +217,13 @@ class Connector(maincon.Connector):
         else:
             nodes = mc.listConnections('{0}.assetLink'.format(ftrackNode))
             nodes.append(ftrackNode)
-            mc.delete(nodes)
+            for node in nodes:
+                try:
+                    mc.delete(node)
+                except Exception as error:
+                    print 'Node: {0} could not be deleted, error: {1}'.format(
+                        node, error
+                    )
 
     @staticmethod
     def changeVersion(applicationObject=None, iAObj=None):
