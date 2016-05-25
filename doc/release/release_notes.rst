@@ -12,7 +12,7 @@ Release Notes
     .. change:: fixed
         :tags: Api
 
-        Can not handle asset types which does not contain transforms.
+        Asset without transform nodes doesn’t show in Maya asset manager
 
     .. change:: fixed
         :tags: Ui
