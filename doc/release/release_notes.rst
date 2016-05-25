@@ -12,6 +12,11 @@ Release Notes
     .. change:: fixed
         :tags: Ui
 
+        Publish asset doesn't work correctly if changing context.
+
+    .. change:: fixed
+        :tags: Ui
+
         Cannot switch version of alembic from the asset manager.
 
     .. change:: fixed
