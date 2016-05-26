@@ -121,6 +121,7 @@ class PublishAssetDialog(QtGui.QDialog):
         entity_id = os.getenv('FTRACK_TASKID', os.getenv('FTRACK_SHOTID'))
         entity = ftrack.Task(entity_id)
         self.browseTasksWidget.reset(entity)
+        self.currentEntity = entity
 
     def resetOptions(self):
         '''Reset options'''
