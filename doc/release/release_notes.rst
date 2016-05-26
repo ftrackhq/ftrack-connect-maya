@@ -12,7 +12,7 @@ Release Notes
     .. change:: fixed
         :tags: Api
 
-        Asset without transform nodes doesn’t show in Maya asset manager
+        Asset without transform nodes doesn’t show in Maya asset manager.
 
     .. change:: fixed
         :tags: Ui
