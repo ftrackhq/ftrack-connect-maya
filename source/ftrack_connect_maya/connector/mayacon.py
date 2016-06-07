@@ -102,7 +102,8 @@ class Connector(maincon.Connector):
                 assetcomponentid = mc.getAttr(ftrackobj + '.assetComponentId')
                 nameInScene = mc.listConnections(
                     '{0}.assetLink'.format(ftrackobj),
-                    type='transform'
+                    destination=True,
+                    source=False
                 )
                 if not nameInScene:
                     mc.warning(

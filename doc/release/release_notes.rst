@@ -7,7 +7,18 @@
 Release Notes
 *************
 
-.. release:: Upcoming
+.. release:: 0.2.3
+    :date: 2016-06-07
+
+    .. change:: fixed
+        :tags: Ui
+
+        Asset without transform nodes doesn’t show in Maya asset manager.
+
+    .. change:: fixed
+        :tags: Ui
+
+        Publish asset doesn't work correctly if changing context.
 
     .. change:: fixed
         :tags: Ui
