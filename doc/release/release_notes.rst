@@ -13,7 +13,7 @@ Release Notes
     .. change:: fixed
         :tags: Ui
 
-        Asset without transform nodes doesn’t show in Maya asset manager.
+        Asset without transform nodes doesn't show in Maya Asset manager.
 
     .. change:: fixed
         :tags: Ui
@@ -23,7 +23,11 @@ Release Notes
     .. change:: fixed
         :tags: Ui
 
-        Cannot switch version of alembic from the asset manager.
+        Cannot switch version of alembic from the Asset manager.
+        
+        .. note::
+
+            This fix applies to later versions of Maya 2016.
 
     .. change:: fixed
 
