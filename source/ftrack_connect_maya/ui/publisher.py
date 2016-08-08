@@ -4,7 +4,7 @@
 import os
 import getpass
 
-from PySide import QtCore, QtGui
+from Qt import QtWidgets, QtCore, QtGui
 
 import ftrack
 from ftrack_connect import connector as ftrack_connector
@@ -15,7 +15,7 @@ from ftrack_connect_maya.ui.export_asset_options_widget import ExportAssetOption
 from ftrack_connect_maya.ui.export_options_widget import ExportOptionsWidget
 
 
-class PublishAssetDialog(QtGui.QDialog):
+class PublishAssetDialog(QtWidgets.QDialog):
     def __init__(self, parent=None, connector=None, currentEntity=None):
         if not connector:
             raise ValueError(
@@ -31,8 +31,8 @@ class PublishAssetDialog(QtGui.QDialog):
 
         super(PublishAssetDialog, self).__init__(self.parent)
         self.setSizePolicy(
-            QtGui.QSizePolicy(
-                QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding
+            QtWidgets.QSizePolicy(
+                QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
             )
         )
         applyTheme(self, 'integration')
@@ -41,20 +41,20 @@ class PublishAssetDialog(QtGui.QDialog):
         self.assetName = None
         self.status = None
 
-        self.mainLayout = QtGui.QVBoxLayout(self)
+        self.mainLayout = QtWidgets.QVBoxLayout(self)
         self.mainLayout.setContentsMargins(0, 0, 0, 0)
 
-        self.mainWidget = QtGui.QWidget(self)
-        self.scrollLayout = QtGui.QVBoxLayout(self.mainWidget)
+        self.mainWidget = QtWidgets.QWidget(self)
+        self.scrollLayout = QtWidgets.QVBoxLayout(self.mainWidget)
         self.scrollLayout.setSpacing(6)
 
-        self.scrollArea = QtGui.QScrollArea(self)
+        self.scrollArea = QtWidgets.QScrollArea(self)
         self.mainLayout.addWidget(self.scrollArea)
 
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollArea.setLineWidth(0)
-        self.scrollArea.setFrameShape(QtGui.QFrame.NoFrame)
+        self.scrollArea.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.scrollArea.setHorizontalScrollBarPolicy(
             QtCore.Qt.ScrollBarAlwaysOff
         )
@@ -86,8 +86,8 @@ class PublishAssetDialog(QtGui.QDialog):
 
         self.scrollLayout.addWidget(self.exportOptionsWidget)
 
-        spacerItem = QtGui.QSpacerItem(
-            20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding
+        spacerItem = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
         )
         self.scrollLayout.addItem(spacerItem)
 

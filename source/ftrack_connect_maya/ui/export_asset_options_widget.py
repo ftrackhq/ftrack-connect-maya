@@ -5,7 +5,7 @@ import os
 import getpass
 import logging
 
-from PySide import QtCore, QtGui
+from Qt import QtCore, QtWidgets, QtGui
 
 import ftrack
 from ftrack_connect.connector import FTAssetHandlerInstance
@@ -17,66 +17,66 @@ class Ui_ExportAssetOptions(object):
     def setupUi(self, ExportAssetOptions):
         ExportAssetOptions.setObjectName("ExportAssetOptions")
         ExportAssetOptions.resize(429, 130)
-        self.verticalLayout = QtGui.QVBoxLayout(ExportAssetOptions)
+        self.verticalLayout = QtWidgets.QVBoxLayout(ExportAssetOptions)
         self.verticalLayout.setSpacing(3)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.gridLayout = QtGui.QGridLayout()
+        self.gridLayout = QtWidgets.QGridLayout()
         self.gridLayout.setObjectName("gridLayout")
-        self.assetTaskLabel = QtGui.QLabel(ExportAssetOptions)
+        self.assetTaskLabel = QtWidgets.QLabel(ExportAssetOptions)
         self.assetTaskLabel.setMinimumSize(QtCore.QSize(120, 0))
         self.assetTaskLabel.setMaximumSize(QtCore.QSize(120, 16777215))
         self.assetTaskLabel.setObjectName("assetTaskLabel")
         self.gridLayout.addWidget(self.assetTaskLabel, 1, 0, 1, 1)
-        self.ListAssetsComboBox = QtGui.QComboBox(ExportAssetOptions)
+        self.ListAssetsComboBox = QtWidgets.QComboBox(ExportAssetOptions)
         self.ListAssetsComboBox.setMinimumSize(QtCore.QSize(100, 0))
         self.ListAssetsComboBox.setMaximumSize(QtCore.QSize(200, 16777215))
         self.ListAssetsComboBox.setObjectName("ListAssetsComboBox")
         self.gridLayout.addWidget(self.ListAssetsComboBox, 0, 1, 1, 1)
-        self.ListAssetNamesComboBox = QtGui.QComboBox(ExportAssetOptions)
+        self.ListAssetNamesComboBox = QtWidgets.QComboBox(ExportAssetOptions)
         self.ListAssetNamesComboBox.setMinimumSize(QtCore.QSize(100, 0))
         self.ListAssetNamesComboBox.setMaximumSize(QtCore.QSize(200, 16777215))
         self.ListAssetNamesComboBox.setObjectName("ListAssetNamesComboBox")
         self.gridLayout.addWidget(self.ListAssetNamesComboBox, 3, 1, 1, 1)
-        self.AssetNameLineEdit = QtGui.QLineEdit(ExportAssetOptions)
+        self.AssetNameLineEdit = QtWidgets.QLineEdit(ExportAssetOptions)
         self.AssetNameLineEdit.setEnabled(True)
         self.AssetNameLineEdit.setMinimumSize(QtCore.QSize(100, 0))
         self.AssetNameLineEdit.setMaximumSize(QtCore.QSize(200, 16777215))
         self.AssetNameLineEdit.setObjectName("AssetNameLineEdit")
         self.gridLayout.addWidget(self.AssetNameLineEdit, 4, 1, 1, 1)
-        self.AssetTaskComboBox = QtGui.QComboBox(ExportAssetOptions)
+        self.AssetTaskComboBox = QtWidgets.QComboBox(ExportAssetOptions)
         self.AssetTaskComboBox.setMinimumSize(QtCore.QSize(100, 0))
         self.AssetTaskComboBox.setMaximumSize(QtCore.QSize(200, 16777215))
         self.AssetTaskComboBox.setObjectName("AssetTaskComboBox")
         self.gridLayout.addWidget(self.AssetTaskComboBox, 1, 1, 1, 1)
-        self.labelAssetType = QtGui.QLabel(ExportAssetOptions)
+        self.labelAssetType = QtWidgets.QLabel(ExportAssetOptions)
         self.labelAssetType.setMinimumSize(QtCore.QSize(120, 0))
         self.labelAssetType.setMaximumSize(QtCore.QSize(120, 16777215))
         self.labelAssetType.setObjectName("labelAssetType")
         self.gridLayout.addWidget(self.labelAssetType, 0, 0, 1, 1)
-        self.assetNameLabel = QtGui.QLabel(ExportAssetOptions)
+        self.assetNameLabel = QtWidgets.QLabel(ExportAssetOptions)
         self.assetNameLabel.setMinimumSize(QtCore.QSize(120, 0))
         self.assetNameLabel.setMaximumSize(QtCore.QSize(120, 16777215))
         self.assetNameLabel.setObjectName("assetNameLabel")
         self.gridLayout.addWidget(self.assetNameLabel, 4, 0, 1, 1)
-        spacerItem = QtGui.QSpacerItem(
+        spacerItem = QtWidgets.QSpacerItem(
             40,
             20,
-            QtGui.QSizePolicy.Expanding,
-            QtGui.QSizePolicy.Minimum
+            QtWidgets.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Minimum
         )
         self.gridLayout.addItem(spacerItem, 0, 2, 1, 1)
-        self.label_2 = QtGui.QLabel(ExportAssetOptions)
+        self.label_2 = QtWidgets.QLabel(ExportAssetOptions)
         self.label_2.setMinimumSize(QtCore.QSize(120, 0))
         self.label_2.setMaximumSize(QtCore.QSize(120, 16777215))
         self.label_2.setObjectName("label_2")
         self.gridLayout.addWidget(self.label_2, 3, 0, 1, 1)
-        self.assetTaskLabel_2 = QtGui.QLabel(ExportAssetOptions)
+        self.assetTaskLabel_2 = QtWidgets.QLabel(ExportAssetOptions)
         self.assetTaskLabel_2.setMinimumSize(QtCore.QSize(120, 0))
         self.assetTaskLabel_2.setMaximumSize(QtCore.QSize(120, 16777215))
         self.assetTaskLabel_2.setObjectName("assetTaskLabel_2")
         self.gridLayout.addWidget(self.assetTaskLabel_2, 2, 0, 1, 1)
-        self.ListStatusComboBox = QtGui.QComboBox(ExportAssetOptions)
+        self.ListStatusComboBox = QtWidgets.QComboBox(ExportAssetOptions)
         self.ListStatusComboBox.setMinimumSize(QtCore.QSize(100, 0))
         self.ListStatusComboBox.setMaximumSize(QtCore.QSize(200, 16777215))
         self.ListStatusComboBox.setObjectName("ListStatusComboBox")
@@ -96,69 +96,69 @@ class Ui_ExportAssetOptions(object):
 
     def retranslateUi(self, ExportAssetOptions):
         ExportAssetOptions.setWindowTitle(
-            QtGui.QApplication.translate(
+            QtWidgets.QApplication.translate(
                 "ExportAssetOptions",
                 "Form",
                 None,
-                QtGui.QApplication.UnicodeUTF8
+                QtWidgets.QApplication.UnicodeUTF8
             )
         )
         self.assetTaskLabel.setText(
-            QtGui.QApplication.translate(
+            QtWidgets.QApplication.translate(
                 "ExportAssetOptions",
                 "Task",
                 None,
-                QtGui.QApplication.UnicodeUTF8
+                QtWidgets.QApplication.UnicodeUTF8
             )
         )
         self.labelAssetType.setText(
-            QtGui.QApplication.translate(
+            QtWidgets.QApplication.translate(
                 "ExportAssetOptions",
                 "AssetType",
                 None,
-                QtGui.QApplication.UnicodeUTF8
+                QtWidgets.QApplication.UnicodeUTF8
             )
         )
         self.assetNameLabel.setText(
-            QtGui.QApplication.translate(
+            QtWidgets.QApplication.translate(
                 "ExportAssetOptions",
                 "AssetName:",
                 None,
-                QtGui.QApplication.UnicodeUTF8
+                QtWidgets.QApplication.UnicodeUTF8
             )
         )
         self.label_2.setText(
-            QtGui.QApplication.translate(
+            QtWidgets.QApplication.translate(
                 "ExportAssetOptions",
                 "Existing Assets",
                 None,
-                QtGui.QApplication.UnicodeUTF8
+                QtWidgets.QApplication.UnicodeUTF8
             )
         )
         self.assetTaskLabel_2.setText(
-            QtGui.QApplication.translate(
+            QtWidgets.QApplication.translate(
                 "ExportAssetOptions",
                 "Task status",
                 None,
-                QtGui.QApplication.UnicodeUTF8
+                QtWidgets.QApplication.UnicodeUTF8
             )
         )
 
 
-class ExportAssetOptionsWidget(QtGui.QWidget):
+class ExportAssetOptionsWidget(QtWidgets.QWidget):
     clickedAssetSignal = QtCore.Signal(str)
     clickedAssetTypeSignal = QtCore.Signal(str)
 
     def __init__(self, parent, browseMode='Shot'):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.ui = Ui_ExportAssetOptions()
         self.ui.setupUi(self)
         self.currentAssetType = None
         self.currentTask = None
         self.browseMode = browseMode
-        self.ui.ListAssetsViewModel = QtGui.QStandardItemModel()
+        self.ui.ListAssetsViewModel = QtWidgets.QStandardItemModel()
 
-        self.ui.ListAssetsSortModel = QtGui.QSortFilterProxyModel()
+        self.ui.ListAssetsSortModel = QtWidgets.QSortFilterProxyModel()
 
         self.ui.ListAssetsSortModel.setDynamicSortFilter(True)
         self.ui.ListAssetsSortModel.setFilterKeyColumn(1)
@@ -166,9 +166,9 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
 
         self.ui.ListAssetNamesComboBox.setModel(self.ui.ListAssetsSortModel)
 
-        self.ui.ListAssetsComboBoxModel = QtGui.QStandardItemModel()
+        self.ui.ListAssetsComboBoxModel = QtWidgets.QStandardItemModel()
 
-        assetTypeItem = QtGui.QStandardItem('Select AssetType')
+        assetTypeItem = QtWidgets.QStandardItem('Select AssetType')
         self.assetTypes = []
         self.assetTypes.append('')
         self.ui.ListAssetsComboBoxModel.appendRow(assetTypeItem)
@@ -184,14 +184,14 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
                     '{0} not available in ftrack'.format(assetTypeStr)
                 )
                 continue
-            assetTypeItem = QtGui.QStandardItem(assetType.getName())
+            assetTypeItem = QtWidgets.QStandardItem(assetType.getName())
             assetTypeItem.type = assetType.getShort()
             self.assetTypes.append(assetTypeItem.type)
             self.ui.ListAssetsComboBoxModel.appendRow(assetTypeItem)
 
         self.ui.ListAssetsComboBox.setModel(self.ui.ListAssetsComboBoxModel)
 
-        self.ui.AssetTaskComboBoxModel = QtGui.QStandardItemModel()
+        self.ui.AssetTaskComboBoxModel = QtWidgets.QStandardItemModel()
         self.ui.AssetTaskComboBox.setModel(self.ui.AssetTaskComboBoxModel)
 
         self.ui.ListAssetNamesComboBox.currentIndexChanged[str].connect(
@@ -241,13 +241,13 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
             assets = sorted(assets, key=lambda a: a.getName().lower())
             self.ui.ListAssetsViewModel.clear()
 
-            item = QtGui.QStandardItem('New')
+            item = QtWidgets.QStandardItem('New')
             item.id = ''
             curAssetType = self.currentAssetType
             if curAssetType:
-                itemType = QtGui.QStandardItem(curAssetType)
+                itemType = QtWidgets.QStandardItem(curAssetType)
             else:
-                itemType = QtGui.QStandardItem('')
+                itemType = QtWidgets.QStandardItem('')
             self.ui.ListAssetsViewModel.setItem(0, 0, item)
             self.ui.ListAssetsViewModel.setItem(0, 1, itemType)
             self.ui.ListAssetNamesComboBox.setCurrentIndex(0)
@@ -256,9 +256,9 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
             for i in range(0, len(assets)):
                 assetName = assets[i].getName()
                 if assetName != '':
-                    item = QtGui.QStandardItem(assetName)
+                    item = QtWidgets.QStandardItem(assetName)
                     item.id = assets[i].getId()
-                    itemType = QtGui.QStandardItem(
+                    itemType = QtWidgets.QStandardItem(
                         assets[i].getType().getShort()
                     )
 
@@ -347,7 +347,7 @@ class ExportAssetOptionsWidget(QtGui.QWidget):
             taskids = [x.getId() for x in ftrackuser.getTasks()]
 
             for i in range(len(tasks)):
-                assetTaskItem = QtGui.QStandardItem(tasks[i].getName())
+                assetTaskItem = QtWidgets.QStandardItem(tasks[i].getName())
                 assetTaskItem.id = tasks[i].getId()
                 self.ui.AssetTaskComboBoxModel.appendRow(assetTaskItem)
 

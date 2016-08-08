@@ -2,7 +2,7 @@
 # :copyright: Copyright (c) 2015 ftrack
 
 import getpass
-from PySide import QtGui, QtCore
+from Qt import QtWidgets, QtCore, QtWidgets
 
 from ftrack_connect.ui.widget.web_view import WebViewWidget
 from ftrack_connect.ui.widget.header import Header
@@ -11,7 +11,7 @@ from ftrack_connect.ui.theme import applyTheme
 import ftrack
 
 
-class FtrackTasksDialog(QtGui.QDialog):
+class FtrackTasksDialog(QtWidgets.QDialog):
     def __init__(self, parent=None, connector=None):
         ''''Initialize dialog with *parent* and *connector* instance.'''
         if not connector:
@@ -26,20 +26,20 @@ class FtrackTasksDialog(QtGui.QDialog):
         super(FtrackTasksDialog, self).__init__(self.parent)
         applyTheme(self, 'integration')
         self.setSizePolicy(
-            QtGui.QSizePolicy(
-                QtGui.QSizePolicy.Expanding,
-                QtGui.QSizePolicy.Expanding
+            QtWidgets.QSizePolicy(
+                QtWidgets.QSizePolicy.Expanding,
+                QtWidgets.QSizePolicy.Expanding
             )
         )
         self.setMinimumWidth(500)
-        self.centralwidget = QtGui.QWidget(self)
-        self.verticalMainLayout = QtGui.QVBoxLayout(self)
-        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.centralwidget = QtWidgets.QWidget(self)
+        self.verticalMainLayout = QtWidgets.QVBoxLayout(self)
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
 
         self.headerWidget = Header(getpass.getuser(), self)
         self.headerWidget.setSizePolicy(
-            QtGui.QSizePolicy.Expanding,
-            QtGui.QSizePolicy.Fixed
+            QtWidgets.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Fixed
         )
         self.verticalMainLayout.addWidget(self.headerWidget)
 
