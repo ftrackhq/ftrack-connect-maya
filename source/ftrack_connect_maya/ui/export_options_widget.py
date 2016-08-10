@@ -69,7 +69,8 @@ class Ui_ExportOptions(object):
         )
         self.verticalLayout.addItem(spacerItem)
 
-        self.retranslateUi(ExportOptions)
+        # self.retranslateUi(ExportOptions)
+        
         QtCore.QObject.connect(
             self.pushButton,
             QtCore.SIGNAL("clicked()"),
@@ -82,47 +83,47 @@ class Ui_ExportOptions(object):
         )
         QtCore.QMetaObject.connectSlotsByName(ExportOptions)
 
-    def retranslateUi(self, ExportOptions):
-        ExportOptions.setWindowTitle(
-            QtWidgets.QApplication.translate(
-                "ExportOptions", "Form", None,
-                QtWidgets.QApplication.UnicodeUTF8
-            )
-        )
-        self.label_4.setText(
-            QtWidgets.QApplication.translate(
-                "ExportOptions", "Thumbnail:", None,
-                QtWidgets.QApplication.UnicodeUTF8
-            )
-        )
+    # def retranslateUi(self, ExportOptions):
+    #     ExportOptions.setWindowTitle(
+    #         QtWidgets.QApplication.translate(
+    #             "ExportOptions", "Form", None,
+    #             QtWidgets.QApplication.UnicodeUTF8
+    #         )
+    #     )
+    #     self.label_4.setText(
+    #         QtWidgets.QApplication.translate(
+    #             "ExportOptions", "Thumbnail:", None,
+    #             QtWidgets.QApplication.UnicodeUTF8
+    #         )
+    #     )
 
-        self.pushButton.setText(
-            QtWidgets.QApplication.translate(
-                "ExportOptions", "Browse", None,
-                QtWidgets.QApplication.UnicodeUTF8
-            )
-        )
+    #     self.pushButton.setText(
+    #         QtWidgets.QApplication.translate(
+    #             "ExportOptions", "Browse", None,
+    #             QtWidgets.QApplication.UnicodeUTF8
+    #         )
+    #     )
 
-        self.screenshotButton.setText(
-            QtWidgets.QApplication.translate(
-                "ExportOptions", "Screenshot", None,
-                QtWidgets.QApplication.UnicodeUTF8
-            )
-        )
+    #     self.screenshotButton.setText(
+    #         QtWidgets.QApplication.translate(
+    #             "ExportOptions", "Screenshot", None,
+    #             QtWidgets.QApplication.UnicodeUTF8
+    #         )
+    #     )
 
-        self.label_5.setText(
-            QtWidgets.QApplication.translate(
-                "ExportOptions", "Comment:", None,
-                QtWidgets.QApplication.UnicodeUTF8
-            )
-        )
+    #     self.label_5.setText(
+    #         QtWidgets.QApplication.translate(
+    #             "ExportOptions", "Comment:", None,
+    #             QtWidgets.QApplication.UnicodeUTF8
+    #         )
+    #     )
 
-        self.publishButton.setText(
-            QtWidgets.QApplication.translate(
-                "ExportOptions", "Publish!", None,
-                QtWidgets.QApplication.UnicodeUTF8
-            )
-        )
+    #     self.publishButton.setText(
+    #         QtWidgets.QApplication.translate(
+    #             "ExportOptions", "Publish!", None,
+    #             QtWidgets.QApplication.UnicodeUTF8
+    #         )
+    #     )
 
 
 class ExportOptionsWidget(QtWidgets.QWidget):
