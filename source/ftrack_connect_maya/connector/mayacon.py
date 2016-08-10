@@ -7,6 +7,7 @@ import uuid
 import maya.cmds as mc
 import maya.OpenMayaUI as mui
 import maya.mel as mm
+from pymel.core.uitypes import pysideWrapInstance
 
 from ftrack_connect.connector import base as maincon
 from ftrack_connect.connector import FTAssetHandlerInstance
@@ -126,11 +127,9 @@ class Connector(maincon.Connector):
     @staticmethod
     def getMainWindow():
         '''Return the *main window* instance'''
+        from Qt import QtWidgets
         ptr = mui.MQtUtil.mainWindow()
-        if ptr is not None:
-            import shiboken
-            from PySide import QtGui
-            return shiboken.wrapInstance(long(ptr), QtGui.QMainWindow)
+        return pysideWrapInstance(ptr, QtWidgets.QMainWindow)
 
     @staticmethod
     def wrapinstance(ptr, base=None):
@@ -144,31 +143,16 @@ class Connector(maincon.Connector):
         :return: QWidget or subclass instance
         :rtype: QtGui.QWidget
         """
-        import pymel
-        from Qt import QtWidgets
 
         if ptr is None:
             return None
-        ptr = long(ptr)  # Ensure type
+
+        # ptr = long(ptr)  # Ensure type
         if not base:
+            from Qt import QtWidgets
             base = QtWidgets.QObject
 
-        return pymel.core.uitypes.pysideWrapInstance(ptr, base)
-        # if 'shiboken' in globals():
-        #     if base is None:
-        #         qObj = shiboken.wrapInstance(long(ptr), QtCore.QObject)
-        #         metaObj = qObj.metaObject()
-        #         cls = metaObj.className()
-        #         superCls = metaObj.superClass().className()
-        #         if hasattr(QtGui, cls):
-        #             base = getattr(QtGui, cls)
-        #         elif hasattr(QtGui, superCls):
-        #             base = getattr(QtGui, superCls)
-        #         else:
-        #             base = QtGui.QWidget
-        #     return shiboken.wrapInstance(long(ptr), base)
-        # else:
-        #     return None
+        return pysideWrapInstance(ptr, base)
 
     @staticmethod
     def importAsset(iAObj):
