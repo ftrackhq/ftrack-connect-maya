@@ -144,27 +144,31 @@ class Connector(maincon.Connector):
         :return: QWidget or subclass instance
         :rtype: QtGui.QWidget
         """
-        import shiboken
-        from PySide import QtGui, QtCore
+        import pymel
+        from Qt import QtWidgets
 
         if ptr is None:
             return None
         ptr = long(ptr)  # Ensure type
-        if 'shiboken' in globals():
-            if base is None:
-                qObj = shiboken.wrapInstance(long(ptr), QtCore.QObject)
-                metaObj = qObj.metaObject()
-                cls = metaObj.className()
-                superCls = metaObj.superClass().className()
-                if hasattr(QtGui, cls):
-                    base = getattr(QtGui, cls)
-                elif hasattr(QtGui, superCls):
-                    base = getattr(QtGui, superCls)
-                else:
-                    base = QtGui.QWidget
-            return shiboken.wrapInstance(long(ptr), base)
-        else:
-            return None
+        if not base:
+            base = QtWidgets.QObject
+
+        return pymel.core.uitypes.pysideWrapInstance(ptr, base)
+        # if 'shiboken' in globals():
+        #     if base is None:
+        #         qObj = shiboken.wrapInstance(long(ptr), QtCore.QObject)
+        #         metaObj = qObj.metaObject()
+        #         cls = metaObj.className()
+        #         superCls = metaObj.superClass().className()
+        #         if hasattr(QtGui, cls):
+        #             base = getattr(QtGui, cls)
+        #         elif hasattr(QtGui, superCls):
+        #             base = getattr(QtGui, superCls)
+        #         else:
+        #             base = QtGui.QWidget
+        #     return shiboken.wrapInstance(long(ptr), base)
+        # else:
+        #     return None
 
     @staticmethod
     def importAsset(iAObj):
