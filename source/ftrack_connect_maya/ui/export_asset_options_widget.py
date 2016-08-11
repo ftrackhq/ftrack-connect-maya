@@ -83,7 +83,7 @@ class Ui_ExportAssetOptions(object):
         self.gridLayout.addWidget(self.ListStatusComboBox, 2, 1, 1, 1)
         self.verticalLayout.addLayout(self.gridLayout)
 
-        # self.retranslateUi(ExportAssetOptions)
+        self.retranslateUi(ExportAssetOptions)
 
         self.ListAssetsComboBox.currentIndexChanged[int].connect(
             ExportAssetOptions.setFilter
@@ -94,55 +94,55 @@ class Ui_ExportAssetOptions(object):
         )
         QtCore.QMetaObject.connectSlotsByName(ExportAssetOptions)
 
-    # def retranslateUi(self, ExportAssetOptions):
-    #     ExportAssetOptions.setWindowTitle(
-    #         QtWidgets.QApplication.translate(
-    #             "ExportAssetOptions",
-    #             "Form",
-    #             None,
-    #             QtWidgets.QApplication.UnicodeUTF8
-    #         )
-    #     )
-    #     self.assetTaskLabel.setText(
-    #         QtWidgets.QApplication.translate(
-    #             "ExportAssetOptions",
-    #             "Task",
-    #             None,
-    #             QtWidgets.QApplication.UnicodeUTF8
-    #         )
-    #     )
-    #     self.labelAssetType.setText(
-    #         QtWidgets.QApplication.translate(
-    #             "ExportAssetOptions",
-    #             "AssetType",
-    #             None,
-    #             QtWidgets.QApplication.UnicodeUTF8
-    #         )
-    #     )
-    #     self.assetNameLabel.setText(
-    #         QtWidgets.QApplication.translate(
-    #             "ExportAssetOptions",
-    #             "AssetName:",
-    #             None,
-    #             QtWidgets.QApplication.UnicodeUTF8
-    #         )
-    #     )
-    #     self.label_2.setText(
-    #         QtWidgets.QApplication.translate(
-    #             "ExportAssetOptions",
-    #             "Existing Assets",
-    #             None,
-    #             QtWidgets.QApplication.UnicodeUTF8
-    #         )
-    #     )
-    #     self.assetTaskLabel_2.setText(
-    #         QtWidgets.QApplication.translate(
-    #             "ExportAssetOptions",
-    #             "Task status",
-    #             None,
-    #             QtWidgets.QApplication.UnicodeUTF8
-    #         )
-    #     )
+    def retranslateUi(self, ExportAssetOptions):
+        ExportAssetOptions.setWindowTitle(
+            QtWidgets.QApplication.translate(
+                "ExportAssetOptions",
+                "Form",
+                None,
+                QtWidgets.QApplication.UnicodeUTF8
+            )
+        )
+        self.assetTaskLabel.setText(
+            QtWidgets.QApplication.translate(
+                "ExportAssetOptions",
+                "Task",
+                None,
+                QtWidgets.QApplication.UnicodeUTF8
+            )
+        )
+        self.labelAssetType.setText(
+            QtWidgets.QApplication.translate(
+                "ExportAssetOptions",
+                "AssetType",
+                None,
+                QtWidgets.QApplication.UnicodeUTF8
+            )
+        )
+        self.assetNameLabel.setText(
+            QtWidgets.QApplication.translate(
+                "ExportAssetOptions",
+                "AssetName:",
+                None,
+                QtWidgets.QApplication.UnicodeUTF8
+            )
+        )
+        self.label_2.setText(
+            QtWidgets.QApplication.translate(
+                "ExportAssetOptions",
+                "Existing Assets",
+                None,
+                QtWidgets.QApplication.UnicodeUTF8
+            )
+        )
+        self.assetTaskLabel_2.setText(
+            QtWidgets.QApplication.translate(
+                "ExportAssetOptions",
+                "Task status",
+                None,
+                QtWidgets.QApplication.UnicodeUTF8
+            )
+        )
 
 
 class ExportAssetOptionsWidget(QtWidgets.QWidget):
