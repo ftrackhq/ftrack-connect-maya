@@ -1,7 +1,7 @@
 # :coding: utf-8
 # :copyright: Copyright (c) 2015 ftrack
 
-from Qt import QtGui, QtCore, QtWidgets
+from QtExt import QtGui, QtCore, QtWidgets
 
 from ftrack_connect.ui.widget.info import FtrackInfoDialog
 from ftrack_connect.ui.theme import applyTheme

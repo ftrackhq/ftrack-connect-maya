@@ -127,7 +127,7 @@ class Connector(maincon.Connector):
     @staticmethod
     def getMainWindow():
         '''Return the *main window* instance'''
-        from Qt import QtWidgets
+        from QtExt import QtWidgets
         ptr = mui.MQtUtil.mainWindow()
         return pysideWrapInstance(ptr, QtWidgets.QMainWindow)
 
@@ -149,7 +149,7 @@ class Connector(maincon.Connector):
 
         # ptr = long(ptr)  # Ensure type
         if not base:
-            from Qt import QtWidgets
+            from QtExt import QtWidgets
             base = QtWidgets.QObject
 
         return pysideWrapInstance(ptr, base)

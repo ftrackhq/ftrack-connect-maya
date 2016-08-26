@@ -4,7 +4,7 @@
 import os
 import getpass
 
-from Qt import QtWidgets, QtCore, QtGui
+from QtExt import QtWidgets, QtCore, QtGui
 
 import ftrack
 from ftrack_connect import connector as ftrack_connector
