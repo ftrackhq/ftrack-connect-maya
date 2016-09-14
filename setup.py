@@ -118,6 +118,6 @@ setup(
     },
     data_files=data_files,
     dependency_links=[
-        'git+https://bitbucket.org/efestolab/qtext/get/0.1.0.zip#egg=QtExt-0.1.0'
+        'git+https://bitbucket.org/ftrack/qtext/get/0.1.0.zip#egg=QtExt-0.1.0'
     ]
 )
