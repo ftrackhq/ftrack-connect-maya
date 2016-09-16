@@ -7,6 +7,12 @@
 Release Notes
 *************
 
+.. release:: Upcoming
+
+    .. change:: changed
+
+        Add support for Maya 2017.
+
 .. release:: 0.2.3
     :date: 2016-06-07
 
