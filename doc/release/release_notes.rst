@@ -7,7 +7,8 @@
 Release Notes
 *************
 
-.. release:: Upcoming
+.. release:: 0.2.4
+    :date: 2016-09-16
 
     .. change:: changed
 
