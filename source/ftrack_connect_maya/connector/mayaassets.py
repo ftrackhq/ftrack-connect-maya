@@ -33,7 +33,10 @@ class GenericAsset(FTAssetType):
 
     def importAsset(self, iAObj=None):
         '''Import asset defined in *iAObj*'''
-        if iAObj.componentName == 'alembic':
+        if (
+            iAObj.componentName == 'alembic' or
+            iAObj.filePath.endswith('abc')
+        ):
             try:
                 mc.loadPlugin('AbcImport.so', qt=1)
             except:
