@@ -9,9 +9,9 @@ Release Notes
 
 .. release:: Upcoming
 
-    .. change:: fixed
+    .. change:: Compatibility
 
-        Maya 2015 breaks due to incompatible call to wrap pointers.
+        Integration breaks on Maya 2015.
 
 .. release:: 0.2.4
     :date: 2016-09-16
