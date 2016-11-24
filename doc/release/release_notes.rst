@@ -9,7 +9,7 @@ Release Notes
 
 .. release:: Upcoming
 
-    .. change:: Compatibility
+    .. change:: compatibility
 
         Integration breaks on Maya 2015.
 
