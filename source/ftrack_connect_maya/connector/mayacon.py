@@ -148,15 +148,14 @@ class Connector(maincon.Connector):
         if ptr is None:
             return None
 
-        maya_version = int(mc.about(version=True))
         if not base:
             from QtExt import QtWidgets, QtCore
             base = QtWidgets.QObject
 
-        if maya_version > 2015:
+        try:
             from pymel.core.uitypes import pysideWrapInstance
             return pysideWrapInstance(ptr, base)
-        else:
+        except Exception:
             ptr = long(ptr)  # Ensure type
             if 'shiboken' in globals():
                 import shiboken
