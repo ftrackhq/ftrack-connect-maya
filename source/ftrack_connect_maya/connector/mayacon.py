@@ -127,15 +127,12 @@ class Connector(maincon.Connector):
     def getMainWindow():
         '''Return the *main window* instance'''
         maya_version = int(mc.about(version=True))
+        print 'MAYA VERSION:', maya_version
+
         from QtExt import QtWidgets
         ptr = mui.MQtUtil.mainWindow()
         if ptr is not None:
-            if maya_version >= 2015:
-                from pymel.core.uitypes import pysideWrapInstance
-                return pysideWrapInstance(ptr, QtWidgets.QMainWindow)
-            else:
-                import shiboken
-                return shiboken.wrapInstance(long(ptr), QtWidgets.QMainWindow)
+            return Connector.wrapinstance(ptr, QtWidgets.QMainWindow)
 
     @staticmethod
     def wrapinstance(ptr, base=None):
@@ -154,30 +151,33 @@ class Connector(maincon.Connector):
             return None
 
         maya_version = int(mc.about(version=True))
-
-        # ptr = long(ptr)  # Ensure type
+        print 'MAYA VERSION:', maya_version
         if not base:
             from QtExt import QtWidgets, QtCore
             base = QtWidgets.QObject
 
-        if maya_version >= 2015:
+        if maya_version > 2015:
+            print 'IN MAYA >= 2015'
             from pymel.core.uitypes import pysideWrapInstance
             return pysideWrapInstance(ptr, base)
         else:
+            print 'IN MAYA <=2015'
             ptr = long(ptr)  # Ensure type
-            import shiboken
-            if base is None:
-                qObj = shiboken.wrapInstance(long(ptr), QtCore.QObject)
-                metaObj = qObj.metaObject()
-                cls = metaObj.className()
-                superCls = metaObj.superClass().className()
-                if hasattr(QtWidgets, cls):
-                    base = getattr(QtWidgets, cls)
-                elif hasattr(QtWidgets, superCls):
-                    base = getattr(QtWidgets, superCls)
-                else:
-                    base = QtWidgets.QWidget
-            return shiboken.wrapInstance(long(ptr), base)
+            if 'shiboken' in globals():
+                import shiboken
+                if base is None:
+                    qObj = shiboken.wrapInstance(long(ptr), QtCore.QObject)
+                    metaObj = qObj.metaObject()
+                    cls = metaObj.className()
+                    superCls = metaObj.superClass().className()
+                    if hasattr(QtWidgets, cls):
+                        base = getattr(QtWidgets, cls)
+                    elif hasattr(QtWidgets, superCls):
+                        base = getattr(QtWidgets, superCls)
+                    else:
+                        base = QtWidgets.QWidget
+                return shiboken.wrapInstance(long(ptr), base)
+            return None
 
     @staticmethod
     def importAsset(iAObj):

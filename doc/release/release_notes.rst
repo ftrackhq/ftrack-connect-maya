@@ -7,6 +7,12 @@
 Release Notes
 *************
 
+.. release:: Upcoming
+
+    .. change:: fixed
+
+        Maya 2015 breaks due to incompatible call to wrap pointers.
+
 .. release:: 0.2.4
     :date: 2016-09-16
 
