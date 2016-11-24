@@ -126,8 +126,6 @@ class Connector(maincon.Connector):
     @staticmethod
     def getMainWindow():
         '''Return the *main window* instance'''
-        maya_version = int(mc.about(version=True))
-        print 'MAYA VERSION:', maya_version
 
         from QtExt import QtWidgets
         ptr = mui.MQtUtil.mainWindow()
