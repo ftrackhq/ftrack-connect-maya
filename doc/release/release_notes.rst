@@ -10,6 +10,11 @@ Release Notes
 .. release:: Upcoming
 
     .. change:: fixed
+        :tags: Compatibility
+
+        Integration breaks on Maya 2015.
+
+    .. change:: fixed
 
         Can't import abc which does not have "alembic" as component name.
 
