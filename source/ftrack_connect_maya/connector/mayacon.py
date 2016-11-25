@@ -154,8 +154,7 @@ class Connector(maincon.Connector):
 
         try:
             from pymel.core.uitypes import pysideWrapInstance
-            return pysideWrapInstance(ptr, base)
-        except Exception:
+        except ImportError:
             ptr = long(ptr)  # Ensure type
             if 'shiboken' in globals():
                 import shiboken
@@ -172,6 +171,8 @@ class Connector(maincon.Connector):
                         base = QtWidgets.QWidget
                 return shiboken.wrapInstance(long(ptr), base)
             return None
+        else:
+            return pysideWrapInstance(ptr, base)
 
     @staticmethod
     def importAsset(iAObj):
