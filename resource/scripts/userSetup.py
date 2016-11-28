@@ -93,12 +93,17 @@ def handle_scan_result(result, scanned_ftrack_nodes):
     '''Handle scan *result*.'''
     message = []
     for partial_result, ftrack_node in zip(result, scanned_ftrack_nodes):
-        current_version = partial_result.get('current_version')
-        latest_version = partial_result.get('latest_version')
-        if current_version != latest_version:
+        if partial_result is None:
+            # The version was not found on the server, probably because it has
+            # been deleted.
+            continue
+
+        scanned = partial_result.get('scanned')
+        latest = partial_result.get('latest')
+        if scanned['version'] != latest['version']:
             message.append(
                 '{0} can be updated from v{1} to v{2}'.format(
-                    ftrack_node, current_version, latest_version
+                    ftrack_node, scanned['version'], latest['version']
                 )
             )
 
@@ -148,10 +153,12 @@ def scan_for_new_assets():
         )
         scanner = ftrack_connect.asset_version_scanner.Scanner(
             session=session,
-            result_handler=lambda result: ftrack_connect.util.invoke_in_main_thread(
-                handle_scan_result,
-                result,
-                scanned_ftrack_nodes
+            result_handler=(
+                lambda result: ftrack_connect.util.invoke_in_main_thread(
+                    handle_scan_result,
+                    result,
+                    scanned_ftrack_nodes
+                )
             )
         )
         scanner.scan(check_items)
