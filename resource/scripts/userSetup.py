@@ -81,6 +81,13 @@ def loadAndInit():
             command=lambda x, dialog=ftrack_docked_dialog: dialog.show(),
         )
 
+    mc.menuItem(divider=True)
+    mc.menuItem(
+        parent=ftrackMenu,
+        label='Scan for new versions',
+        command=lambda x: scan_for_new_assets()
+    )
+
 
 def handle_scan_result(result, scanned_ftrack_nodes):
     '''Handle scan *result*.'''
