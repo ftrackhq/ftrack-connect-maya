@@ -8,6 +8,9 @@ import logging
 import ftrack
 import functools
 
+import ftrack_connect.util
+import ftrack_connect.asset_version_scanner
+
 from ftrack_connect_maya.connector import Connector
 from ftrack_connect_maya.connector.mayacon import DockedWidget
 from ftrack_connect.ui.widget.asset_manager import FtrackAssetManagerDialog
@@ -79,34 +82,23 @@ def loadAndInit():
         )
 
 
-def checkForNewAssets():
-    '''Check whether there is any new asset'''
-    allObjects = mc.ls(type='ftrackAssetNode')
-    message = ''
-    for ftNode in allObjects:
-        if not mc.referenceQuery(ftNode, isNodeReferenced=True):
-            assetVersion = mc.getAttr("{0}.assetVersion".format(ftNode))
-            assetId = mc.getAttr("{0}.assetId".format(ftNode))
-            if assetId is None:
-                mc.warning(
-                    'FTrack node "{0}" does not contain data!'.format(ftNode)
+def handle_scan_result(result, scanned_ftrack_nodes):
+    '''Handle scan *result*.'''
+    message = []
+    for partial_result, ftrack_node in zip(result, scanned_ftrack_nodes):
+        current_version = partial_result.get('current_version')
+        latest_version = partial_result.get('latest_version')
+        if current_version != latest_version:
+            message.append(
+                '{0} can be updated from v{1} to v{2}'.format(
+                    ftrack_node, current_version, latest_version
                 )
-                continue
+            )
 
-            assetTake = mc.getAttr(ftNode + ".assetTake")
-            assetversion = ftrack.AssetVersion(assetId)
-            asset = assetversion.getAsset()
-            versions = asset.getVersions(componentNames=[assetTake])
-            latestVersion = versions[-1].getVersion()
-            if latestVersion != assetVersion:
-                message = '- {0} can be updated from v:{1} to v:{2}'.format(
-                    ftNode, assetVersion, latestVersion
-                )
-
-    if message != '':
+    if message:
         confirm = mc.confirmDialog(
-            title='New assets',
-            message=message,
+            title='Scan result',
+            message='\n'.join(message),
             button=['Open AssetManager', 'Close'],
             defaultButton='Close',
             cancelButton='Close',
@@ -117,6 +109,45 @@ def checkForNewAssets():
             global assetManagerDialog
             assetManagerDialog = FtrackAssetManagerDialog(connector=connector)
             assetManagerDialog.show()
+
+
+def scan_for_new_assets():
+    '''Check whether there is any new asset.'''
+    nodes_in_scene = mc.ls(type='ftrackAssetNode')
+
+    check_items = []
+    scanned_ftrack_nodes = []
+    for ftrack_node in nodes_in_scene:
+        if not mc.referenceQuery(ftrack_node, isNodeReferenced=True):
+            asset_version_id = mc.getAttr('{0}.assetId'.format(ftrack_node))
+            if asset_version_id is None:
+                mc.warning(
+                    'FTrack node "{0}" does not contain data!'.format(ftrack_node)
+                )
+                continue
+
+            component_name = mc.getAttr(ftrack_node + '.assetTake')
+            check_items.append({
+                'asset_version_id': asset_version_id,
+                'component_name': component_name
+            })
+            scanned_ftrack_nodes.append(ftrack_node)
+
+    if scanned_ftrack_nodes:
+        import ftrack_api
+        session = ftrack_api.Session(
+            auto_connect_event_hub=False,
+            plugin_paths=None
+        )
+        scanner = ftrack_connect.asset_version_scanner.Scanner(
+            session=session,
+            result_handler=lambda result: ftrack_connect.util.invoke_in_main_thread(
+                handle_scan_result,
+                result,
+                scanned_ftrack_nodes
+            )
+        )
+        scanner.scan(check_items)
 
 
 def refAssetManager():
@@ -149,7 +180,7 @@ def framerateInit():
 
 
 if not Connector.batch():
-    mc.scriptJob(e=["SceneOpened", "checkForNewAssets()"], permanent=True)
+    mc.scriptJob(e=["SceneOpened", "scan_for_new_assets()"], permanent=True)
     mc.scriptJob(e=["SceneOpened", "refAssetManager()"], permanent=True)
     mc.evalDeferred("loadAndInit()")
     mc.evalDeferred("framerateInit()")
