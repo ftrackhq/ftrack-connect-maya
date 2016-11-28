@@ -84,7 +84,7 @@ def loadAndInit():
     mc.menuItem(divider=True)
     mc.menuItem(
         parent=ftrackMenu,
-        label='Scan for new versions',
+        label='Scan for new assets',
         command=lambda x: scan_for_new_assets()
     )
 
