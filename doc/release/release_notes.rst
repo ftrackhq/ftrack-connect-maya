@@ -10,6 +10,11 @@ Release Notes
 .. release:: Upcoming
 
     .. change:: fixed
+        :tags: Performance
+
+        Scanning for new asset versions at scene startup is very slow.
+
+    .. change:: fixed
         :tags: Compatibility
 
         Integration breaks on Maya 2015.
