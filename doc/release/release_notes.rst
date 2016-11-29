@@ -12,6 +12,11 @@ Release Notes
     .. change:: fixed
         :tags: Performance
 
+        Scanning for new asset versions at scene startup is very slow.
+
+    .. change:: fixed
+        :tags: Performance
+
         All panels are created on Maya startup which has a negative impact
         on performance.
 
