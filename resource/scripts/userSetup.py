@@ -22,26 +22,38 @@ from ftrack_connect_maya.ui.tasks import FtrackTasksDialog
 ftrack.setup()
 
 currentEntity = ftrack.Task(
-    os.getenv('FTRACK_TASKID',
-        os.getenv('FTRACK_SHOTID')
-    )
+    os.getenv('FTRACK_TASKID', os.getenv('FTRACK_SHOTID'))
 )
 
 
 dialogs = [
-    FtrackImportAssetDialog,
-    functools.partial(
-        PublishAssetDialog,
-        currentEntity=currentEntity
+    (FtrackImportAssetDialog, 'Import asset'),
+    (
+        functools.partial(PublishAssetDialog, currentEntity=currentEntity),
+        'Publish asset'
     ),
     'divider',
-    FtrackAssetManagerDialog,
+    (FtrackAssetManagerDialog, 'Asset manager'),
     'divider',
-    FtrackMayaInfoDialog,
-    FtrackTasksDialog
+    (FtrackMayaInfoDialog, 'Info'),
+    (FtrackTasksDialog, 'Tasks')
 ]
 
+created_dialogs = dict()
+
 connector = Connector()
+
+
+def open_dialog(dialog_class):
+    '''Open *dialog_class* and create if not already existing.'''
+    dialog_name = dialog_class
+
+    if dialog_name not in created_dialogs:
+        ftrack_dialog = dialog_class(connector=connector)
+        ftrack_docked_dialog = DockedWidget(ftrack_dialog)
+        created_dialogs[dialog_name] = ftrack_docked_dialog
+
+    created_dialogs[dialog_name].show()
 
 
 def loadAndInit():
@@ -67,18 +79,19 @@ def loadAndInit():
     )
 
     # Register and hook the dialog in ftrack menu
-    for Dialog in dialogs:
-        if Dialog == 'divider':
+    for item in dialogs:
+        if item == 'divider':
             mc.menuItem(divider=True)
             continue
 
-        ftrack_dialog = Dialog(connector=connector)
-        ftrack_docked_dialog = DockedWidget(ftrack_dialog)
+        dialog_class, label = item
 
         mc.menuItem(
             parent=ftrackMenu,
-            label=ftrack_dialog.windowTitle().replace('ftrack', ''),
-            command=lambda x, dialog=ftrack_docked_dialog: dialog.show(),
+            label=label,
+            command=(
+                lambda x, dialog_class=dialog_class: open_dialog(dialog_class)
+            )
         )
 
     mc.menuItem(divider=True)
