@@ -94,13 +94,6 @@ def loadAndInit():
             )
         )
 
-    mc.menuItem(divider=True)
-    mc.menuItem(
-        parent=ftrackMenu,
-        label='Scan for new assets',
-        command=lambda x: scan_for_new_assets()
-    )
-
 
 def handle_scan_result(result, scanned_ftrack_nodes):
     '''Handle scan *result*.'''
