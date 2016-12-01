@@ -7,7 +7,8 @@
 Release Notes
 *************
 
-.. release:: Upcoming
+.. release:: 0.2.5
+    :date: 2016-12-01
 
     .. change:: fixed
         :tags: Performance
