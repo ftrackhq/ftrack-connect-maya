@@ -60,13 +60,16 @@ class GenericAsset(FTAssetType):
             self.referenceAssetBool = True
             groupReferenceBool = True
 
-            fileAssetNameSpace = os.path.basename(iAObj.filePath)
-            fileAssetNameSpace = os.path.splitext(fileAssetNameSpace)[0]
+            uiNameSpace = os.path.basename(iAObj.filePath)
+            uiNameSpace = os.path.splitext(uiNameSpace)[0]
             # remove the last bit, which usually is the version
-            fileAssetNameSpace = '_'.join(fileAssetNameSpace.split('_')[:-1])
+            uiNameSpace = '_'.join(uiNameSpace.split('_')[:-1])
+
+            if iAObj.options['mayaNamespace'] == "Component":
+                uiNameSpace = iAObj.componentName
 
             nameSpaceStr = (
-                iAObj.options.get('nameSpaceStr', None) or fileAssetNameSpace
+                iAObj.options.get('nameSpaceStr', None) or uiNameSpace
             )
 
             importType = 'mayaBinary'
@@ -109,7 +112,7 @@ class GenericAsset(FTAssetType):
             ):
                 preserveReferences = iAObj.options['mayaReference']
 
-            if not iAObj.options.get('mayaNamespace'):
+            if iAObj.options['mayaNamespace'] == "None":
                 nameSpaceStr = ':'
 
             self.oldData = set(mc.ls())
@@ -1022,8 +1025,14 @@ class SceneAsset(GenericAsset):
             <row name="Preserve References" accepts="maya">
                 <option type="checkbox" name="mayaReference" value="True"/>
             </row>
-            <row name="Add Asset Namespace" accepts="maya">
-                <option type="checkbox" name="mayaNamespace" value="False"/>
+            <row name="Namespace from:" accepts="maya">
+                <option type="radio" name="mayaNamespace">
+                    <optionitem name="Component" value="True"/>
+                    <optionitem name="File name"/>
+                    <optionitem name="None"/>
+                </option>
+            </row>
+            <row name="Custom Namespace" accepts="maya">
                 <option type="string" name="nameSpaceStr" value=""/>
             </row>
         </tab>
