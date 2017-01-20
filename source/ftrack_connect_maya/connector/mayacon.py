@@ -74,21 +74,27 @@ class Connector(maincon.Connector):
         startFrame = float(os.getenv('FS', 1001))
         endFrame = float(os.getenv('FE', 1101))
         shotId = os.getenv('FTRACK_SHOTID')
-        shot = ftrack.Shot(id=shotId)
-        handles = float(shot.get('handles'))
+        try:
+            shot = ftrack.Shot(id=shotId)
 
-        mc.warning('Setting timeline to {0} {1} '.format(startFrame, endFrame))
+            handles = float(shot.get('handles'))
 
-        # add handles to start and end frame
-        hsf = startFrame - handles
-        hef = endFrame + handles
+            mc.warning(
+                'Setting timeline to {0} {1} '.format(startFrame, endFrame)
+            )
 
-        mc.playbackOptions(
-            minTime=hsf,
-            maxTime=hef,
-            animationStartTime=hsf,
-            animationEndTime=hef
-        )
+            # add handles to start and end frame
+            hsf = startFrame - handles
+            hef = endFrame + handles
+
+            mc.playbackOptions(
+                minTime=hsf,
+                maxTime=hef,
+                animationStartTime=hsf,
+                animationEndTime=hef
+            )
+        except Exception as error:
+            mc.warning("Could not set timeline due to: " + str(error))
 
     @staticmethod
     def getAssets():
