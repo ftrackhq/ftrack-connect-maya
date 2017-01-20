@@ -7,6 +7,13 @@
 Release Notes
 *************
 
+.. release:: Upcoming
+
+    .. change:: fixed
+        :tags: Compatibility
+
+        If PySide is installed on the system Maya 2017 may crash.
+
 .. release:: 0.2.5
     :date: 2016-12-01
 
