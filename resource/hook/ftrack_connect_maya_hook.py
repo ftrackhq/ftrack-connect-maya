@@ -283,6 +283,12 @@ class ApplicationLauncher(ftrack_connect.application.ApplicationLauncher):
             'MAYA_PLUG_IN_PATH',
             environment
         )
+
+        if float(application['version']) < 2017:
+            environment['QT_PREFERRED_BINDING'] = 'PySide'
+        else:
+            environment['QT_PREFERRED_BINDING'] = 'PySide2'
+
         return environment
 
 
