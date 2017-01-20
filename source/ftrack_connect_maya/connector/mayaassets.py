@@ -55,9 +55,16 @@ class GenericAsset(FTAssetType):
 
             self.linkToFtrackNode(iAObj)
         else:
-            self.importAssetBool = False
+            # Determine import mode
+            if 'importMode' in iAObj.options:
+                if iAObj.options['importMode'] == 'Import':
+                    self.importAssetBool = True
+                    self.referenceAssetBool = False
+                else:
+                    self.importAssetBool = False
+                    self.referenceAssetBool = True
+
             preserveReferences = True
-            self.referenceAssetBool = True
             groupReferenceBool = True
 
             fileAssetNameSpace = os.path.basename(iAObj.filePath)
@@ -1016,7 +1023,8 @@ class SceneAsset(GenericAsset):
         <tab name="Options">
             <row name="Import mode" accepts="maya">
                 <option type="radio" name="importMode">
-                    <optionitem name="Import" value="True"/>
+                    <optionitem name="Import"/>
+                    <optionitem name="Reference" value="True"/>
                 </option>
             </row>
             <row name="Preserve References" accepts="maya">
