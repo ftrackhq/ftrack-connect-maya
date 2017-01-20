@@ -77,7 +77,7 @@ class Connector(maincon.Connector):
         try:
             shot = ftrack.Shot(id=shotId)
         except ftrack.api.ftrackerror.FTrackError as error:
-            mc.warning("Could not set timeline due to: " + str(error))
+            mc.warning(u'Could not set timeline due to: "{0}"'.format(error))
         else:
             handles = float(shot.get('handles'))
 
@@ -85,7 +85,7 @@ class Connector(maincon.Connector):
                 'Setting timeline to {0} {1} '.format(startFrame, endFrame)
             )
 
-            # add handles to start and end frame
+            # Add handles to start and end frame.
             hsf = startFrame - handles
             hef = endFrame + handles
 
