@@ -66,7 +66,7 @@ class DockedWidget(object):
 class Connector(maincon.Connector):
     def __init__(self):
         super(Connector, self).__init__()
-        
+
     @staticmethod
     def setTimeLine():
         '''Set time line to FS , FE environment values'''
@@ -74,21 +74,27 @@ class Connector(maincon.Connector):
         startFrame = float(os.getenv('FS', 1001))
         endFrame = float(os.getenv('FE', 1101))
         shotId = os.getenv('FTRACK_SHOTID')
-        shot = ftrack.Shot(id=shotId)
-        handles = float(shot.get('handles'))
+        try:
+            shot = ftrack.Shot(id=shotId)
+        except ftrack.api.ftrackerror.FTrackError as error:
+            mc.warning("Could not set timeline due to: " + str(error))
+        else:
+            handles = float(shot.get('handles'))
 
-        mc.warning('Setting timeline to {0} {1} '.format(startFrame, endFrame))
+            mc.warning(
+                'Setting timeline to {0} {1} '.format(startFrame, endFrame)
+            )
 
-        # add handles to start and end frame
-        hsf = startFrame - handles
-        hef = endFrame + handles
+            # add handles to start and end frame
+            hsf = startFrame - handles
+            hef = endFrame + handles
 
-        mc.playbackOptions(
-            minTime=hsf,
-            maxTime=hef,
-            animationStartTime=hsf,
-            animationEndTime=hef
-        )
+            mc.playbackOptions(
+                minTime=hsf,
+                maxTime=hef,
+                animationStartTime=hsf,
+                animationEndTime=hef
+            )
 
     @staticmethod
     def getAssets():

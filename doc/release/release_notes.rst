@@ -10,6 +10,11 @@ Release Notes
 .. release:: Upcoming
 
     .. change:: fixed
+        :tags: Timeline
+
+        Error when setting timeline if task parent is not a Shot.
+
+    .. change:: fixed
         :tags: Compatibility
 
         If PySide is installed on the system Maya 2017 may crash.
@@ -61,7 +66,7 @@ Release Notes
         :tags: Ui
 
         Cannot switch version of alembic from the Asset manager.
-        
+
         .. note::
 
             This fix applies to later versions of Maya 2016.
