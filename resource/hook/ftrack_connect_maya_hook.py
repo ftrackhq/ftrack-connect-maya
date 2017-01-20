@@ -284,7 +284,7 @@ class ApplicationLauncher(ftrack_connect.application.ApplicationLauncher):
             environment
         )
 
-        if float(application["version"]) < 2017:
+        if float(application['version']) < 2017:
             environment['QT_PREFERRED_BINDING'] = 'PySide'
         else:
             environment['QT_PREFERRED_BINDING'] = 'PySide2'
