@@ -55,6 +55,7 @@ class GenericAsset(FTAssetType):
 
             self.linkToFtrackNode(iAObj)
         else:
+            component = ftrack.Component(iAObj.componentId)
             self.importAssetBool = False
             preserveReferences = True
             self.referenceAssetBool = True
@@ -69,7 +70,9 @@ class GenericAsset(FTAssetType):
                 iAObj.options.get('nameSpaceStr', None) or fileAssetNameSpace
             )
 
-            importType = 'mayaBinary'
+            # Determine import type
+            mapping = {".ma": "mayaAscii", ".mb": "mayaBinary"}
+            importType = mapping[component.getFileType()]
 
             if iAObj.componentName in [
                 'mayaBinary', 'main', 'mayaBinaryScene',
