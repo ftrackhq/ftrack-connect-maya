@@ -55,16 +55,9 @@ class GenericAsset(FTAssetType):
 
             self.linkToFtrackNode(iAObj)
         else:
-            # Determine import mode
-            if 'importMode' in iAObj.options:
-                if iAObj.options['importMode'] == 'Import':
-                    self.importAssetBool = True
-                    self.referenceAssetBool = False
-                else:
-                    self.importAssetBool = False
-                    self.referenceAssetBool = True
-
+            self.importAssetBool = False
             preserveReferences = True
+            self.referenceAssetBool = True
             groupReferenceBool = True
 
             fileAssetNameSpace = os.path.basename(iAObj.filePath)
