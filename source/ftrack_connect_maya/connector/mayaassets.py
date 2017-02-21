@@ -865,8 +865,17 @@ class CameraAsset(GenericAsset):
             <row name="Preserve References" accepts="maya">
                 <option type="checkbox" name="mayaReference" value="True"/>
             </row>
-            <row name="Add Asset Namespace" accepts="maya">
-                <option type="checkbox" name="mayaNamespace" value="False"/>
+            <row name="Add Namespace" accepts="maya">
+                <option type="checkbox" name="mayaAddNamespace" value="True"/>
+            </row>
+            <row name="Namespace from:" accepts="maya">
+                <option type="radio" name="mayaNamespace">
+                    <optionitem name="File name" value="True"/>
+                    <optionitem name="Component"/>
+                    <optionitem name="Custom"/>
+                </option>
+            </row>
+            <row name="Custom Namespace" accepts="maya">
                 <option type="string" name="nameSpaceStr" value=""/>
             </row>
         </tab>
@@ -1025,11 +1034,14 @@ class SceneAsset(GenericAsset):
             <row name="Preserve References" accepts="maya">
                 <option type="checkbox" name="mayaReference" value="True"/>
             </row>
+            <row name="Add Namespace" accepts="maya">
+                <option type="checkbox" name="mayaAddNamespace" value="True"/>
+            </row>
             <row name="Namespace from:" accepts="maya">
                 <option type="radio" name="mayaNamespace">
-                    <optionitem name="Component" value="True"/>
-                    <optionitem name="File name"/>
-                    <optionitem name="None"/>
+                    <optionitem name="File name" value="True"/>
+                    <optionitem name="Component"/>
+                    <optionitem name="Custom"/>
                 </option>
             </row>
             <row name="Custom Namespace" accepts="maya">
