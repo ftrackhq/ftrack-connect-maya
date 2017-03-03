@@ -9,6 +9,11 @@ Release Notes
 
 .. release:: Upcoming
 
+    .. change:: new
+        :tags: Import
+
+        Add more options for import namespace.
+
     .. change:: fixed
         :tags: Timeline
 
