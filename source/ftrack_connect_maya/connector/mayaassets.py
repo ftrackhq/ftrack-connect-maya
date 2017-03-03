@@ -63,14 +63,14 @@ class GenericAsset(FTAssetType):
             # Determine namespace
             nameSpaceStr = ':'
             if iAObj.options['mayaAddNamespace']:
-                if iAObj.options['mayaNamespace'] == "File name":
+                if iAObj.options['mayaNamespace'] == 'File name':
                     nameSpaceStr = os.path.basename(iAObj.filePath)
                     nameSpaceStr = os.path.splitext(nameSpaceStr)[0]
                     # Remove the last bit, which usually is the version
                     nameSpaceStr = '_'.join(nameSpaceStr.split('_')[:-1])
-                if iAObj.options['mayaNamespace'] == "Component":
+                if iAObj.options['mayaNamespace'] == 'Component':
                     nameSpaceStr = iAObj.componentName
-                if iAObj.options['mayaNamespace'] == "Custom":
+                if iAObj.options['mayaNamespace'] == 'Custom':
                     # Use custom namespace if any is specified.
                     if iAObj.options['nameSpaceStr']:
                         nameSpaceStr = iAObj.options['nameSpaceStr']
