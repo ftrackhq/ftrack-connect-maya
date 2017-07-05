@@ -8,6 +8,11 @@ Release Notes
 *************
 
 .. release:: Upcoming
+    
+    .. change:: fixed
+        :tag: Logging
+
+        Legacy api event hub spams Maya.
 
     .. change:: new
         :tags: Import
