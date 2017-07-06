@@ -10,6 +10,7 @@ import functools
 
 import ftrack_connect.util
 import ftrack_connect.asset_version_scanner
+import ftrack_connect.config
 
 from ftrack_connect_maya.connector import Connector
 from ftrack_connect_maya.connector.mayacon import DockedWidget
@@ -207,4 +208,6 @@ if not Connector.batch():
     mc.evalDeferred("Connector.setTimeLine()")
 
 
-logging.getLogger().setLevel(logging.INFO)
+ftrack_connect.config.configure_logging(
+    'ftrack_connect_maya', level='WARNING'
+)
