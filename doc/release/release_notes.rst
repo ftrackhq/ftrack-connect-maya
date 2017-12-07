@@ -7,6 +7,14 @@
 Release Notes
 *************
 
+.. release:: Upcoming
+    :date: 2017-07-07
+    
+    .. change:: fixed
+        :tags: Compatibility
+
+        Maya 2018 hang on startup.
+
 .. release:: 1.0.0
     :date: 2017-07-07
     
