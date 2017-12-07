@@ -5,7 +5,7 @@ import os
 import maya.cmds as mc
 import maya.mel as mm
 import logging
-import ftrack
+import ftrack_api
 import functools
 
 import ftrack_connect.util
@@ -20,9 +20,12 @@ from ftrack_connect_maya.ui.info import FtrackMayaInfoDialog
 from ftrack_connect_maya.ui.publisher import PublishAssetDialog
 from ftrack_connect_maya.ui.tasks import FtrackTasksDialog
 
-ftrack.setup()
+session = ftrack_api.Session(
+    auto_connect_event_hub=False,
+    plugin_paths=None
+)
 
-currentEntity = ftrack.Task(
+currentEntity = session.get('Context', 
     os.getenv('FTRACK_TASKID', os.getenv('FTRACK_SHOTID'))
 )
 
@@ -153,11 +156,6 @@ def scan_for_new_assets():
             scanned_ftrack_nodes.append(ftrack_node)
 
     if scanned_ftrack_nodes:
-        import ftrack_api
-        session = ftrack_api.Session(
-            auto_connect_event_hub=False,
-            plugin_paths=None
-        )
         scanner = ftrack_connect.asset_version_scanner.Scanner(
             session=session,
             result_handler=(
@@ -180,10 +178,10 @@ def refAssetManager():
 
 def framerateInit():
     '''Set the initial framerate with the values set on the shot'''
-    import ftrack
+
     shotId = os.getenv('FTRACK_SHOTID')
-    shot = ftrack.Shot(id=shotId)
-    fps = str(int(shot.get('fps')))
+    shot = session.get('Context', shotId)
+    fps = str(int(shot['metadata']['fps']))
 
     mapping = {
         '15': 'game',
@@ -206,8 +204,3 @@ if not Connector.batch():
     mc.evalDeferred("loadAndInit()")
     mc.evalDeferred("framerateInit()")
     mc.evalDeferred("Connector.setTimeLine()")
-
-
-ftrack_connect.config.configure_logging(
-    'ftrack_connect_maya', level='WARNING'
-)
