@@ -7,6 +7,12 @@
 Release Notes
 *************
 
+.. release:: upcoming
+    .. change:: new
+       :tags: Logging
+
+       Improved feedback gathering.
+
 .. release:: 1.0.0
     :date: 2017-07-07
     
