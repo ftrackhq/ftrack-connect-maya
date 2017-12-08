@@ -1,3 +1,6 @@
+# :coding: utf-8
+# :copyright: Copyright (c) 2017 ftrack
+
 import ftrack_connect_maya
 import ftrack_connect.usage
 
