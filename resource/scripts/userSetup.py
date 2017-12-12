@@ -14,31 +14,13 @@ import ftrack_connect.config
 
 from ftrack_connect_maya.connector import Connector
 from ftrack_connect_maya.connector.mayacon import DockedWidget
-from ftrack_connect.ui.widget.asset_manager import FtrackAssetManagerDialog
-from ftrack_connect.ui.widget.import_asset import FtrackImportAssetDialog
-from ftrack_connect_maya.ui.info import FtrackMayaInfoDialog
-from ftrack_connect_maya.ui.publisher import PublishAssetDialog
-from ftrack_connect_maya.ui.tasks import FtrackTasksDialog
+
 
 ftrack.setup()
 
 currentEntity = ftrack.Task(
     os.getenv('FTRACK_TASKID', os.getenv('FTRACK_SHOTID'))
 )
-
-
-dialogs = [
-    (FtrackImportAssetDialog, 'Import asset'),
-    (
-        functools.partial(PublishAssetDialog, currentEntity=currentEntity),
-        'Publish asset'
-    ),
-    'divider',
-    (FtrackAssetManagerDialog, 'Asset manager'),
-    'divider',
-    (FtrackMayaInfoDialog, 'Info'),
-    (FtrackTasksDialog, 'Tasks')
-]
 
 created_dialogs = dict()
 
@@ -78,6 +60,25 @@ def loadAndInit():
         tearOff=False,
         label='ftrack'
     )
+
+    from ftrack_connect.ui.widget.asset_manager import FtrackAssetManagerDialog
+    from ftrack_connect.ui.widget.import_asset import FtrackImportAssetDialog
+    from ftrack_connect_maya.ui.info import FtrackMayaInfoDialog
+    from ftrack_connect_maya.ui.publisher import PublishAssetDialog
+    from ftrack_connect_maya.ui.tasks import FtrackTasksDialog
+
+    dialogs = [
+        (FtrackImportAssetDialog, 'Import asset'),
+        (
+            functools.partial(PublishAssetDialog, currentEntity=currentEntity),
+            'Publish asset'
+        ),
+        'divider',
+        (FtrackAssetManagerDialog, 'Asset manager'),
+        'divider',
+        (FtrackMayaInfoDialog, 'Info'),
+        (FtrackTasksDialog, 'Tasks')
+    ]
 
     # Register and hook the dialog in ftrack menu
     for item in dialogs:
@@ -125,6 +126,10 @@ def handle_scan_result(result, scanned_ftrack_nodes):
         )
 
         if confirm != 'Close':
+            from ftrack_connect.ui.widget.asset_manager import (
+                FtrackAssetManagerDialog
+            )
+
             global assetManagerDialog
             assetManagerDialog = FtrackAssetManagerDialog(connector=connector)
             assetManagerDialog.show()
