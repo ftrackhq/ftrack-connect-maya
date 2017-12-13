@@ -8,6 +8,13 @@ Release Notes
 *************
 
 .. release:: upcoming
+
+    .. change:: fixed
+        :tags: Compatibility
+
+        Integration does not load in Maya 2018 on windows.
+
+
     .. change:: new
        :tags: Logging
 
