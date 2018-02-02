@@ -7,6 +7,13 @@
 Release Notes
 *************
 
+.. release:: upcoming
+
+    .. change:: fixed
+        :tags: Compatibility
+
+        QtWebWidgets incompatibility for windows.
+
 .. release:: 1.1.1
     :date: 2017-12-14
 

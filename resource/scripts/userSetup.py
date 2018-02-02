@@ -2,6 +2,7 @@
 # :copyright: Copyright (c) 2015 ftrack
 
 import os
+import re
 import maya.cmds as mc
 import maya.mel as mm
 import logging
@@ -16,6 +17,9 @@ from ftrack_connect_maya.usage import send_event
 from ftrack_connect_maya.connector import Connector
 from ftrack_connect_maya.connector.mayacon import DockedWidget
 
+logger = logging.getLogger(
+    'ftrack_connect_maya'
+)
 
 ftrack.setup()
 
@@ -43,6 +47,28 @@ def open_dialog(dialog_class):
 def loadAndInit():
     '''Load and Init the maya plugin, build the widgets and set the menu'''
     # Load the ftrack maya plugin
+
+    # Maya 2018 on windows may hang if an attempt is made to
+    # load Qt.QtWebEngineWidgets, we check the version and
+    # os and disable the webwidgets if applicable.
+
+    if mc.about(win=True):
+        match = re.match(
+            '([0-9]{4}).*', mc.about(version=True)
+        )
+
+        if int(match.groups()[0]) >= 2018:
+            import QtExt
+
+            # Disable web widgets.
+            QtExt.is_webwidget_supported = lambda: False
+
+            logger.debug(
+                'Disabling webwidgets due to maya 2018 '
+                'QtWebEngineWidgets incompatibility.'
+            )
+
+
     mc.loadPlugin('ftrackMayaPlugin.py', quiet=True)
     # Create new maya connector and register the assets
     connector.registerAssets()
