@@ -54,6 +54,16 @@ class GenericAsset(FTAssetType):
             self.newData = set(mc.ls())
 
             self.linkToFtrackNode(iAObj)
+        elif iAObj.filePath.endswith('wav'):
+
+            self.oldData = set(mc.ls())
+
+            start_frame = mc.playbackOptions(q=True, min=True)
+            mc.sound(file=iAObj.filePath, offset=start_frame)
+
+            self.newData = set(mc.ls())
+
+            self.linkToFtrackNode(iAObj)
         else:
             self.importAssetBool = False
             preserveReferences = True
