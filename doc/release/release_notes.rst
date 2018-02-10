@@ -7,6 +7,12 @@
 Release Notes
 *************
 
+.. release:: Upcoming
+
+    .. change:: changed
+
+        Change default import mode to "Reference".
+
 .. release:: 0.2.5
     :date: 2016-12-01
 
