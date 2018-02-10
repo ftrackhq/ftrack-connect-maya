@@ -13,6 +13,51 @@ Release Notes
 
         Import type of scenes are determined initially from file type.
 
+.. release:: 1.1.2
+    :date: 2018-02-02
+
+    .. change:: fixed
+        :tags: Compatibility
+
+        QtWebWidgets incompatibility for windows.
+
+.. release:: 1.1.1
+    :date: 2017-12-14
+
+    .. change:: fixed
+        :tags: Compatibility
+
+        Integration does not load in Maya 2018 on windows.
+
+
+    .. change:: new
+       :tags: Logging
+
+       Improved feedback gathering.
+
+.. release:: 1.0.0
+    :date: 2017-07-07
+
+    .. change:: fixed
+        :tags: Logging
+
+        Legacy api event hub spams Maya.
+
+    .. change:: new
+        :tags: Import
+
+        Add more options for import namespace.
+
+    .. change:: fixed
+        :tags: Timeline
+
+        Error when setting timeline if task parent is not a Shot.
+
+    .. change:: fixed
+        :tags: Compatibility
+
+        If PySide is installed on the system Maya 2017 may crash.
+
 .. release:: 0.2.5
     :date: 2016-12-01
 
@@ -60,7 +105,7 @@ Release Notes
         :tags: Ui
 
         Cannot switch version of alembic from the Asset manager.
-        
+
         .. note::
 
             This fix applies to later versions of Maya 2016.

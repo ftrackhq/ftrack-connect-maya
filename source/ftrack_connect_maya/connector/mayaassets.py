@@ -61,14 +61,20 @@ class GenericAsset(FTAssetType):
             self.referenceAssetBool = True
             groupReferenceBool = True
 
-            fileAssetNameSpace = os.path.basename(iAObj.filePath)
-            fileAssetNameSpace = os.path.splitext(fileAssetNameSpace)[0]
-            # remove the last bit, which usually is the version
-            fileAssetNameSpace = '_'.join(fileAssetNameSpace.split('_')[:-1])
-
-            nameSpaceStr = (
-                iAObj.options.get('nameSpaceStr', None) or fileAssetNameSpace
-            )
+            # Determine namespace
+            nameSpaceStr = ':'
+            if iAObj.options['mayaAddNamespace']:
+                if iAObj.options['mayaNamespace'] == 'File name':
+                    nameSpaceStr = os.path.basename(iAObj.filePath)
+                    nameSpaceStr = os.path.splitext(nameSpaceStr)[0]
+                    # Remove the last bit, which usually is the version
+                    nameSpaceStr = '_'.join(nameSpaceStr.split('_')[:-1])
+                if iAObj.options['mayaNamespace'] == 'Component':
+                    nameSpaceStr = iAObj.componentName
+                if iAObj.options['mayaNamespace'] == 'Custom':
+                    # Use custom namespace if any is specified.
+                    if iAObj.options['nameSpaceStr']:
+                        nameSpaceStr = iAObj.options['nameSpaceStr']
 
             # Determine import type
             mapping = {'.ma': 'mayaAscii', '.mb': 'mayaBinary'}
@@ -111,9 +117,6 @@ class GenericAsset(FTAssetType):
                 iAObj.options['mayaReference']
             ):
                 preserveReferences = iAObj.options['mayaReference']
-
-            if not iAObj.options.get('mayaNamespace'):
-                nameSpaceStr = ':'
 
             self.oldData = set(mc.ls())
 
@@ -378,6 +381,38 @@ class GenericAsset(FTAssetType):
             '{0}.assetComponentId'.format(ftNode),
             iAObj.componentId, type='string'
         )
+
+    @staticmethod
+    def importOptions():
+        '''Return import options for the component'''
+
+        xml = '''
+        <tab name="Options">
+            <row name="Import mode" accepts="maya">
+                <option type="radio" name="importMode">
+                    <optionitem name="Reference" value="True"/>
+                    <optionitem name="Import"/>
+                </option>
+            </row>
+            <row name="Preserve References" accepts="maya">
+                <option type="checkbox" name="mayaReference" value="True"/>
+            </row>
+            <row name="Add Namespace" accepts="maya">
+                <option type="checkbox" name="mayaAddNamespace" value="True"/>
+            </row>
+            <row name="Namespace from:" accepts="maya">
+                <option type="radio" name="mayaNamespace">
+                    <optionitem name="File name" value="True"/>
+                    <optionitem name="Component"/>
+                    <optionitem name="Custom"/>
+                </option>
+            </row>
+            <row name="Custom Namespace" accepts="maya">
+                <option type="string" name="nameSpaceStr" value=""/>
+            </row>
+        </tab>
+        '''
+        return xml
 
 
 class AudioAsset(GenericAsset):
@@ -865,8 +900,17 @@ class CameraAsset(GenericAsset):
             <row name="Preserve References" accepts="maya">
                 <option type="checkbox" name="mayaReference" value="True"/>
             </row>
-            <row name="Add Asset Namespace" accepts="maya">
-                <option type="checkbox" name="mayaNamespace" value="False"/>
+            <row name="Add Namespace" accepts="maya">
+                <option type="checkbox" name="mayaAddNamespace" value="True"/>
+            </row>
+            <row name="Namespace from:" accepts="maya">
+                <option type="radio" name="mayaNamespace">
+                    <optionitem name="File name" value="True"/>
+                    <optionitem name="Component"/>
+                    <optionitem name="Custom"/>
+                </option>
+            </row>
+            <row name="Custom Namespace" accepts="maya">
                 <option type="string" name="nameSpaceStr" value=""/>
             </row>
         </tab>
@@ -1025,8 +1069,17 @@ class SceneAsset(GenericAsset):
             <row name="Preserve References" accepts="maya">
                 <option type="checkbox" name="mayaReference" value="True"/>
             </row>
-            <row name="Add Asset Namespace" accepts="maya">
-                <option type="checkbox" name="mayaNamespace" value="False"/>
+            <row name="Add Namespace" accepts="maya">
+                <option type="checkbox" name="mayaAddNamespace" value="True"/>
+            </row>
+            <row name="Namespace from:" accepts="maya">
+                <option type="radio" name="mayaNamespace">
+                    <optionitem name="File name" value="True"/>
+                    <optionitem name="Component"/>
+                    <optionitem name="Custom"/>
+                </option>
+            </row>
+            <row name="Custom Namespace" accepts="maya">
                 <option type="string" name="nameSpaceStr" value=""/>
             </row>
         </tab>
