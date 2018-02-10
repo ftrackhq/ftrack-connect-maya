@@ -7,6 +7,12 @@
 Release Notes
 *************
 
+.. release:: Upcoming
+
+    .. change:: changed
+
+        Import type of scenes are determined initially from file type.
+
 .. release:: 0.2.5
     :date: 2016-12-01
 
