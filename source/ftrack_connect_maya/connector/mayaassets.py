@@ -71,8 +71,8 @@ class GenericAsset(FTAssetType):
             )
 
             # Determine import type
-            mapping = {".ma": "mayaAscii", ".mb": "mayaBinary"}
-            importType = mapping[component.getFileType()]
+            mapping = {'.ma': 'mayaAscii', '.mb': 'mayaBinary'}
+            importType = mapping.get(component.getFileType(), 'mayaBinary')
 
             if iAObj.componentName in [
                 'mayaBinary', 'main', 'mayaBinaryScene',
