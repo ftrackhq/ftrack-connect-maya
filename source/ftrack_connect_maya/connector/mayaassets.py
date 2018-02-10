@@ -3,6 +3,7 @@
 
 import os
 import copy
+import platform
 
 import maya.cmds as mc
 
@@ -23,6 +24,10 @@ currentEndFrame = mc.playbackOptions(max=True, q=True)
 
 if mayacon.Connector.batch() is False:
     from ftrack_connect.connector import panelcom
+
+SUPPORTED_SOUND_FORMATS = [".aiff", ".wav"]
+if platform.system() == "Darwin":
+    SUPPORTED_SOUND_FORMATS.append(".mp3")
 
 
 class GenericAsset(FTAssetType):
@@ -54,7 +59,9 @@ class GenericAsset(FTAssetType):
             self.newData = set(mc.ls())
 
             self.linkToFtrackNode(iAObj)
-        elif iAObj.filePath.endswith('wav'):
+        elif any(
+                [iAObj.filePath.endswith(format) for format in SUPPORTED_SOUND_FORMATS]
+                ):
 
             self.oldData = set(mc.ls())
 
