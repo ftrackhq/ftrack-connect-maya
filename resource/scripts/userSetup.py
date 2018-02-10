@@ -2,6 +2,7 @@
 # :copyright: Copyright (c) 2015 ftrack
 
 import os
+import re
 import maya.cmds as mc
 import maya.mel as mm
 import logging
@@ -10,34 +11,21 @@ import functools
 
 import ftrack_connect.util
 import ftrack_connect.asset_version_scanner
+import ftrack_connect.config
 
+from ftrack_connect_maya.usage import send_event
 from ftrack_connect_maya.connector import Connector
 from ftrack_connect_maya.connector.mayacon import DockedWidget
-from ftrack_connect.ui.widget.asset_manager import FtrackAssetManagerDialog
-from ftrack_connect.ui.widget.import_asset import FtrackImportAssetDialog
-from ftrack_connect_maya.ui.info import FtrackMayaInfoDialog
-from ftrack_connect_maya.ui.publisher import PublishAssetDialog
-from ftrack_connect_maya.ui.tasks import FtrackTasksDialog
+
+logger = logging.getLogger(
+    'ftrack_connect_maya'
+)
 
 ftrack.setup()
 
 currentEntity = ftrack.Task(
     os.getenv('FTRACK_TASKID', os.getenv('FTRACK_SHOTID'))
 )
-
-
-dialogs = [
-    (FtrackImportAssetDialog, 'Import asset'),
-    (
-        functools.partial(PublishAssetDialog, currentEntity=currentEntity),
-        'Publish asset'
-    ),
-    'divider',
-    (FtrackAssetManagerDialog, 'Asset manager'),
-    'divider',
-    (FtrackMayaInfoDialog, 'Info'),
-    (FtrackTasksDialog, 'Tasks')
-]
 
 created_dialogs = dict()
 
@@ -59,6 +47,28 @@ def open_dialog(dialog_class):
 def loadAndInit():
     '''Load and Init the maya plugin, build the widgets and set the menu'''
     # Load the ftrack maya plugin
+
+    # Maya 2018 on windows may hang if an attempt is made to
+    # load Qt.QtWebEngineWidgets, we check the version and
+    # os and disable the webwidgets if applicable.
+
+    if mc.about(win=True):
+        match = re.match(
+            '([0-9]{4}).*', mc.about(version=True)
+        )
+
+        if int(match.groups()[0]) >= 2018:
+            import QtExt
+
+            # Disable web widgets.
+            QtExt.is_webwidget_supported = lambda: False
+
+            logger.debug(
+                'Disabling webwidgets due to maya 2018 '
+                'QtWebEngineWidgets incompatibility.'
+            )
+
+
     mc.loadPlugin('ftrackMayaPlugin.py', quiet=True)
     # Create new maya connector and register the assets
     connector.registerAssets()
@@ -78,6 +88,25 @@ def loadAndInit():
         label='ftrack'
     )
 
+    from ftrack_connect.ui.widget.asset_manager import FtrackAssetManagerDialog
+    from ftrack_connect.ui.widget.import_asset import FtrackImportAssetDialog
+    from ftrack_connect_maya.ui.info import FtrackMayaInfoDialog
+    from ftrack_connect_maya.ui.publisher import PublishAssetDialog
+    from ftrack_connect_maya.ui.tasks import FtrackTasksDialog
+
+    dialogs = [
+        (FtrackImportAssetDialog, 'Import asset'),
+        (
+            functools.partial(PublishAssetDialog, currentEntity=currentEntity),
+            'Publish asset'
+        ),
+        'divider',
+        (FtrackAssetManagerDialog, 'Asset manager'),
+        'divider',
+        (FtrackMayaInfoDialog, 'Info'),
+        (FtrackTasksDialog, 'Tasks')
+    ]
+
     # Register and hook the dialog in ftrack menu
     for item in dialogs:
         if item == 'divider':
@@ -93,6 +122,11 @@ def loadAndInit():
                 lambda x, dialog_class=dialog_class: open_dialog(dialog_class)
             )
         )
+
+    send_event(
+        'USED-FTRACK-CONNECT-MAYA'
+    )
+
 
 
 def handle_scan_result(result, scanned_ftrack_nodes):
@@ -124,6 +158,10 @@ def handle_scan_result(result, scanned_ftrack_nodes):
         )
 
         if confirm != 'Close':
+            from ftrack_connect.ui.widget.asset_manager import (
+                FtrackAssetManagerDialog
+            )
+
             global assetManagerDialog
             assetManagerDialog = FtrackAssetManagerDialog(connector=connector)
             assetManagerDialog.show()
@@ -207,4 +245,6 @@ if not Connector.batch():
     mc.evalDeferred("Connector.setTimeLine()")
 
 
-logging.getLogger().setLevel(logging.INFO)
+ftrack_connect.config.configure_logging(
+    'ftrack_connect_maya', level='WARNING'
+)
