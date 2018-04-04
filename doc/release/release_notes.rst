@@ -7,6 +7,13 @@
 Release Notes
 *************
 
+.. release:: Upcoming
+
+    .. change:: changed
+       :tags: Internal
+
+       Enforce QtExt minimum version in setup.
+
 .. release:: 1.0.0
     :date: 2017-07-07
     
