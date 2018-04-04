@@ -10,7 +10,11 @@ Release Notes
 .. release:: Upcoming
 
     .. change:: changed
-       :tags:Asset manager
+
+        Import type of scenes are determined initially from file type.
+
+    .. change:: changed
+       :tags: Asset manager
 
        Allow import support for different audio file formats.
 
