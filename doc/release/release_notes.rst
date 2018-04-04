@@ -7,6 +7,12 @@
 Release Notes
 *************
 
+.. release:: Upcoming
+
+    .. change:: changed
+
+        Import type of scenes are determined initially from file type.
+
 .. release:: 1.1.2
     :date: 2018-02-02
 
@@ -31,7 +37,7 @@ Release Notes
 
 .. release:: 1.0.0
     :date: 2017-07-07
-    
+
     .. change:: fixed
         :tags: Logging
 
