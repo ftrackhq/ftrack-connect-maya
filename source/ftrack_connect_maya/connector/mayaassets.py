@@ -3,7 +3,7 @@
 
 import os
 import copy
-import platform
+import sys
 
 import maya.cmds as mc
 
@@ -25,9 +25,9 @@ currentEndFrame = mc.playbackOptions(max=True, q=True)
 if mayacon.Connector.batch() is False:
     from ftrack_connect.connector import panelcom
 
-SUPPORTED_SOUND_FORMATS = [".aiff", ".wav"]
-if platform.system() == "Darwin":
-    SUPPORTED_SOUND_FORMATS.append(".mp3")
+SUPPORTED_SOUND_FORMATS = ['.aiff', '.wav']
+if sys.platform == 'darwin':
+    SUPPORTED_SOUND_FORMATS.append('.mp3')
 
 
 class GenericAsset(FTAssetType):
@@ -495,7 +495,7 @@ class GeometryAsset(GenericAsset):
         ftNode = mc.listConnections(applicationObject, type='ftrackAssetNode')
         if not ftNode:
             return
-        ftNode = ftNode[0]        
+        ftNode = ftNode[0]
         shapes = mc.listConnections(ftNode, sh=True, d=True, s=False, type='shape')
         root_nodes = []
         for shape in shapes:
