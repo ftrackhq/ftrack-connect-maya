@@ -11,6 +11,11 @@ Release Notes
 
     .. change:: changed
 
+        Import type of scenes are determined initially from file type.
+
+    .. change:: changed
+
+        Explicit radio buttons for import modes; "Import" and "Reference".
         Change default import mode to "Reference".
 
 .. release:: 1.1.2
