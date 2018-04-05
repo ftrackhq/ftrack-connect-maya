@@ -18,6 +18,11 @@ Release Notes
 
        Enforce QtExt minimum version in setup.
 
+    .. change:: changed
+
+       Explicit radio buttons for import modes; "Import" and "Reference".
+       Change default import mode to "Reference".
+
 .. release:: 1.1.2
     :date: 2018-02-02
 

@@ -1063,7 +1063,8 @@ class SceneAsset(GenericAsset):
         <tab name="Options">
             <row name="Import mode" accepts="maya">
                 <option type="radio" name="importMode">
-                    <optionitem name="Import" value="True"/>
+                    <optionitem name="Import"/>
+                    <optionitem name="Reference" value="True"/>
                 </option>
             </row>
             <row name="Preserve References" accepts="maya">
