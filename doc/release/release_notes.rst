@@ -23,6 +23,11 @@ Release Notes
        Explicit radio buttons for import modes; "Import" and "Reference".
        Change default import mode to "Reference".
 
+    .. change:: changed
+       :tags: Asset manager
+ 
+        Allow import support for different audio file formats.
+
 .. release:: 1.1.2
     :date: 2018-02-02
 
