@@ -13,6 +13,11 @@ Release Notes
 
         Import type of scenes are determined initially from file type.
 
+    .. change:: changed
+       :tags: Internal
+
+       Enforce QtExt minimum version in setup.
+
 .. release:: 1.1.2
     :date: 2018-02-02
 
