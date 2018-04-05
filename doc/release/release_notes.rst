@@ -14,9 +14,19 @@ Release Notes
         Import type of scenes are determined initially from file type.
 
     .. change:: changed
-       :tags: Asset manager
+       :tags: Internal
 
-       Allow import support for different audio file formats.
+       Enforce QtExt minimum version in setup.
+
+    .. change:: changed
+
+       Explicit radio buttons for import modes; "Import" and "Reference".
+       Change default import mode to "Reference".
+
+    .. change:: changed
+       :tags: Asset manager
+ 
+        Allow import support for different audio file formats.
 
 .. release:: 1.1.2
     :date: 2018-02-02

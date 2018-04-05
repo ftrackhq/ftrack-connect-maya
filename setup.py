@@ -108,7 +108,7 @@ setup(
         'lowdown >= 0.1.0, < 1'
     ],
     install_requires=[
-        'qtext',
+        'qtext >= 0.2.0',
     ],
     tests_require=[
         'pytest >= 2.3.5, < 3'
