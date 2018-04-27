@@ -7,7 +7,8 @@
 Release Notes
 *************
 
-.. release:: Upcoming
+.. release:: 1.1.3
+    :date: 2018-04-27
 
     .. change:: changed
 
