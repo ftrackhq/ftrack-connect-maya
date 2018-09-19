@@ -277,12 +277,12 @@ class ApplicationLauncher(ftrack_connect.application.ApplicationLauncher):
         task_parent_attributes = task_parent['custom_attributes']
 
         try:
-            environment['FS'] = str(int(task_parent_attributes['sframe']))
+            environment['FS'] = str(int(task_parent_attributes['fstart']))
         except Exception:
             environment['FS'] = '1'
 
         try:
-            environment['FE'] = str(int(task_parent_attributes['eframe']))
+            environment['FE'] = str(int(task_parent_attributes['fend']))
         except Exception:
             environment['FE'] = '1'
 
