@@ -7,6 +7,13 @@
 Release Notes
 *************
 
+.. release:: Upcoming
+
+  .. change:: changed
+        :tags: launcher
+
+        Maya is discovered on components as well as tasks.
+
 .. release:: 1.1.3
     :date: 2018-04-27
 
