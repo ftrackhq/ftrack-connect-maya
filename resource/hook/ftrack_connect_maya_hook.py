@@ -14,6 +14,8 @@ from ftrack_connect.session import get_shared_session
 import ftrack_connect_maya
 from distutils.version import LooseVersion
 
+session = get_shared_session()
+
 
 class LaunchApplicationAction(object):
     '''Discover and launch maya.'''
@@ -43,20 +45,23 @@ class LaunchApplicationAction(object):
         '''Return true if the selection is valid.'''
         if (
             len(selection) != 1 or
-            selection[0]['entityType'] not in ['task', 'component']
+            selection[0]['entityType'] not in ['task', 'Component']
         ):
             return False
 
+
         ftrack_entity = None
         entity = selection[0]
-        if selection[0]['entityType'] == 'Task':
-            ftrack_entity = ftrack.Task(entity['entityId'])
 
-        elif selection[0]['entityType'] == 'Component':
-            ftrack_entity = ftrack.Component(entity['entityId'])
+        if entity['entityType'] == 'task':
+            ftrack_entity = session.get('Task', entity['entityId'])
 
-        if ftrack_entity and ftrack_entity.getObjectType() not in ['Task', 'Component']:
+        elif entity['entityType'] == 'Component':
+            ftrack_entity = session.get('Component', entity['entityId'])
+
+        if ftrack_entity and ftrack_entity.entity_type not in ['Task', 'FileComponent']:
             return False
+
 
         return True
 
@@ -255,8 +260,6 @@ class ApplicationLauncher(ftrack_connect.application.ApplicationLauncher):
             ApplicationLauncher, self
         )._getApplicationEnvironment(application, context)
 
-        session = get_shared_session()
-
         entity = context['selection'][0]
         if entity['entityType'] != 'Component':
 
@@ -268,7 +271,7 @@ class ApplicationLauncher(ftrack_connect.application.ApplicationLauncher):
             component = session.get(
                 'Component', entity['entityId']
             )
-            task = component['version']['parent']
+            task = component['version']['asset']['parent']
 
         task_parent = task['parent']
         task_parent_attributes = task_parent['custom_attributes']
