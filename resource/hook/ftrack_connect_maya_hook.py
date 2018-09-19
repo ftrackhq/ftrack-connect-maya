@@ -10,7 +10,9 @@ import os
 
 import ftrack
 import ftrack_connect.application
+from ftrack_connect.session import get_shared_session
 import ftrack_connect_maya
+from distutils.version import LooseVersion
 
 
 class LaunchApplicationAction(object):
@@ -41,14 +43,19 @@ class LaunchApplicationAction(object):
         '''Return true if the selection is valid.'''
         if (
             len(selection) != 1 or
-            selection[0]['entityType'] != 'task'
+            selection[0]['entityType'] not in ['task', 'component']
         ):
             return False
 
+        ftrack_entity = None
         entity = selection[0]
-        task = ftrack.Task(entity['entityId'])
+        if selection[0]['entityType'] == 'Task':
+            ftrack_entity = ftrack.Task(entity['entityId'])
 
-        if task.getObjectType() != 'Task':
+        elif selection[0]['entityType'] == 'Component':
+            ftrack_entity = ftrack.Component(entity['entityId'])
+
+        if ftrack_entity and ftrack_entity.getObjectType() not in ['Task', 'Component']:
             return False
 
         return True
@@ -248,22 +255,36 @@ class ApplicationLauncher(ftrack_connect.application.ApplicationLauncher):
             ApplicationLauncher, self
         )._getApplicationEnvironment(application, context)
 
+        session = get_shared_session()
+
         entity = context['selection'][0]
-        task = ftrack.Task(entity['entityId'])
-        taskParent = task.getParent()
+        if entity['entityType'] != 'Component':
+
+            task = session.get(
+                'Task', entity['entityId']
+            )
+
+        else:
+            component = session.get(
+                'Component', entity['entityId']
+            )
+            task = component['version']['parent']
+
+        task_parent = task['parent']
+        task_parent_attributes = task_parent['custom_attributes']
 
         try:
-            environment['FS'] = str(int(taskParent.getFrameStart()))
+            environment['FS'] = str(int(task_parent_attributes['sframe']))
         except Exception:
             environment['FS'] = '1'
 
         try:
-            environment['FE'] = str(int(taskParent.getFrameEnd()))
+            environment['FE'] = str(int(task_parent_attributes['eframe']))
         except Exception:
             environment['FE'] = '1'
 
-        environment['FTRACK_TASKID'] = task.getId()
-        environment['FTRACK_SHOTID'] = task.get('parent_id')
+        environment['FTRACK_TASKID'] = task['id']
+        environment['FTRACK_SHOTID'] = task_parent['id']
 
         maya_connect_scripts = os.path.join(self.plugin_path, 'scripts')
         maya_connect_plugins = os.path.join(self.plugin_path, 'plug_ins')
@@ -284,7 +305,7 @@ class ApplicationLauncher(ftrack_connect.application.ApplicationLauncher):
             environment
         )
 
-        if float(application['version']) < 2017:
+        if application['version'] < LooseVersion('2017'):
             environment['QT_PREFERRED_BINDING'] = 'PySide'
         else:
             environment['QT_PREFERRED_BINDING'] = 'PySide2'
