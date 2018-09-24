@@ -62,7 +62,6 @@ class LaunchApplicationAction(object):
 
         if (
                 ftrack_entity and
-                ftrack_entity.entity_type and
                 ftrack_entity.entity_type not in ['Task', 'FileComponent']
         ):
             return False
