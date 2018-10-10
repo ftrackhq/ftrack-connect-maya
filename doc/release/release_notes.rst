@@ -10,8 +10,9 @@ Release Notes
 .. release:: Upcoming
 
     .. change:: fix
+        :tags: Hook
 
-        Hook does not work with ftrack-connect >= 1.1.6
+        Version check breaks using LooseVersion.
 
 .. release:: 1.1.3
     :date: 2018-04-27
