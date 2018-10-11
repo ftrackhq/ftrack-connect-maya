@@ -12,7 +12,8 @@ Release Notes
     .. change:: fix
         :tags: Hook
 
-        Version check breaks using LooseVersion.
+        Version check breaks due to changes in application version sorting with
+        connect >= 1.5.0.
 
 .. release:: 1.1.3
     :date: 2018-04-27
