@@ -7,6 +7,7 @@ import pprint
 import logging
 import re
 import os
+from distutils.version import LooseVersion
 
 import ftrack
 import ftrack_connect.application
@@ -284,7 +285,7 @@ class ApplicationLauncher(ftrack_connect.application.ApplicationLauncher):
             environment
         )
 
-        if float(application['version']) < 2017:
+        if application['version'] < LooseVersion('2017'):
             environment['QT_PREFERRED_BINDING'] = 'PySide'
         else:
             environment['QT_PREFERRED_BINDING'] = 'PySide2'
