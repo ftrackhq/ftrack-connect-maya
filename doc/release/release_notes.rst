@@ -7,7 +7,8 @@
 Release Notes
 *************
 
-.. release:: Upcoming
+.. release:: 1.1.4
+    :date: 2018-10-11
 
     .. change:: fix
         :tags: Hook
