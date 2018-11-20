@@ -4,9 +4,14 @@
 import os
 import re
 import glob
+import shutil
 
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
+from setuptools import setup, find_packages, Command
+from pip._internal import main as pip_main
+
+import fileinput
 
 
 ROOT_PATH = os.path.dirname(
@@ -22,6 +27,13 @@ SOURCE_PATH = os.path.join(
 )
 
 README_PATH = os.path.join(ROOT_PATH, 'README.rst')
+BUILD_PATH = os.path.join(ROOT_PATH, 'build')
+STAGING_PATH = os.path.join(BUILD_PATH, 'ftrack-connect-maya-{0}')
+
+MAYA_PLUGIN_PATH = os.path.join(RESOURCE_PATH, 'plug_ins')
+MAYA_SCRIPTS_PATH = os.path.join(RESOURCE_PATH, 'scripts')
+
+HOOK_PATH = os.path.join(RESOURCE_PATH, 'hook')
 
 with open(os.path.join(
     SOURCE_PATH, 'ftrack_connect_maya', '_version.py')
@@ -29,6 +41,9 @@ with open(os.path.join(
     VERSION = re.match(
         r'.*__version__ = \'(.*?)\'', _version_file.read(), re.DOTALL
     ).group(1)
+
+
+STAGING_PATH = STAGING_PATH.format(VERSION)
 
 
 # Custom commands.
@@ -47,43 +62,62 @@ class PyTest(TestCommand):
         raise SystemExit(errno)
 
 
-def get_files_from_folder(folder):
-    '''Get all files in a folder in resource folder.'''
-    plugin_directory = os.path.join(RESOURCE_PATH, folder)
-    plugin_data_files = []
+class BuildPlugin(Command):
+    '''Build plugin.'''
 
-    for root, directories, files in os.walk(plugin_directory):
-        files_list = []
-        if files:
-            for filename in files:
-                files_list.append(
-                    os.path.join(root, filename)
-                )
+    description = 'Download dependencies and build plugin .'
 
-        if files_list:
-            destination_folder = root.replace(
-                RESOURCE_PATH, 'ftrack_connect_maya/ftrack_connect_maya'
-            )
-            plugin_data_files.append(
-                (destination_folder, files_list)
-            )
+    user_options = []
 
-    return plugin_data_files
+    def initialize_options(self):
+        pass
 
-data_files = []
+    def finalize_options(self):
+        pass
 
-for child in os.listdir(
-    RESOURCE_PATH
-):
-    if os.path.isdir(os.path.join(RESOURCE_PATH, child)) and child != 'hook':
-        data_files += get_files_from_folder(child)
+    def run(self):
+        '''Run the build step.'''
+        # Clean staging path
+        shutil.rmtree(STAGING_PATH, ignore_errors=True)
 
-data_files.append(
-    (
-        'ftrack_connect_maya/hook',
-        glob.glob(os.path.join(RESOURCE_PATH, 'hook', '*.py'))
-    )
-)
+        # Copy plugin files
+        shutil.copytree(
+            MAYA_PLUGIN_PATH,
+            os.path.join(STAGING_PATH, 'resource', 'plug_ins')
+        )
+
+        # Copy scripts files
+        shutil.copytree(
+            MAYA_SCRIPTS_PATH,
+            os.path.join(STAGING_PATH, 'resource', 'scripts')
+        )
+
+        # Copy hook files
+        shutil.copytree(
+            HOOK_PATH,
+            os.path.join(STAGING_PATH, 'hook')
+        )
+
+        pip_main(
+            [
+                'install',
+                '.',
+                '--target',
+                os.path.join(STAGING_PATH, 'dependencies'),
+                '--process-dependency-links'
+            ]
+        )
+
+        result_path = shutil.make_archive(
+            os.path.join(
+                BUILD_PATH,
+                'ftrack-connect-maya-{0}'.format(VERSION)
+            ),
+            'zip',
+            STAGING_PATH
+        )
+
+        print 'Result: ' + result_path
 
 
 # Configuration.
@@ -102,22 +136,15 @@ setup(
         '': 'source'
     },
     setup_requires=[
-        'qtext',
         'sphinx >= 1.2.2, < 2',
         'sphinx_rtd_theme >= 0.1.6, < 2',
         'lowdown >= 0.1.0, < 1'
-    ],
-    install_requires=[
-        'qtext >= 0.2.0',
     ],
     tests_require=[
         'pytest >= 2.3.5, < 3'
     ],
     cmdclass={
-        'test': PyTest
-    },
-    data_files=data_files,
-    dependency_links=[
-        'git+https://bitbucket.org/ftrack/qtext/get/0.2.1.zip#egg=QtExt-0.2.1'
-    ]
+        'test': PyTest,
+        'build_plugin': BuildPlugin,
+    }
 )

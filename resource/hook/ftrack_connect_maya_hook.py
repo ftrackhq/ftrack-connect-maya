@@ -11,6 +11,12 @@ from distutils.version import LooseVersion
 
 import ftrack
 import ftrack_connect.application
+
+cwd = os.path.dirname(__file__)
+sources = os.path.abspath(os.path.join(cwd, '..', 'dependencies'))
+ftrack_connect_maya_resource_path = os.path.abspath(os.path.join(cwd, '..',  'resource'))
+sys.path.append(sources)
+
 import ftrack_connect_maya
 
 
@@ -285,6 +291,12 @@ class ApplicationLauncher(ftrack_connect.application.ApplicationLauncher):
             environment
         )
 
+        environment = ftrack_connect.application.appendPath(
+            sources,
+            'PYTHONPATH',
+            environment
+        )
+
         if application['version'] < LooseVersion('2017'):
             environment['QT_PREFERRED_BINDING'] = 'PySide'
         else:
@@ -306,14 +318,7 @@ def register(registry, **kw):
 
     # Create a launcher with the store containing applications.
     launcher = ApplicationLauncher(
-        application_store, plugin_path=os.environ.get(
-            'FTRACK_CONNECT_MAYA_PLUGINS_PATH',
-            os.path.abspath(
-                os.path.join(
-                    os.path.dirname(__file__), '..', 'ftrack_connect_maya'
-                )
-            )
-        )
+        application_store, plugin_path=ftrack_connect_maya_resource_path
     )
 
     # Create action and register to respond to discover and launch actions.
