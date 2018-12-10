@@ -21,18 +21,6 @@ download it for your platform.
     :ref:`article <using/launching>` to launch Maya with the ftrack
     integration.
 
-Installing with pip
-===================
-
-.. highlight:: bash
-
-Installation is simple with `pip <http://www.pip-installer.org/>`_::
-
-    pip install ftrack-connect-maya
-
-.. note::
-
-    This project is not yet available on PyPi.
 
 Building from source
 ====================
@@ -47,11 +35,11 @@ cloning the public repository::
 Then you can build and install the package into your current Python
 site-packages folder::
 
-    python setup.py install
+    python setup.py build_plugin
 
-Alternatively, just build locally and manage yourself::
+The result plugin will then be available under the build folder.
+Copy or symlink the result plugin folder in your FTRACK_CONNECT_PLUGIN_PATH.
 
-    python setup.py build
 
 Building documentation from source
 ----------------------------------
@@ -69,7 +57,7 @@ Dependencies
 
 * `Python <http://python.org>`_ >= 2.6, < 3
 * `ftrack connect <https://bitbucket.org/ftrack/ftrack-connect>`_ >= 0.1.2, < 2
-* `Maya <http://www.autodesk.com/products/maya/overview>`_ >= 2014, <= 2016
+* `Maya <http://www.autodesk.com/products/maya/overview>`_ >= 2014, <= 2019
 
 Additional For building
 -----------------------
