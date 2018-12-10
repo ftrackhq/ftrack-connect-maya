@@ -125,7 +125,7 @@ setup(
     version=VERSION,
     description='Maya integration with ftrack.',
     long_description=open(README_PATH).read(),
-    keywords='',
+    keywords='ftrack, connect, connector, maya, autodesk',
     url='https://bitbucket.org/ftrack/ftrack-connect-maya',
     author='ftrack',
     author_email='support@ftrack.com',

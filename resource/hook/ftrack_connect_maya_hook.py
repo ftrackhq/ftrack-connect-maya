@@ -318,7 +318,10 @@ def register(registry, **kw):
 
     # Create a launcher with the store containing applications.
     launcher = ApplicationLauncher(
-        application_store, plugin_path=ftrack_connect_maya_resource_path
+        application_store, plugin_path=os.getenv(
+            'FTRACK_CONNECT_MAYA_PLUGINS_PATH',
+            ftrack_connect_maya_resource_path
+        )
     )
 
     # Create action and register to respond to discover and launch actions.
