@@ -3,38 +3,36 @@
 
 import os
 import re
-import glob
 import shutil
 
-from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 from setuptools import setup, find_packages, Command
+
 from pip._internal import main as pip_main
 
-import fileinput
+# Define paths
 
+PLUGIN_NAME = 'ftrack-connect-maya-{0}'
 
-ROOT_PATH = os.path.dirname(
-    os.path.realpath(__file__)
-)
+ROOT_PATH = os.path.dirname(os.path.realpath(__file__))
 
-RESOURCE_PATH = os.path.join(
-    ROOT_PATH, 'resource'
-)
+RESOURCE_PATH = os.path.join(ROOT_PATH, 'resource')
 
-SOURCE_PATH = os.path.join(
-    ROOT_PATH, 'source'
-)
+SOURCE_PATH = os.path.join(ROOT_PATH, 'source')
 
 README_PATH = os.path.join(ROOT_PATH, 'README.rst')
+
 BUILD_PATH = os.path.join(ROOT_PATH, 'build')
-STAGING_PATH = os.path.join(BUILD_PATH, 'ftrack-connect-maya-{0}')
+
+STAGING_PATH = os.path.join(BUILD_PATH, PLUGIN_NAME)
 
 MAYA_PLUGIN_PATH = os.path.join(RESOURCE_PATH, 'plug_ins')
+
 MAYA_SCRIPTS_PATH = os.path.join(RESOURCE_PATH, 'scripts')
 
 HOOK_PATH = os.path.join(RESOURCE_PATH, 'hook')
 
+# Parse package version
 with open(os.path.join(
     SOURCE_PATH, 'ftrack_connect_maya', '_version.py')
 ) as _version_file:
@@ -43,10 +41,11 @@ with open(os.path.join(
     ).group(1)
 
 
+# Update staging path with the plugin version
 STAGING_PATH = STAGING_PATH.format(VERSION)
 
 
-# Custom commands.
+# Custom PyTest commands.
 class PyTest(TestCommand):
     '''Pytest command.'''
 
@@ -98,6 +97,7 @@ class BuildPlugin(Command):
             os.path.join(STAGING_PATH, 'hook')
         )
 
+        # Install local dependencies
         pip_main(
             [
                 'install',
@@ -108,16 +108,15 @@ class BuildPlugin(Command):
             ]
         )
 
-        result_path = shutil.make_archive(
+        # Generate plugin zip
+        shutil.make_archive(
             os.path.join(
                 BUILD_PATH,
-                'ftrack-connect-maya-{0}'.format(VERSION)
+                PLUGIN_NAME.format(VERSION)
             ),
             'zip',
             STAGING_PATH
         )
-
-        print 'Result: ' + result_path
 
 
 # Configuration.
