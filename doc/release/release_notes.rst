@@ -7,6 +7,14 @@
 Release Notes
 *************
 
+
+.. release:: Upcoming
+
+    .. change:: changed
+        :tags: Internal
+
+        Convert code to standalone ftrack-connect plugin.
+
 .. release:: 1.1.4
     :date: 2018-10-11
 
