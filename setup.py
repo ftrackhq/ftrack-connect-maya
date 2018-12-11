@@ -145,5 +145,8 @@ setup(
     cmdclass={
         'test': PyTest,
         'build_plugin': BuildPlugin,
-    }
+    },
+    install_requires=[
+        'appdirs'
+    ]
 )
