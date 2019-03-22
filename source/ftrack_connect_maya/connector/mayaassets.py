@@ -6,6 +6,7 @@ import copy
 import sys
 
 import maya.cmds as mc
+import maya.mel as mel
 
 import ftrack
 
@@ -537,6 +538,7 @@ class GeometryAsset(GenericAsset):
             steps=[
                 iAObj.options['mayaBinary'],
                 iAObj.options['alembic'],
+                iAObj.options['fbx'],
                 iAObj.options['mayaPublishScene']
             ]
         )
@@ -601,6 +603,28 @@ class GeometryAsset(GenericAsset):
                 mc.select(selectednodes)
 
             panelComInstance.emitPublishProgressStep()
+
+        if iAObj.options.get('fbx'):
+            temporaryPath = HelpFunctions.temporaryFile(suffix='.fbx')
+
+            publishedComponents.append(
+                FTComponent(
+                    componentname='fbx',
+                    path=temporaryPath
+                )
+            )
+
+            mel.eval('FBXExportFileVersion "FBX201000"')
+            mel.eval('FBXExportConvertUnitString "cm"')
+            mel.eval('FBXExportInputConnections -v 0')
+            # export selection
+            mel.eval('FBXExport -f "{}" -s'.format(temporaryPath))  # remove -s to export all
+
+            if selectednodes:
+                mc.select(selectednodes)
+
+            panelComInstance.emitPublishProgressStep()
+
 
         return publishedComponents, 'Published GeometryAsset asset'
 
@@ -669,6 +693,11 @@ class GeometryAsset(GenericAsset):
                         <optionitem name="All"/>
                         <optionitem name="Selection" value="True"/>
                 </option>
+            </row>
+        </tab>
+        <tab name="Fbx options">
+            <row name="Publish Fbx">
+                <option type="checkbox" name="fbx"/>
             </row>
         </tab>
         """
