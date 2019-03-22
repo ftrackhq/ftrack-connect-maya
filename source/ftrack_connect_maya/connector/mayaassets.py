@@ -621,34 +621,54 @@ class GeometryAsset(GenericAsset):
 
             # fbx user options
             if iAObj.options.get('FBXExportAnimationOnly'):
-                mel.eval('FBXExportAnimationOnly -v true')
+                mel.eval('FBXExportAnimationOnly -v 1')
+            else:
+                mel.eval('FBXExportAnimationOnly -v 0')
 
             if iAObj.options.get('FBXExportApplyConstantKeyReducer'):
                 mel.eval('FBXExportApplyConstantKeyReducer -v 1')
+            else:
+                mel.eval('FBXExportApplyConstantKeyReducer -v 0')
 
             if iAObj.options.get('FBXExportBakeComplexAnimation'):
                 mel.eval('FBXExportBakeComplexAnimation -v 1')
+            else:
+                mel.eval('FBXExportBakeComplexAnimation -v 0')
 
             if iAObj.options.get('FBXExportBakeResampleAnimation'):
                 mel.eval('FBXExportBakeResampleAnimation -v 1')
+            else:
+                mel.eval('FBXExportBakeResampleAnimation -v 0')
 
             if iAObj.options.get('FBXExportCameras'):
                 mel.eval('FBXExportCameras -v 1')
+            else:
+                mel.eval('FBXExportCameras -v 0')
 
             if iAObj.options.get('FBXExportColladaSingleMatrix'):
                 mel.eval('FBXExportColladaSingleMatrix -v 1')
+            else:
+                mel.eval('FBXExportColladaSingleMatrix -v 0')
 
             if iAObj.options.get('FBXExportColladaTriangulate'):
                 mel.eval('FBXExportColladaTriangulate -v 1')
+            else:
+                mel.eval('FBXExportColladaTriangulate -v 0')
 
             if iAObj.options.get('FBXExportConstraints'):
                 mel.eval('FBXExportConstraints -v 1')
+            else:
+                mel.eval('FBXExportConstraints -v 0')
 
             if iAObj.options.get('FBXExportEmbeddedTextures'):
                 mel.eval('FBXExportEmbeddedTextures -v 1')
+            else:
+                mel.eval('FBXExportEmbeddedTextures -v 0')
 
             if iAObj.options.get('FBXExportLights'):
                 mel.eval('FBXExportLights -v 1')
+            else:
+                mel.eval('FBXExportLights -v 0')
 
             # fbx export command
             fbx_export_cmd = 'FBXExport -f "{}"'.format(temporaryPath)
@@ -737,6 +757,18 @@ class GeometryAsset(GenericAsset):
             <row name="Publish Fbx">
                 <option type="checkbox" name="fbx"/>
             </row>
+            <row name="Export Cameras" accepts="maya">
+                <option type="checkbox" name="FBXExportCameras" value="False"/>
+            </row>    
+            <row name="Export Lights" accepts="maya">
+                <option type="checkbox" name="FBXExportLights" value="False"/>
+            </row>  
+            <row name="Export Constraints" accepts="maya">
+                <option type="checkbox" name="FBXExportConstraints" value="False"/>
+            </row>
+            <row name="Embedded Textures" accepts="maya">
+                <option type="checkbox" name="FBXExportEmbeddedTextures" value="False"/>
+            </row>
             <row name="Export Animation Only" accepts="maya">
                 <option type="checkbox" name="FBXExportAnimationOnly" value="False"/>
             </row>
@@ -749,24 +781,12 @@ class GeometryAsset(GenericAsset):
             <row name="Bake Resample Animation" accepts="maya">
                 <option type="checkbox" name="FBXExportBakeResampleAnimation" value="False"/>
             </row>       
-            <row name="Export Cameras" accepts="maya">
-                <option type="checkbox" name="FBXExportCameras" value="False"/>
-            </row>    
             <row name="Collada Single Matrix" accepts="maya">
                 <option type="checkbox" name="FBXExportColladaSingleMatrix" value="False"/>
             </row>                
             <row name="Collada Triangulate" accepts="maya">
                 <option type="checkbox" name="FBXExportColladaTriangulate" value="False"/>
             </row>
-            <row name="Export Constraints" accepts="maya">
-                <option type="checkbox" name="FBXExportConstraints" value="False"/>
-            </row>
-            <row name="Embedded Textures" accepts="maya">
-                <option type="checkbox" name="FBXExportEmbeddedTextures" value="False"/>
-            </row>
-            <row name="Export Lights" accepts="maya">
-                <option type="checkbox" name="FBXExportLights" value="False"/>
-            </row>  
             <row name="FBX Selection Mode" accepts="maya">
                 <option type="radio" name="fbxExportMode">
                         <optionitem name="All"/>
