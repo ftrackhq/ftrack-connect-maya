@@ -614,11 +614,49 @@ class GeometryAsset(GenericAsset):
                 )
             )
 
-            mel.eval('FBXExportFileVersion "FBX201000"')
+            # fbx basic options
             mel.eval('FBXExportConvertUnitString "cm"')
             mel.eval('FBXExportInputConnections -v 0')
-            # export selection
-            mel.eval('FBXExport -f "{}" -s'.format(temporaryPath))  # remove -s to export all
+            mel.eval('FBXExportGenerateLog -v 0')
+
+            # fbx user options
+            if iAObj.options.get('FBXExportAnimationOnly'):
+                mel.eval('FBXExportAnimationOnly -v true')
+
+            if iAObj.options.get('FBXExportApplyConstantKeyReducer'):
+                mel.eval('FBXExportApplyConstantKeyReducer -v 1')
+
+            if iAObj.options.get('FBXExportBakeComplexAnimation'):
+                mel.eval('FBXExportBakeComplexAnimation -v 1')
+
+            if iAObj.options.get('FBXExportBakeResampleAnimation'):
+                mel.eval('FBXExportBakeResampleAnimation -v 1')
+
+            if iAObj.options.get('FBXExportCameras'):
+                mel.eval('FBXExportCameras -v 1')
+
+            if iAObj.options.get('FBXExportColladaSingleMatrix'):
+                mel.eval('FBXExportColladaSingleMatrix -v 1')
+
+            if iAObj.options.get('FBXExportColladaTriangulate'):
+                mel.eval('FBXExportColladaTriangulate -v 1')
+
+            if iAObj.options.get('FBXExportConstraints'):
+                mel.eval('FBXExportConstraints -v 1')
+
+            if iAObj.options.get('FBXExportEmbeddedTextures'):
+                mel.eval('FBXExportEmbeddedTextures -v 1')
+
+            if iAObj.options.get('FBXExportLights'):
+                mel.eval('FBXExportLights -v 1')
+
+            # fbx export command
+            fbx_export_cmd = 'FBXExport -f "{}"'.format(temporaryPath)
+
+            if iAObj.options.get('fbxExportMode') == 'Selection':
+                fbx_export_cmd += ' -s'
+
+            mel.eval(fbx_export_cmd)
 
             if selectednodes:
                 mc.select(selectednodes)
@@ -698,6 +736,42 @@ class GeometryAsset(GenericAsset):
         <tab name="Fbx options">
             <row name="Publish Fbx">
                 <option type="checkbox" name="fbx"/>
+            </row>
+            <row name="Export Animation Only" accepts="maya">
+                <option type="checkbox" name="FBXExportAnimationOnly" value="False"/>
+            </row>
+            <row name="Apply Constant Key Reducer" accepts="maya">
+                <option type="checkbox" name="FBXExportApplyConstantKeyReducer" value="False"/>
+            </row>
+            <row name="Bake Complex Animation" accepts="maya">
+                <option type="checkbox" name="FBXExportBakeComplexAnimation" value="False"/>
+            </row>        
+            <row name="Bake Resample Animation" accepts="maya">
+                <option type="checkbox" name="FBXExportBakeResampleAnimation" value="False"/>
+            </row>       
+            <row name="Export Cameras" accepts="maya">
+                <option type="checkbox" name="FBXExportCameras" value="False"/>
+            </row>    
+            <row name="Collada Single Matrix" accepts="maya">
+                <option type="checkbox" name="FBXExportColladaSingleMatrix" value="False"/>
+            </row>                
+            <row name="Collada Triangulate" accepts="maya">
+                <option type="checkbox" name="FBXExportColladaTriangulate" value="False"/>
+            </row>
+            <row name="Export Constraints" accepts="maya">
+                <option type="checkbox" name="FBXExportConstraints" value="False"/>
+            </row>
+            <row name="Embedded Textures" accepts="maya">
+                <option type="checkbox" name="FBXExportEmbeddedTextures" value="False"/>
+            </row>
+            <row name="Export Lights" accepts="maya">
+                <option type="checkbox" name="FBXExportLights" value="False"/>
+            </row>  
+            <row name="FBX Selection Mode" accepts="maya">
+                <option type="radio" name="fbxExportMode">
+                        <optionitem name="All"/>
+                        <optionitem name="Selection" value="True"/>
+                </option>
             </row>
         </tab>
         """
