@@ -630,7 +630,7 @@ class GeometryAsset(GenericAsset):
             mel.eval('FBXExportFileVersion {}'.format(version))
 
             smooth_mesh = iAObj.options.get('FBXExportSmoothMesh')
-            mel.eval('FBXExportSmoothMesh {}'.format(smooth_mesh))
+            mel.eval('FBXExportSmoothMesh -v {}'.format(int(smooth_mesh)))
 
             ascii_export = iAObj.options.get('FBXExportInAscii')
             mel.eval('FBXExportInAscii -v {}'.format(int(ascii_export)))
@@ -747,7 +747,7 @@ class GeometryAsset(GenericAsset):
         </tab>
         <tab name="Fbx options">
             <row name="Publish Fbx">
-                <option type="checkbox" name="fbx"/>
+                <option type="checkbox" name="fbx" value="True"/>
             </row>
             <row name="Ascii format" accepts="maya">
                 <option type="checkbox" name="FBXExportInAscii" value="False"/>
