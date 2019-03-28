@@ -6,6 +6,7 @@ import copy
 import sys
 
 import maya.cmds as mc
+import maya.mel as mel
 
 import ftrack
 
@@ -537,6 +538,7 @@ class GeometryAsset(GenericAsset):
             steps=[
                 iAObj.options['mayaBinary'],
                 iAObj.options['alembic'],
+                iAObj.options['fbx'],
                 iAObj.options['mayaPublishScene']
             ]
         )
@@ -601,6 +603,78 @@ class GeometryAsset(GenericAsset):
                 mc.select(selectednodes)
 
             panelComInstance.emitPublishProgressStep()
+
+        if iAObj.options.get('fbx'):
+            temporaryPath = HelpFunctions.temporaryFile(suffix='.fbx')
+
+            publishedComponents.append(
+                FTComponent(
+                    componentname='fbx',
+                    path=temporaryPath
+                )
+            )
+
+            # fbx basic options
+            mel.eval('FBXResetExport')
+            mel.eval('FBXExportConvertUnitString "cm"')
+            mel.eval('FBXExportGenerateLog -v 0')
+
+            # fbx user options
+            scale = iAObj.options.get('FBXExportScaleFactor')
+            mel.eval('FBXExportScaleFactor {}'.format(scale))
+
+            up_axis = iAObj.options.get('FBXExportUpAxis')
+            mel.eval('FBXExportUpAxis {}'.format(up_axis))
+
+            version = iAObj.options.get('FBXExportFileVersion')
+            mel.eval('FBXExportFileVersion {}'.format(version))
+
+            smooth_mesh = iAObj.options.get('FBXExportSmoothMesh')
+            mel.eval('FBXExportSmoothMesh -v {}'.format(int(smooth_mesh)))
+
+            ascii_export = iAObj.options.get('FBXExportInAscii')
+            mel.eval('FBXExportInAscii -v {}'.format(int(ascii_export)))
+
+            anim_only = iAObj.options.get('FBXExportAnimationOnly')
+            mel.eval('FBXExportAnimationOnly -v {}'.format(int(anim_only)))
+
+            intances = iAObj.options.get('FBXExportInstances')
+            mel.eval('FBXExportInstances -v {}'.format(int(intances)))
+
+            constraint_reducer = iAObj.options.get('FBXExportApplyConstantKeyReducer')
+            mel.eval('FBXExportApplyConstantKeyReducer -v {}'.format(int(constraint_reducer)))
+
+            bake_complex_anim = iAObj.options.get('FBXExportBakeComplexAnimation')
+            mel.eval('FBXExportBakeComplexAnimation -v {}'.format(int(bake_complex_anim)))
+
+            bake_resample_anim = iAObj.options.get('FBXExportBakeResampleAnimation')
+            mel.eval('FBXExportBakeResampleAnimation -v {}'.format(int(bake_resample_anim)))
+
+            export_camera = iAObj.options.get('FBXExportCameras')
+            mel.eval('FBXExportCameras -v {}'.format(int(export_camera)))
+
+            export_constraints = iAObj.options.get('FBXExportConstraints')
+            mel.eval('FBXExportConstraints -v {}'.format(int(export_constraints)))
+
+            embedded_textures = iAObj.options.get('FBXExportEmbeddedTextures')
+            mel.eval('FBXExportEmbeddedTextures -v {}'.format(int(embedded_textures)))
+
+            export_lights = iAObj.options.get('FBXExportLights')
+            mel.eval('FBXExportLights -v {}'.format(int(export_lights)))
+
+            # fbx export command
+            fbx_export_cmd = 'FBXExport -f "{}"'.format(temporaryPath)
+
+            if iAObj.options.get('fbxExportMode') == 'Selection':
+                fbx_export_cmd += ' -s'
+
+            mel.eval(fbx_export_cmd)
+
+            if selectednodes:
+                mc.select(selectednodes)
+
+            panelComInstance.emitPublishProgressStep()
+
 
         return publishedComponents, 'Published GeometryAsset asset'
 
@@ -668,6 +742,59 @@ class GeometryAsset(GenericAsset):
                 <option type="radio" name="alembicExportMode">
                         <optionitem name="All"/>
                         <optionitem name="Selection" value="True"/>
+                </option>
+            </row>
+        </tab>
+        <tab name="Fbx options">
+            <row name="Publish Fbx">
+                <option type="checkbox" name="fbx" value="True"/>
+            </row>
+            <row name="Ascii format" accepts="maya">
+                <option type="checkbox" name="FBXExportInAscii" value="False"/>
+            </row>    
+            <row name="Scale factor" accepts="maya">
+                <option type="string" name="FBXExportScaleFactor" value="1"/>
+            </row>    
+            <row name="Up Axis" accepts="maya">
+                <option type="string" name="FBXExportUpAxis" value="y"/>
+            </row>   
+            <row name="File version" accepts="maya">
+                <option type="string" name="FBXExportFileVersion" value="FBX201600"/>
+            </row>   
+            <row name="Export Cameras" accepts="maya">
+                <option type="checkbox" name="FBXExportCameras" value="True"/>
+            </row>    
+            <row name="Export Lights" accepts="maya">
+                <option type="checkbox" name="FBXExportLights" value="True"/>
+            </row>  
+            <row name="Export Constraints" accepts="maya">
+                <option type="checkbox" name="FBXExportConstraints" value="False"/>
+            </row>
+            <row name="Export Instances" accepts="maya">
+                <option type="checkbox" name="FBXExportInstances" value="True"/>
+            </row>
+            <row name="Smooth Mesh" accepts="maya">
+                <option type="checkbox" name="FBXExportSmoothMesh" value="False"/>
+            </row>
+            <row name="Embedded Textures" accepts="maya">
+                <option type="checkbox" name="FBXExportEmbeddedTextures" value="False"/>
+            </row>
+            <row name="Export Animation Only" accepts="maya">
+                <option type="checkbox" name="FBXExportAnimationOnly" value="False"/>
+            </row>
+            <row name="Apply Constant Key Reducer" accepts="maya">
+                <option type="checkbox" name="FBXExportApplyConstantKeyReducer" value="False"/>
+            </row>
+            <row name="Bake Complex Animation" accepts="maya">
+                <option type="checkbox" name="FBXExportBakeComplexAnimation" value="False"/>
+            </row>        
+            <row name="Bake Resample Animation" accepts="maya">
+                <option type="checkbox" name="FBXExportBakeResampleAnimation" value="False"/>
+            </row>       
+            <row name="FBX Selection Mode" accepts="maya">
+                <option type="radio" name="fbxExportMode">
+                        <optionitem name="All" value="True"/>
+                        <optionitem name="Selection"/>
                 </option>
             </row>
         </tab>

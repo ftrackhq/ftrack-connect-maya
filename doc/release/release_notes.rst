@@ -7,6 +7,13 @@
 Release Notes
 *************
 
+.. release:: Upcoming
+
+    .. change:: new
+        :tags: Export
+
+        Provide fbx export options.
+
 .. release:: 1.2.0
     :date: 2018-12-19
 
