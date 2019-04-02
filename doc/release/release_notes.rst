@@ -7,7 +7,8 @@
 Release Notes
 *************
 
-.. release:: Upcoming
+.. release:: 1.2.1
+    :date: 2019-04-02
 
     .. change:: new
         :tags: Export
