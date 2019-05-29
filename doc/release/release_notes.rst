@@ -7,6 +7,12 @@
 Release Notes
 *************
 
+.. release:: Upcoming
+
+    .. change:: fix
+
+        Fbx export breaks under windows.
+
 .. release:: 1.2.1
     :date: 2019-04-02
 

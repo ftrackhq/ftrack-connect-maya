@@ -607,6 +607,8 @@ class GeometryAsset(GenericAsset):
         if iAObj.options.get('fbx'):
             temporaryPath = HelpFunctions.temporaryFile(suffix='.fbx')
 
+            # protect windows characters
+            temporaryPath = temporaryPath.replace('\\', '\\\\')
             publishedComponents.append(
                 FTComponent(
                     componentname='fbx',
