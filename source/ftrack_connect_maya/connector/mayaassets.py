@@ -74,25 +74,16 @@ class GenericAsset(FTAssetType):
             self.linkToFtrackNode(iAObj)
         else:
             component = ftrack.Component(iAObj.componentId)
+            groupReferenceBool = True
             self.importAssetBool = False
+            kwargs = {
+                'mergeNamespacesOnClash': True,
+            }
             preserveReferences = True
             self.referenceAssetBool = True
-            groupReferenceBool = True
 
             # Determine namespace
-            nameSpaceStr = ':'
-            if iAObj.options['mayaAddNamespace']:
-                if iAObj.options['mayaNamespace'] == 'File name':
-                    nameSpaceStr = os.path.basename(iAObj.filePath)
-                    nameSpaceStr = os.path.splitext(nameSpaceStr)[0]
-                    # Remove the last bit, which usually is the version
-                    nameSpaceStr = '_'.join(nameSpaceStr.split('_')[:-1])
-                if iAObj.options['mayaNamespace'] == 'Component':
-                    nameSpaceStr = iAObj.componentName
-                if iAObj.options['mayaNamespace'] == 'Custom':
-                    # Use custom namespace if any is specified.
-                    if iAObj.options['nameSpaceStr']:
-                        nameSpaceStr = iAObj.options['nameSpaceStr']
+            kwargs['namespace'] = self._determineNameSpace(iAObj)
 
             # Determine import type
             mapping = {'.ma': 'mayaAscii', '.mb': 'mayaBinary'}
@@ -108,6 +99,14 @@ class GenericAsset(FTAssetType):
                         self.referenceAssetBool = False
                         # do not group when importing
                         groupReferenceBool = False
+                    elif iAObj.options['importMode'] == 'Open':
+                        self.importAssetBool = False
+                        self.referenceAssetBool = False
+                        # do not group when importing
+                        groupReferenceBool = False
+                        kwargs['open'] = True
+                        kwargs.pop('mergeNamespacesOnClash', None)
+                        kwargs.pop('namespace', None)
 
                 if iAObj.componentName in ('mayaAscii', 'mayaAsciiScene'):
                     importType = 'mayaAscii'
@@ -117,18 +116,20 @@ class GenericAsset(FTAssetType):
                 self.importAssetBool = True
                 self.referenceAssetBool = False
 
-            if iAObj.componentName in ['mayaBinaryScene']:
+            if (iAObj.componentName in ['mayaBinaryScene'] or
+                    kwargs.get('open', False)):
                 confirmDialog = mc.confirmDialog(
                     title='Confirm',
                     message='Replace current scene?',
                     button=['Yes', 'No'],
                     defaultButton='No',
                     cancelButton='No',
-                    dismissString='No')
+                    dismissString='No'
+                )
                 if confirmDialog == 'Yes':
                     mc.file(new=True, force=True)
                 else:
-                    return 'Canceled Import'
+                    raise RuntimeWarning('User canceled import')
 
             if (
                 'mayaReference' in iAObj.options and
@@ -149,11 +150,13 @@ class GenericAsset(FTAssetType):
                 loadReferenceDepth='all',
                 sharedNodes='renderLayersByName',
                 preserveReferences=preserveReferences,
-                mergeNamespacesOnClash=True,
-                namespace=nameSpaceStr,
                 returnNewNodes=True,
-                options='v=0'
+                options='v=0',
+                **kwargs
             )
+
+            if kwargs.get('open', False):
+                mc.file(renameToSave=True)
 
             self.newData = set(mc.ls())
 
@@ -171,6 +174,23 @@ class GenericAsset(FTAssetType):
         # Restore timeline on asset import.
         mayacon.Connector.setTimeLine()
         return 'Imported ' + iAObj.assetType + ' asset'
+
+    def _determineNameSpace(self, iAObj):
+        nameSpaceStr = ':'
+        if iAObj.options['mayaAddNamespace']:
+            if iAObj.options['mayaNamespace'] == 'File name':
+                nameSpaceStr = os.path.basename(iAObj.filePath)
+                nameSpaceStr = os.path.splitext(nameSpaceStr)[0]
+                # Remove the last bit, which usually is the version
+                nameSpaceStr = '_'.join(nameSpaceStr.split('_')[:-1])
+            if iAObj.options['mayaNamespace'] == 'Component':
+                nameSpaceStr = iAObj.componentName
+            if iAObj.options['mayaNamespace'] == 'Custom':
+                # Use custom namespace if any is specified.
+                if iAObj.options['nameSpaceStr']:
+                    nameSpaceStr = iAObj.options['nameSpaceStr']
+
+        return nameSpaceStr
 
     def getGroupName(self, nodes, assetName):
         '''Return the node among the *nodes* containing the given *assetName*.'''
@@ -408,8 +428,9 @@ class GenericAsset(FTAssetType):
         <tab name="Options">
             <row name="Import mode" accepts="maya">
                 <option type="radio" name="importMode">
-                    <optionitem name="Reference" value="True"/>
                     <optionitem name="Import"/>
+                    <optionitem name="Open"/>
+                    <optionitem name="Reference" value="True"/>
                 </option>
             </row>
             <row name="Preserve References" accepts="maya">
@@ -753,22 +774,22 @@ class GeometryAsset(GenericAsset):
             </row>
             <row name="Ascii format" accepts="maya">
                 <option type="checkbox" name="FBXExportInAscii" value="False"/>
-            </row>    
+            </row>
             <row name="Scale factor" accepts="maya">
                 <option type="string" name="FBXExportScaleFactor" value="1"/>
-            </row>    
+            </row>
             <row name="Up Axis" accepts="maya">
                 <option type="string" name="FBXExportUpAxis" value="y"/>
-            </row>   
+            </row>
             <row name="File version" accepts="maya">
                 <option type="string" name="FBXExportFileVersion" value="FBX201600"/>
-            </row>   
+            </row>
             <row name="Export Cameras" accepts="maya">
                 <option type="checkbox" name="FBXExportCameras" value="True"/>
-            </row>    
+            </row>
             <row name="Export Lights" accepts="maya">
                 <option type="checkbox" name="FBXExportLights" value="True"/>
-            </row>  
+            </row>
             <row name="Export Constraints" accepts="maya">
                 <option type="checkbox" name="FBXExportConstraints" value="False"/>
             </row>
@@ -789,10 +810,10 @@ class GeometryAsset(GenericAsset):
             </row>
             <row name="Bake Complex Animation" accepts="maya">
                 <option type="checkbox" name="FBXExportBakeComplexAnimation" value="False"/>
-            </row>        
+            </row>
             <row name="Bake Resample Animation" accepts="maya">
                 <option type="checkbox" name="FBXExportBakeResampleAnimation" value="False"/>
-            </row>       
+            </row>
             <row name="FBX Selection Mode" accepts="maya">
                 <option type="radio" name="fbxExportMode">
                         <optionitem name="All" value="True"/>
@@ -1210,6 +1231,7 @@ class SceneAsset(GenericAsset):
             <row name="Import mode" accepts="maya">
                 <option type="radio" name="importMode">
                     <optionitem name="Import"/>
+                    <optionitem name="Open"/>
                     <optionitem name="Reference" value="True"/>
                 </option>
             </row>

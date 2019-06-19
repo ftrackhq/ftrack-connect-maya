@@ -13,6 +13,12 @@ Release Notes
 
         Fbx export breaks under windows.
 
+    .. change:: new
+        :tags: Import
+
+        Added "Open" import mode, which replaces current scene.
+
+
 .. release:: 1.2.1
     :date: 2019-04-02
 
@@ -57,7 +63,7 @@ Release Notes
 
     .. change:: changed
        :tags: Asset manager
- 
+
         Allow import support for different audio file formats.
 
 .. release:: 1.1.2
