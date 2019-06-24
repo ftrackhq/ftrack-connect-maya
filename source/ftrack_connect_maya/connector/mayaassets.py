@@ -39,6 +39,9 @@ class GenericAsset(FTAssetType):
 
     def importAsset(self, iAObj=None):
         '''Import asset defined in *iAObj*'''
+
+        namespace = self._determineNameSpace(iAObj)
+
         if (
             iAObj.componentName == 'alembic' or
             iAObj.filePath.endswith('abc')
@@ -50,12 +53,25 @@ class GenericAsset(FTAssetType):
 
             self.oldData = set(mc.ls())
 
-            mc.createNode('transform', n=iAObj.assetName)
-            mc.AbcImport(
-                iAObj.filePath,
-                mode='import',
-                reparent=iAObj.assetName
-            )
+            if iAObj.options['importMode'] == 'Import':
+                mc.createNode('transform', n=iAObj.assetName)
+                mc.AbcImport(
+                    iAObj.filePath,
+                    mode='import',
+                    reparent=iAObj.assetName
+                )
+
+            if iAObj.options['importMode'] == 'Reference':
+                mc.file(
+                    iAObj.filePath,
+                    r=True,
+                    type="Alembic",
+                    ignoreVersion=True,
+                    gl=False,
+                    dr=False,
+                    namespace=namespace,
+                    mergeNamespacesOnClash=False
+                )
 
             self.newData = set(mc.ls())
 
@@ -83,7 +99,7 @@ class GenericAsset(FTAssetType):
             self.referenceAssetBool = True
 
             # Determine namespace
-            kwargs['namespace'] = self._determineNameSpace(iAObj)
+            kwargs['namespace'] = namespace
 
             # Determine import type
             mapping = {'.ma': 'mayaAscii', '.mb': 'mayaBinary'}
