@@ -7,13 +7,16 @@
 Release Notes
 *************
 
-.. release:: Upcoming
+.. release:: 1.2.2
+    :date: 2019-06-25
 
     .. change:: fix
+        :tags: Import
 
         Allow alembic to be imported as reference.
 
     .. change:: fix
+        :tags: Export
 
         Fbx export breaks under windows.
 
