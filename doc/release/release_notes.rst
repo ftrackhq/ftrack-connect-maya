@@ -11,6 +11,10 @@ Release Notes
 
     .. change:: fix
 
+        Allow alembic to be imported as reference.
+
+    .. change:: fix
+
         Fbx export breaks under windows.
 
     .. change:: new
