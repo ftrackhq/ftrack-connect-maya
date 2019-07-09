@@ -1523,4 +1523,4 @@ def registerAssetTypes():
     assetHandler.registerAssetType(name='audio', cls=AudioAsset)
     assetHandler.registerAssetType(name='geo', cls=GeometryAsset)
     assetHandler.registerAssetType(name='scene', cls=SceneAsset)
-    assetHandler.registerAssetType(name='image', cls=ImageAsset)
+    assetHandler.registerAssetType(name='img', cls=ImageAsset)
