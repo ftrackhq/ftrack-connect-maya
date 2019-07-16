@@ -1369,6 +1369,152 @@ class LightRigAsset(GenericAsset):
         return xml
 
 
+class ImageAsset(GenericAsset):
+    def __init__(self):
+        super(ImageAsset, self).__init__()
+
+    def _createNodes(self, iAObj=None, namespace=None):
+        # create file node
+        if namespace:
+            saved_namespace = mc.namespaceInfo(currentNamespace=True)
+
+            if not mc.namespace(exists=namespace):
+                mc.namespace(add=namespace)
+
+            mc.namespace(set=namespace)
+
+        if mc.about(version=True) == '2016':
+            # enable color management for textures in Maya 2016
+            color_managed = True
+        else:
+            color_managed = False
+
+        texture_node = mc.shadingNode("file", asTexture=True, name=iAObj.assetName, isColorManaged=color_managed)
+
+        # create place2dTexture node
+        place_2d_node = mc.shadingNode("place2dTexture", asUtility=True)
+
+        # connect nodes
+        mc.setAttr('%s.fileTextureName' % texture_node, iAObj.filePath, type='string')
+
+        mc.connectAttr('%s.coverage' % place_2d_node, '%s.coverage' % texture_node)
+        mc.connectAttr('%s.translateFrame' % place_2d_node, '%s.translateFrame' % texture_node)
+        mc.connectAttr('%s.rotateFrame' % place_2d_node, '%s.rotateFrame' % texture_node)
+        mc.connectAttr('%s.mirrorU' % place_2d_node, '%s.mirrorU' % texture_node)
+        mc.connectAttr('%s.mirrorV' % place_2d_node, '%s.mirrorV' % texture_node)
+        mc.connectAttr('%s.stagger' % place_2d_node, '%s.stagger' % texture_node)
+        mc.connectAttr('%s.wrapU' % place_2d_node, '%s.wrapU' % texture_node)
+        mc.connectAttr('%s.wrapV' % place_2d_node, '%s.wrapV' % texture_node)
+        mc.connectAttr('%s.repeatUV' % place_2d_node, '%s.repeatUV' % texture_node)
+        mc.connectAttr('%s.offset' % place_2d_node, '%s.offset' % texture_node)
+        mc.connectAttr('%s.rotateUV' % place_2d_node, '%s.rotateUV' % texture_node)
+        mc.connectAttr('%s.noiseUV' % place_2d_node, '%s.noiseUV' % texture_node)
+        mc.connectAttr('%s.vertexUvOne' % place_2d_node, '%s.vertexUvOne' % texture_node)
+        mc.connectAttr('%s.vertexUvTwo' % place_2d_node, '%s.vertexUvTwo' % texture_node)
+        mc.connectAttr('%s.vertexUvThree' % place_2d_node, '%s.vertexUvThree' % texture_node)
+        mc.connectAttr('%s.vertexCameraOne' % place_2d_node, '%s.vertexCameraOne' % texture_node)
+        mc.connectAttr('%s.outUV' % place_2d_node, '%s.uv' % texture_node)
+        mc.connectAttr('%s.outUvFilterSize' % place_2d_node, '%s.uvFilterSize' % texture_node)
+
+        if namespace:
+            mc.namespace(set=saved_namespace)
+
+    def importAsset(self, iAObj=None):
+        self.oldData = set(mc.ls())
+
+        if iAObj.options.get('mayaNamespace'):
+            file_asset_namespace = os.path.basename(iAObj.filePath)
+            file_asset_namespace = os.path.splitext(file_asset_namespace)[0]
+            # Remove the last bit, which usually is the version
+            file_asset_namespace = '_'.join(file_asset_namespace.split('_')[:-1])
+            namespace = iAObj.options.get('nameSpaceStr', None) or file_asset_namespace
+        else:
+            namespace = None
+
+        self._createNodes(iAObj, namespace)
+        self.newData = set(mc.ls())
+        self.linkToFtrackNode(iAObj)
+
+    def publishAsset(self, iAObj=None):
+        raise ValueError('Cannot publish texture from maya')
+
+    def changeVersion(self, iAObj=None, applicationObject=None):
+        node = applicationObject
+
+        # If the node is a place2dTexture node, find the associated file node.
+        if mc.nodeType(node) == "place2dTexture":
+            connections = mc.listConnections(node + ".rotateUV", d=True, s=False)
+            if connections:
+                node = connections[0]
+            else:
+                node = None
+
+        if node:
+            mc.setAttr('%s.fileTextureName' % node, iAObj.filePath, type='string')
+        else:
+            # report some error here?
+            return False
+
+        ftrackNode = mc.listConnections(
+            applicationObject + '.ftrack',
+            d=False,
+            s=True
+        )[0]
+
+        self.updateftrackNode(iAObj, ftrackNode)
+        return True
+
+    def linkToFtrackNode(self, iAObj):
+        # Contains small fix for addAttr without short name which usually clash
+        diff = self.newData.difference(self.oldData)
+        if not diff:
+            print 'no diff found in scene'
+            return
+
+        ftNodeName = iAObj.assetName + "_ftrackdata"
+        count = 0
+        while 1:
+            if mc.objExists(ftNodeName):
+                ftNodeName = ftNodeName + str(count)
+                count = count + 1
+            else:
+                break
+
+        ftNode = mc.createNode("ftrackAssetNode", name=ftNodeName)
+        mc.setAttr(ftNode + ".assetVersion", int(iAObj.assetVersion))
+        mc.setAttr(ftNode + ".assetId", iAObj.assetVersionId, type="string")
+        mc.setAttr(ftNode + ".assetPath", iAObj.filePath, type="string")
+        mc.setAttr(ftNode + ".assetTake", iAObj.componentName, type="string")
+        mc.setAttr(ftNode + ".assetType", iAObj.assetType, type="string")
+        mc.setAttr(
+            ftNode + ".assetComponentId",
+            iAObj.componentId,
+            type="string"
+        )
+
+        for item in diff:
+            if mc.lockNode(item, q=True)[0]:
+                mc.lockNode(item, l=False)
+
+            if not mc.attributeQuery('ftrack', n=item, exists=True):
+                mc.addAttr(item, ln="ftrack", at="message")
+
+            if not mc.listConnections(item + ".ftrack"):
+                mc.connectAttr(ftNode + ".assetLink", item + ".ftrack")
+
+    @staticmethod
+    def importOptions():
+        xml = """
+        <tab name="Options">
+            <row name="Add Asset Namespace" accepts="maya">
+                <option type="checkbox" name="mayaNamespace" value="False"/>
+                <option type="string" name="nameSpaceStr" value=""/>
+            </row>
+        </tab>
+        """
+        return xml
+
+
 def registerAssetTypes():
     assetHandler = FTAssetHandlerInstance.instance()
     assetHandler.registerAssetType(name='cam', cls=CameraAsset)
@@ -1377,3 +1523,4 @@ def registerAssetTypes():
     assetHandler.registerAssetType(name='audio', cls=AudioAsset)
     assetHandler.registerAssetType(name='geo', cls=GeometryAsset)
     assetHandler.registerAssetType(name='scene', cls=SceneAsset)
+    assetHandler.registerAssetType(name='img', cls=ImageAsset)
