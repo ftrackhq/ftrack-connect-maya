@@ -13,6 +13,10 @@ Release Notes
 
         Fix QStringListModel compatibility for PySide2 5.9+.
 
+    .. change:: add
+        :tags: Import
+
+        Added import single frame image sequence as image texture.
 
 .. release:: 1.2.2
     :date: 2019-06-25
