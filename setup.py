@@ -6,7 +6,7 @@ import re
 import shutil
 import pip
 
-if not pip.__version__.split('.')[0:1] >= (19, 3):
+if not pip.__version__.split('.') >= (19, 3, 0):
     raise ValueError('Pip should be version 19.3.0 or higher')
 
 from setuptools.command.test import test as TestCommand
