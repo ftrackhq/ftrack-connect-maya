@@ -4,6 +4,10 @@
 import os
 import re
 import shutil
+import pip
+
+if not pip.__version__.split('.') >= ['19', '3', '0']:
+    raise ValueError('Pip should be version 19.3.0 or higher')
 
 from setuptools.command.test import test as TestCommand
 from setuptools import setup, find_packages, Command
@@ -98,13 +102,12 @@ class BuildPlugin(Command):
         )
 
         # Install local dependencies
-        pip_main(
+        pip_main.main(
             [
                 'install',
                 '.',
                 '--target',
-                os.path.join(STAGING_PATH, 'dependencies'),
-                '--process-dependency-links'
+                os.path.join(STAGING_PATH, 'dependencies')
             ]
         )
 
@@ -148,12 +151,6 @@ setup(
     },
     install_requires=[
         'appdirs',
-        'qtext',
-    ],
-    dependency_links=[
-        (
-            'git+https://bitbucket.org/ftrack/qtext/get/0.2.2.zip'
-            '#egg=QtExt-0.2.2'
-        )
+        'qtext @ git+https://bitbucket.org/ftrack/qtext/get/0.2.2.zip#egg=QtExt-0.2.2'
     ]
 )

@@ -9,6 +9,11 @@ Release Notes
 
 .. release:: Upcoming
 
+    ..change:: changed
+        :tags: Setup
+
+        Pip compatibility for version 19.3.0 or higher
+
     .. change:: fix
 
         Fix QStringListModel compatibility for PySide2 5.9+.
