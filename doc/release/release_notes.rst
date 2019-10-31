@@ -11,6 +11,17 @@ Release Notes
 
     .. change:: fix
 
+        Pip compatibility for PIP 19 to 19.3.0.
+
+    .. change:: changed
+        :tags: Internal
+
+        Modified internal code for Pip to build with Pip 19, changed dependency intallation.
+
+.. release:: Upcoming
+
+    .. change:: fix
+
         Fix QStringListModel compatibility for PySide2 5.9+.
 
     .. change:: add
