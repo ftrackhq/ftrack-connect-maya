@@ -9,10 +9,10 @@ Release Notes
 
 .. release:: Upcoming
 
-    ..change:: improve
+    ..change:: changed
         :tags: Setup
 
-        Pip compatibility for PIP 19 to 19.3.0.
+        Pip compatibility for version 19.3.0 or higher
 
     .. change:: fix
 
