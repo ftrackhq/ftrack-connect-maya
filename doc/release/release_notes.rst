@@ -9,16 +9,10 @@ Release Notes
 
 .. release:: Upcoming
 
-    .. change:: fix
+    ..change:: improve
+        :tags: Setup
 
         Pip compatibility for PIP 19 to 19.3.0.
-
-    .. change:: changed
-        :tags: Internal
-
-        Modified internal code for Pip to build with Pip 19, changed dependency intallation.
-
-.. release:: Upcoming
 
     .. change:: fix
 
