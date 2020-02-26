@@ -7,6 +7,12 @@
 Release Notes
 *************
 
+.. release:: Upcoming
+
+    .. change:: change
+
+        Update pyside signal signature for pyside2 compatiblity.
+
 .. release:: 1.2.3
     :date: 2020-01-21
 

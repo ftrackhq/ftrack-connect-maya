@@ -70,17 +70,9 @@ class Ui_ExportOptions(object):
         self.verticalLayout.addItem(spacerItem)
 
         self.retranslateUi(ExportOptions)
-        
-        QtCore.QObject.connect(
-            self.pushButton,
-            QtCore.SIGNAL("clicked()"),
-            ExportOptions.setThumbnailFilename
-        )
-        QtCore.QObject.connect(
-            self.screenshotButton,
-            QtCore.SIGNAL("clicked()"),
-            ExportOptions.takeScreenshot
-        )
+        self.pushButton.clicked.connect(ExportOptions.setThumbnailFilename)
+        self.screenshotButton.clicked.connect(ExportOptions.takeScreenshot)
+
         QtCore.QMetaObject.connectSlotsByName(ExportOptions)
 
     def retranslateUi(self, ExportOptions):
