@@ -6,7 +6,7 @@ import os
 from QtExt import QtCore, QtWidgets, QtGui
 
 import ftrack
-from ftrack_connect.ui.widget.stacked_options import StackedOptionsWidget
+from ftrack_connector_legacy.ui.widget.stacked_options import StackedOptionsWidget
 from ftrack_connector_legacy import connector as ftrack_connector
 from ftrack_connect_maya.connector.mayacon import Connector as maya_connector
 
