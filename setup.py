@@ -153,6 +153,7 @@ setup(
     },
     install_requires=[
         'appdirs',
+        'ftrack-connector-legacy @ git+https://bitbucket.org/ftrack/ftrack-connector-legacy.git@backlog/connect-2/connector#egg=ftrack-connector-legacy',
         'qtext @ git+https://bitbucket.org/ftrack/qtext/get/0.2.2.zip#egg=QtExt-0.2.2'
     ]
 )
