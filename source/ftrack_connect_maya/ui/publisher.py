@@ -7,7 +7,7 @@ import getpass
 from QtExt import QtWidgets, QtCore, QtGui
 
 import ftrack
-from ftrack_connect import connector as ftrack_connector
+from ftrack_connector_legacy import connector as ftrack_connector
 from ftrack_connect.ui.widget import header
 from ftrack_connect.ui.theme import applyTheme
 from ftrack_connect.ui.widget.context_selector import ContextSelector
