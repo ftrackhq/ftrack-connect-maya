@@ -10,6 +10,11 @@ Release Notes
 .. release:: Upcoming
 
     .. change:: change
+        :tags: Setup
+
+        Provide dependency to ftrack-connector-legacy module.
+
+    .. change:: change
 
         Update pyside signal signature for pyside2 compatiblity.
 
