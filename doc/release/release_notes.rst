@@ -11,7 +11,14 @@ Release Notes
 
     .. change:: change
 
-        Update pyside signal signature for pyside2 compatiblity.
+        Update pyside signal signature for pyside2 compatibility.
+
+.. release:: Upcoming
+
+    .. change:: add
+        :tags: Import
+
+        Add support for FBX import.
 
 .. release:: 1.2.3
     :date: 2020-01-21
