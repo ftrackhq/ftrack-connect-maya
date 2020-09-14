@@ -82,7 +82,13 @@ class GenericAsset(FTAssetType):
         ):
             self.oldData = set(mc.ls())
 
-            mc.file(iAObj.filePath, i=(iAObj.options['importMode'] == 'Import'), r=(iAObj.options['importMode'] == 'Reference'), mergeNamespacesOnClash=False, namespace=namespace)
+            mc.file(
+                iAObj.filePath,
+                i=(iAObj.options['importMode'] == 'Import'),
+                r=(iAObj.options['importMode'] == 'Reference'),
+                mergeNamespacesOnClash=False,
+                namespace=namespace
+            )
 
             self.newData = set(mc.ls())
 
