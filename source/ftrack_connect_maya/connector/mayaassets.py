@@ -76,6 +76,17 @@ class GenericAsset(FTAssetType):
             self.newData = set(mc.ls())
 
             self.linkToFtrackNode(iAObj)
+        elif (
+                iAObj.componentName == 'fbx' or
+                iAObj.filePath.endswith('fbx')
+        ):
+            self.oldData = set(mc.ls())
+
+            mc.file(iAObj.filePath, i=(iAObj.options['importMode'] == 'Import'), r=(iAObj.options['importMode'] == 'Reference'), mergeNamespacesOnClash=False, namespace=namespace)
+
+            self.newData = set(mc.ls())
+
+            self.linkToFtrackNode(iAObj)
         elif any(
                 [iAObj.filePath.endswith(format) for format in SUPPORTED_SOUND_FORMATS]
                 ):
