@@ -7,7 +7,8 @@
 Release Notes
 *************
 
-.. release:: Upcoming
+.. release:: 1.3.0
+    :date: 2020-09-28
 
     .. change:: change
 
