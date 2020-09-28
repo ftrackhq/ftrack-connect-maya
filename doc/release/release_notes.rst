@@ -13,8 +13,6 @@ Release Notes
 
         Update pyside signal signature for pyside2 compatibility.
 
-.. release:: Upcoming
-
     .. change:: add
         :tags: Import
 
