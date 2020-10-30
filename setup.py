@@ -104,7 +104,7 @@ class BuildPlugin(Command):
         )
 
         # Install local dependencies
-        pip_main.main(
+        pip_main(
             [
                 'install',
                 '.',
