@@ -10,10 +10,7 @@ from setuptools.command.test import test as TestCommand
 from setuptools import setup, find_packages, Command
 import pip
 
-if parse_version(pip.__version__) < parse_version('19.3.0'):
-    raise ValueError('Pip should be version 19.3.0 or higher')
-
-from pip._internal import main as pip_main
+from pip.__main__ import _main as pip_main
 
 
 # Define paths
@@ -104,7 +101,7 @@ class BuildPlugin(Command):
         )
 
         # Install local dependencies
-        pip_main.main(
+        pip_main(
             [
                 'install',
                 '.',
@@ -153,7 +150,7 @@ setup(
     },
     install_requires=[
         'appdirs',
-        'ftrack-connector-legacy @ git+https://bitbucket.org/ftrack/ftrack-connector-legacy.git@backlog/connect-2/connector#egg=ftrack-connector-legacy',
+        'ftrack-connector-legacy @ git+https://bitbucket.org/ftrack/ftrack-connector-legacy.git@backlog/connect-2/story#egg=ftrack-connector-legacy',
         'qtext @ git+https://bitbucket.org/ftrack/qtext/get/0.2.2.zip#egg=QtExt-0.2.2'
     ]
 )
