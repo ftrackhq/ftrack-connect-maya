@@ -2,7 +2,7 @@
 # :copyright: Copyright (c) 2017 ftrack
 
 import ftrack_connect_maya
-import ftrack_connect.usage
+import ftrack_connector_legacy.usage
 
 import maya.cmds
 
@@ -16,6 +16,6 @@ def send_event(event_name, metadata=None):
             'ftrack_connect_maya_version': ftrack_connect_maya.__version__
         }
 
-    ftrack_connect.usage.send_event(
+    ftrack_connector_legacy.usage.send_event(
         event_name, metadata
     )

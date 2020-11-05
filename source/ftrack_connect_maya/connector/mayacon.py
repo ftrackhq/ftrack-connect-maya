@@ -8,8 +8,8 @@ import maya.cmds as mc
 import maya.OpenMayaUI as mui
 import maya.mel as mm
 
-from ftrack_connect.connector import base as maincon
-from ftrack_connect.connector import FTAssetHandlerInstance
+from ftrack_connector_legacy.connector import base as maincon
+from ftrack_connector_legacy.connector import FTAssetHandlerInstance
 
 
 class DockedWidget(object):
