@@ -44,13 +44,13 @@ def on_discover_maya_integration(session, event):
             'version': ftrack_connect_maya.__version__
         },
         'env': {
-            'PYTHONPATH': os.path.pathsep.join([maya_connect_scripts, sources]),
+            'PYTHONPATH.prepend': os.path.pathsep.join([maya_connect_scripts, sources]),
             'MAYA_SCRIPT_PATH': maya_connect_scripts,
             'MAYA_PLUG_IN_PATH': maya_connect_plugins,
             'FTRACK_TASKID': task['id'],
             'FTRACK_SHOTID': task['parent']['id'],
-            'LOGNAME': session._api_user,
-            'FTRACK_APIKEY': session._api_key
+            'LOGNAME.set': session._api_user,
+            'FTRACK_APIKEY.set': session._api_key
         }
     }
     return data
