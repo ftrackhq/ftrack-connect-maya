@@ -20,16 +20,6 @@ sys.path.append(sources)
 import ftrack_connect_maya
 
 
-#         try:
-#             environment['FS'] = str(int(taskParent.getFrameStart()))
-#         except Exception:
-#             environment['FS'] = '1'
-
-#         try:
-#             environment['FE'] = str(int(taskParent.getFrameEnd()))
-#         except Exception:
-#             environment['FE'] = '1'
-
 
 def on_discover_maya_integration(session, event):
     entity = event['data']['context']['selection'][0]
@@ -47,16 +37,17 @@ def on_discover_maya_integration(session, event):
             'PYTHONPATH.prepend': os.path.pathsep.join([maya_connect_scripts, sources]),
             'MAYA_SCRIPT_PATH': maya_connect_scripts,
             'MAYA_PLUG_IN_PATH': maya_connect_plugins,
-            'FTRACK_TASKID': task['id'],
-            'FTRACK_SHOTID': task['parent']['id'],
+            'FTRACK_TASKID.set': task['id'],
+            'FTRACK_SHOTID.set': task['parent']['id'],
             'LOGNAME.set': session._api_user,
-            'FTRACK_APIKEY.set': session._api_key
+            'FTRACK_APIKEY.set': session._api_key,
+            'FS.set': task['parent']['id']['custom_attributes'].get('fstart', 1.0),
+            'FE.set': task['parent']['id']['custom_attributes'].get('fend', 100.0)
         }
     }
     return data
 
-#         environment['FTRACK_TASKID'] = task.getId()
-#         environment['FTRACK_SHOTID'] = task.get('parent_id')
+
 def register(session):
     '''Subscribe to application launch events on *registry*.'''
     if not isinstance(session, ftrack_api.session.Session):
