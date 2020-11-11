@@ -10,9 +10,9 @@ Release Notes
 .. release:: Upcoming
     
     .. change:: change
-        :tags: Setup
+        :tags: Hook
 
-        Provide dependency to ftrack-connector-legacy module.
+        Update hook for application-launcher.
 
     .. change:: change
         :tags: Setup
