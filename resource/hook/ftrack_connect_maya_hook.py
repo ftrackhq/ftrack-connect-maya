@@ -41,8 +41,8 @@ def on_discover_maya_integration(session, event):
             'FTRACK_SHOTID.set': task['parent']['id'],
             'LOGNAME.set': session._api_user,
             'FTRACK_APIKEY.set': session._api_key,
-            'FS.set': task['parent']['custom_attributes'].get('fstart', 1.0),
-            'FE.set': task['parent']['custom_attributes'].get('fend', 100.0)
+            'FS.set': task['parent']['custom_attributes'].get('fstart', '1.0'),
+            'FE.set': task['parent']['custom_attributes'].get('fend', '100.0')
         }
     }
     return data
