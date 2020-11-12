@@ -8,20 +8,21 @@ import pprint
 import logging
 import re
 import os
-from distutils.version import LooseVersion
 
 import ftrack_api
 
-cwd = os.path.dirname(__file__)
-sources = os.path.abspath(os.path.join(cwd, '..', 'dependencies'))
-ftrack_connect_maya_resource_path = os.path.abspath(os.path.join(cwd, '..',  'resource'))
-sys.path.append(sources)
-
-import ftrack_connect_maya
-
-
 
 def on_discover_maya_integration(session, event):
+
+
+    cwd = os.path.dirname(__file__)
+    sources = os.path.abspath(os.path.join(cwd, '..', 'dependencies'))
+    ftrack_connect_maya_resource_path = os.path.abspath(os.path.join(cwd, '..',  'resource'))
+    sys.path.append(sources)
+
+    import ftrack_connect_maya
+
+
     entity = event['data']['context']['selection'][0]
     task = session.get('Context', entity['entityId'])
 
