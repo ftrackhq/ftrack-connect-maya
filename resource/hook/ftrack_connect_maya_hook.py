@@ -60,6 +60,7 @@ def register(session):
         session
     )
     session.event_hub.subscribe(
-        'topic=ftrack.connect.application.launch',
+        'topic=ftrack.connect.application.launch'
+        ' and data.application.identifier=maya*',
         handle_event
     )
