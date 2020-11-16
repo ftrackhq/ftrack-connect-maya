@@ -20,7 +20,7 @@ def on_discover_maya_integration(session, event):
     ftrack_connect_maya_resource_path = os.path.abspath(os.path.join(cwd, '..',  'resource'))
     sys.path.append(sources)
 
-    import ftrack_connect_maya
+    import ftrack_connect_maya.__version__ as integration_version
 
 
     entity = event['data']['context']['selection'][0]
@@ -32,7 +32,7 @@ def on_discover_maya_integration(session, event):
     data = {
         'integration': {
             "name": 'ftrack-connect-maya',
-            'version': ftrack_connect_maya.__version__
+            'version': integration_version
         },
         'env': {
             'PYTHONPATH.prepend': os.path.pathsep.join([maya_connect_scripts, sources]),
