@@ -10,8 +10,6 @@ from setuptools.command.test import test as TestCommand
 from setuptools import setup, find_packages, Command
 import pip
 
-if parse_version(pip.__version__) < parse_version('19.3.0'):
-    raise ValueError('Pip should be version 19.3.0 or higher')
 
 from pip._internal import main as pip_main
 
@@ -104,7 +102,7 @@ class BuildPlugin(Command):
         )
 
         # Install local dependencies
-        pip_main.main(
+        pip_main(
             [
                 'install',
                 '.',
