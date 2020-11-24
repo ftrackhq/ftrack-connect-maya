@@ -32,18 +32,18 @@ def on_discover_maya_integration(session, event):
     data = {
         'integration': {
             "name": 'ftrack-connect-maya',
-            'version': integration_version
-        },
-        'env': {
-            'PYTHONPATH.prepend': os.path.pathsep.join([maya_connect_scripts, sources]),
-            'MAYA_SCRIPT_PATH': maya_connect_scripts,
-            'MAYA_PLUG_IN_PATH': maya_connect_plugins,
-            'FTRACK_TASKID.set': task['id'],
-            'FTRACK_SHOTID.set': task['parent']['id'],
-            'LOGNAME.set': session._api_user,
-            'FTRACK_APIKEY.set': session._api_key,
-            'FS.set': task['parent']['custom_attributes'].get('fstart', '1.0'),
-            'FE.set': task['parent']['custom_attributes'].get('fend', '100.0')
+            'version': integration_version,
+            'env': {
+                'PYTHONPATH.prepend': os.path.pathsep.join([maya_connect_scripts, sources]),
+                'MAYA_SCRIPT_PATH': maya_connect_scripts,
+                'MAYA_PLUG_IN_PATH': maya_connect_plugins,
+                'FTRACK_TASKID.set': task['id'],
+                'FTRACK_SHOTID.set': task['parent']['id'],
+                'LOGNAME.set': session._api_user,
+                'FTRACK_APIKEY.set': session._api_key,
+                'FS.set': task['parent']['custom_attributes'].get('fstart', '1.0'),
+                'FE.set': task['parent']['custom_attributes'].get('fend', '100.0')
+            }
         }
     }
     return data
