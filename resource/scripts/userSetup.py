@@ -13,7 +13,6 @@ import ftrack_connector_legacy.util
 import ftrack_connector_legacy.asset_version_scanner
 import ftrack_connector_legacy.config
 
-from ftrack_connect_maya.usage import send_event
 from ftrack_connect_maya.connector import Connector
 from ftrack_connect_maya.connector.mayacon import DockedWidget
 
@@ -122,11 +121,6 @@ def loadAndInit():
                 lambda x, dialog_class=dialog_class: open_dialog(dialog_class)
             )
         )
-
-    send_event(
-        'USED-FTRACK-CONNECT-MAYA'
-    )
-
 
 
 def handle_scan_result(result, scanned_ftrack_nodes):
