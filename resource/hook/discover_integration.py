@@ -59,8 +59,15 @@ def register(session):
         on_discover_maya_integration,
         session
     )
+
     session.event_hub.subscribe(
         'topic=ftrack.connect.application.launch'
+        ' and data.application.identifier=maya*',
+        handle_event
+    )
+
+    session.event_hub.subscribe(
+        'topic=ftrack.connect.application.discover'
         ' and data.application.identifier=maya*',
         handle_event
     )
