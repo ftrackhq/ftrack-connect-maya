@@ -13,8 +13,7 @@ import ftrack_api
 
 
 def on_discover_maya_integration(session, event):
-
-
+    
     cwd = os.path.dirname(__file__)
     sources = os.path.abspath(os.path.join(cwd, '..', 'dependencies'))
     ftrack_connect_maya_resource_path = os.path.abspath(os.path.join(cwd, '..',  'resource'))
@@ -61,12 +60,14 @@ def register(session):
     )
     session.event_hub.subscribe(
         'topic=ftrack.connect.application.launch'
-        ' and data.application.identifier=maya*',
+        ' and data.application.identifier=maya*'
+        ' and data.application.version <= 2020',
         handle_event
     )
     
     session.event_hub.subscribe(
         'topic=ftrack.connect.application.discover'
-        ' and data.application.identifier=maya*',
+        ' and data.application.identifier=maya*'
+        ' and data.application.version <= 2020',
         handle_event
     )
