@@ -7,8 +7,9 @@
 Release Notes
 *************
 
-.. release:: Upcoming
-    
+.. release:: 1.3.0-beta-1
+    :date: 2021-03-11
+
     .. change:: change
         :tags: Hook
 
