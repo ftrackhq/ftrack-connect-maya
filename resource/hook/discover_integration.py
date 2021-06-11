@@ -53,7 +53,7 @@ def on_launch_maya_integration(session, event):
         task = session.get('Context', selection[0]['entityId'])
         maya_base_data['integration']['env']['FTRACK_TASKID.set'] =  task['id']
         maya_base_data['integration']['env']['FTRACK_SHOTID.set'] =  task['parent']['id']
-        maya_base_data['integration']['env']['FS.set'] = task['parent']['custom_attributes'].get('fstart', '1.0'),
+        maya_base_data['integration']['env']['FS.set'] = task['parent']['custom_attributes'].get('fstart', '1.0')
         maya_base_data['integration']['env']['FE.set'] = task['parent']['custom_attributes'].get('fend', '100.0')
 
     return maya_base_data
