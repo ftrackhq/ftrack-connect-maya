@@ -12,40 +12,51 @@ import os
 import ftrack_api
 
 
+cwd = os.path.dirname(__file__)
+sources = os.path.abspath(os.path.join(cwd, '..', 'dependencies'))
+ftrack_connect_maya_resource_path = os.path.abspath(os.path.join(cwd, '..',  'resource'))
+sys.path.append(sources)
+
+
 def on_discover_maya_integration(session, event):
-    
-    cwd = os.path.dirname(__file__)
-    sources = os.path.abspath(os.path.join(cwd, '..', 'dependencies'))
-    ftrack_connect_maya_resource_path = os.path.abspath(os.path.join(cwd, '..',  'resource'))
-    sys.path.append(sources)
 
     from ftrack_connect_maya import __version__ as integration_version
 
+    data = {
+        'integration': {
+            'name': 'ftrack-connect-maya',
+            'version': integration_version
+        }
+    }
 
-    entity = event['data']['context']['selection'][0]
-    task = session.get('Context', entity['entityId'])
+    return data
+
+
+def on_launch_maya_integration(session, event):
+    maya_base_data = on_discover_maya_integration(session, event)
 
     maya_connect_scripts = os.path.join(ftrack_connect_maya_resource_path, 'scripts')
     maya_connect_plugins = os.path.join(ftrack_connect_maya_resource_path, 'plug_ins')
 
-    data = {
-        'integration': {
-            "name": 'ftrack-connect-maya',
-            'version': integration_version,
-            'env': {
-                'PYTHONPATH.prepend': os.path.pathsep.join([maya_connect_scripts, sources]),
-                'MAYA_SCRIPT_PATH': maya_connect_scripts,
-                'MAYA_PLUG_IN_PATH': maya_connect_plugins,
-                'FTRACK_TASKID.set': task['id'],
-                'FTRACK_SHOTID.set': task['parent']['id'],
-                'LOGNAME.set': session._api_user,
-                'FTRACK_APIKEY.set': session._api_key,
-                'FS.set': task['parent']['custom_attributes'].get('fstart', '1.0'),
-                'FE.set': task['parent']['custom_attributes'].get('fend', '100.0')
-            }
-        }
+
+    maya_base_data['integration']['env'] = {
+        'PYTHONPATH.prepend': os.path.pathsep.join([maya_connect_scripts, sources]),
+        'MAYA_SCRIPT_PATH': maya_connect_scripts,
+        'MAYA_PLUG_IN_PATH': maya_connect_plugins,
+        'LOGNAME.set': session._api_user,
+        'FTRACK_APIKEY.set': session._api_key,
     }
-    return data
+    
+    selection = event['data'].get('context', {}).get('selection', [])
+    
+    if selection:
+        task = session.get('Context', selection[0]['entityId'])
+        maya_base_data['integration']['env']['FTRACK_TASKID.set'] =  task['id']
+        maya_base_data['integration']['env']['FTRACK_SHOTID.set'] =  task['parent']['id']
+        maya_base_data['integration']['env']['FS.set'] = task['parent']['custom_attributes'].get('fstart', '1.0')
+        maya_base_data['integration']['env']['FE.set'] = task['parent']['custom_attributes'].get('fend', '100.0')
+
+    return maya_base_data
 
 
 def register(session):
@@ -54,20 +65,27 @@ def register(session):
         return
 
 
-    handle_event = functools.partial(
+    handle_discovery_event = functools.partial(
         on_discover_maya_integration,
         session
     )
-    session.event_hub.subscribe(
-        'topic=ftrack.connect.application.launch'
-        ' and data.application.identifier=maya*'
-        ' and data.application.version <= 2020',
-        handle_event
-    )
-    
+
     session.event_hub.subscribe(
         'topic=ftrack.connect.application.discover'
         ' and data.application.identifier=maya*'
         ' and data.application.version <= 2020',
-        handle_event
+        handle_discovery_event
     )
+
+    handle_launch_event = functools.partial(
+        on_launch_maya_integration,
+        session
+    )    
+
+    session.event_hub.subscribe(
+        'topic=ftrack.connect.application.launch'
+        ' and data.application.identifier=maya*'
+        ' and data.application.version <= 2020',
+        handle_launch_event
+    )
+    
