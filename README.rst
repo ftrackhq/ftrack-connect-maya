@@ -9,7 +9,7 @@ Documentation
 *************
 
 Full documentation, including installation and setup guides, can be found at
-http://ftrack-connect-maya.rtd.ftrack.com/en/latest/
+https://ftrack-connect-maya.readthedocs.io/en/latest/
 
 *********************
 Copyright and license
