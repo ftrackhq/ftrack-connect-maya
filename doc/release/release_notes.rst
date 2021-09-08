@@ -7,7 +7,7 @@
 Release Notes
 *************
 
-.. release:: 1.3.0
+.. release:: 1.4.0
     :date: 2021-09-08
 
     .. change:: change
