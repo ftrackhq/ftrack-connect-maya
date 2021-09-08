@@ -10,7 +10,8 @@ from setuptools.command.test import test as TestCommand
 from setuptools import setup, find_packages, Command
 import pip
 
-from pip.__main__ import _main as pip_main
+
+from pip._internal import main as pip_main
 
 
 # Define paths
@@ -101,7 +102,7 @@ class BuildPlugin(Command):
         )
 
         # Install local dependencies
-        pip_main(
+        pip_main.main(
             [
                 'install',
                 '.',

@@ -20,9 +20,19 @@ Release Notes
 
         Provide dependency to ftrack-connector-legacy module.
 
+
+.. release:: 1.3.0
+    :date: 2020-09-28
+
     .. change:: change
 
         Update pyside signal signature for pyside2 compatiblity.
+    
+    .. change:: add
+        :tags: Import
+
+        Add support for FBX import.
+
 
 .. release:: 1.2.3
     :date: 2020-01-21
