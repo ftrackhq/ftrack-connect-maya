@@ -5,6 +5,7 @@
 
 import os
 import re
+import sys
 
 # -- General ------------------------------------------------------------------
 
@@ -17,7 +18,13 @@ extensions = [
     'sphinx.ext.viewcode',
     'lowdown'
 ]
-
+sys.path.append(
+    os.path.join(
+        os.path.dirname(__file__),
+        '..',
+        'source'
+    )
+)
 
 # The suffix of source filenames.
 source_suffix = '.rst'
