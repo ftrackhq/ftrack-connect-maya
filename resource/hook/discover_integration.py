@@ -15,10 +15,10 @@ import ftrack_api
 cwd = os.path.dirname(__file__)
 sources = os.path.abspath(os.path.join(cwd, '..', 'dependencies'))
 ftrack_connect_maya_resource_path = os.path.abspath(os.path.join(cwd, '..',  'resource'))
-sys.path.append(sources)
 
 
 def on_discover_maya_integration(session, event):
+    sys.path.append(sources)
 
     from ftrack_connect_maya import __version__ as integration_version
 
