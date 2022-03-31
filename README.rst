@@ -2,6 +2,11 @@
 ftrack connect maya
 ###############################
 
+.. warning::
+
+    This integration will reach EOL by the end of 2022 and will no be longer supported. 
+
+
 Maya integration with ftrack.
 
 *************
