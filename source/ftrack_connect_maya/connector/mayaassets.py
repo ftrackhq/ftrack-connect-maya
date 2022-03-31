@@ -12,7 +12,7 @@ import ftrack
 
 import mayacon
 
-from ftrack_connect.connector import (
+from ftrack_connector_legacy.connector import (
     FTAssetHandlerInstance,
     HelpFunctions,
     FTAssetType,
@@ -24,7 +24,7 @@ currentEndFrame = mc.playbackOptions(max=True, q=True)
 
 
 if mayacon.Connector.batch() is False:
-    from ftrack_connect.connector import panelcom
+    from ftrack_connector_legacy.connector import panelcom
 
 SUPPORTED_SOUND_FORMATS = ['.aiff', '.wav']
 if sys.platform == 'darwin':

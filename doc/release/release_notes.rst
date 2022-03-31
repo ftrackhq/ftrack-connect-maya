@@ -7,17 +7,38 @@
 Release Notes
 *************
 
+.. release:: 1.4.0
+    :date: 2021-09-08
+
+    .. change:: change
+        :tags: Hook
+
+        Update hook for application-launcher.
+
+    .. change:: change
+        :tags: Setup
+
+        Provide dependency to ftrack-connector-legacy module.
+
+
+.. warning::
+
+    From this version the support for ftrack-connect 1.X is dropped, and
+    only ftrack-conenct 2.0 will be supported up to the integration EOL.
+
+
 .. release:: 1.3.0
     :date: 2020-09-28
 
     .. change:: change
 
-        Update pyside signal signature for pyside2 compatibility.
-
+        Update pyside signal signature for pyside2 compatiblity.
+    
     .. change:: add
         :tags: Import
 
         Add support for FBX import.
+
 
 .. release:: 1.2.3
     :date: 2020-01-21

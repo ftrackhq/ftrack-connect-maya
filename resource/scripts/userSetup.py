@@ -9,11 +9,10 @@ import logging
 import ftrack
 import functools
 
-import ftrack_connect.util
-import ftrack_connect.asset_version_scanner
-import ftrack_connect.config
+import ftrack_connector_legacy.util
+import ftrack_connector_legacy.asset_version_scanner
+import ftrack_connector_legacy.config
 
-from ftrack_connect_maya.usage import send_event
 from ftrack_connect_maya.connector import Connector
 from ftrack_connect_maya.connector.mayacon import DockedWidget
 
@@ -88,8 +87,8 @@ def loadAndInit():
         label='ftrack'
     )
 
-    from ftrack_connect.ui.widget.asset_manager import FtrackAssetManagerDialog
-    from ftrack_connect.ui.widget.import_asset import FtrackImportAssetDialog
+    from ftrack_connector_legacy.ui.widget.asset_manager import FtrackAssetManagerDialog
+    from ftrack_connector_legacy.ui.widget.import_asset import FtrackImportAssetDialog
     from ftrack_connect_maya.ui.info import FtrackMayaInfoDialog
     from ftrack_connect_maya.ui.publisher import PublishAssetDialog
     from ftrack_connect_maya.ui.tasks import FtrackTasksDialog
@@ -122,11 +121,6 @@ def loadAndInit():
                 lambda x, dialog_class=dialog_class: open_dialog(dialog_class)
             )
         )
-
-    send_event(
-        'USED-FTRACK-CONNECT-MAYA'
-    )
-
 
 
 def handle_scan_result(result, scanned_ftrack_nodes):
@@ -195,10 +189,10 @@ def scan_for_new_assets():
             auto_connect_event_hub=False,
             plugin_paths=None
         )
-        scanner = ftrack_connect.asset_version_scanner.Scanner(
+        scanner = ftrack_connector_legacy.asset_version_scanner.Scanner(
             session=session,
             result_handler=(
-                lambda result: ftrack_connect.util.invoke_in_main_thread(
+                lambda result: ftrack_connector_legacy.util.invoke_in_main_thread(
                     handle_scan_result,
                     result,
                     scanned_ftrack_nodes
@@ -210,7 +204,7 @@ def scan_for_new_assets():
 
 def refAssetManager():
     '''Refresh asset manager'''
-    from ftrack_connect.connector import panelcom
+    from ftrack_connector_legacy.connector import panelcom
     panelComInstance = panelcom.PanelComInstance.instance()
     panelComInstance.refreshListeners()
 
@@ -245,6 +239,6 @@ if not Connector.batch():
     mc.evalDeferred("Connector.setTimeLine()")
 
 
-ftrack_connect.config.configure_logging(
+ftrack_connector_legacy.config.configure_logging(
     'ftrack_connect_maya', level='WARNING'
 )
